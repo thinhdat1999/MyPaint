@@ -7,3 +7,12 @@ G:\Lập Trình Trực Quan\MyPaint\MyPaint\obj\Debug\MyPaint.csproj.GenerateRes
 G:\Lập Trình Trực Quan\MyPaint\MyPaint\obj\Debug\MyPaint.csproj.CoreCompileInputs.cache
 G:\Lập Trình Trực Quan\MyPaint\MyPaint\obj\Debug\MyPaint.exe
 G:\Lập Trình Trực Quan\MyPaint\MyPaint\obj\Debug\MyPaint.pdb
+C:\Users\vuong\Source\Repos\MyPaint\MyPaint\MyPaint\bin\Debug\MyPaint.exe.config
+C:\Users\vuong\Source\Repos\MyPaint\MyPaint\MyPaint\bin\Debug\MyPaint.exe
+C:\Users\vuong\Source\Repos\MyPaint\MyPaint\MyPaint\bin\Debug\MyPaint.pdb
+C:\Users\vuong\Source\Repos\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.csprojAssemblyReference.cache
+C:\Users\vuong\Source\Repos\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.Properties.Resources.resources
+C:\Users\vuong\Source\Repos\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.csproj.GenerateResource.cache
+C:\Users\vuong\Source\Repos\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.csproj.CoreCompileInputs.cache
+C:\Users\vuong\Source\Repos\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.exe
+C:\Users\vuong\Source\Repos\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.pdb

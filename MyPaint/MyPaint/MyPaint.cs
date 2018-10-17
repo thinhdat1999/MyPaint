@@ -326,25 +326,27 @@ namespace Paint
         {
             if (pictureBox1.BackgroundImage != null)
                 RedoList.Push(pictureBox1.BackgroundImage);
-            //pictureBox1.BackgroundImage = UndoList.Pop();
-            if (UndoList.Peek() != null)
-                DrawArea = new Bitmap(UndoList.Pop(), pictureBox1.Size);
+            if (UndoList.Count() >= 1)
+                pictureBox1.BackgroundImage = UndoList.Pop();
+            else return;
+            if (pictureBox1.BackgroundImage == null) return;
             else
-                DrawArea = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
-            RefreshFormBackground();
-
+            {
+                DrawArea = new Bitmap(pictureBox1.BackgroundImage, pictureBox1.Size);
+                RefreshFormBackground();
+            }
         }
         public void Redo()
         {
+            if (RedoList.Count() == 0) return;
             UndoList.Push(pictureBox1.BackgroundImage);
             while (RedoList.Peek() == null)
             {
                 RedoList.Pop();
             }
-
-            //pictureBox1.BackgroundImage = RedoList.Pop();
             if (RedoList.Peek() != null)
                 DrawArea = new Bitmap(RedoList.Pop(), pictureBox1.Size);
+            else return;
             RefreshFormBackground();
 
         }
