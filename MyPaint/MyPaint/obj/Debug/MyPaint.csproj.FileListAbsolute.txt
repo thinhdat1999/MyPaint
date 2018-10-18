@@ -16,3 +16,13 @@ C:\Users\vuong\Source\Repos\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.csproj.Gen
 C:\Users\vuong\Source\Repos\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.csproj.CoreCompileInputs.cache
 C:\Users\vuong\Source\Repos\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.exe
 C:\Users\vuong\Source\Repos\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.pdb
+D:\Bai tập UIT\Lập trình trực quan\Đồ án\MyPaint\MyPaint\obj\Debug\MyPaint.exe
+D:\Bai tập UIT\Lập trình trực quan\Đồ án\MyPaint\MyPaint\obj\Debug\MyPaint.pdb
+D:\Bai tập UIT\Lập trình trực quan\Đồ án\MyPaint\MyPaint\bin\Debug\MyPaint.exe.config
+D:\Bai tập UIT\Lập trình trực quan\Đồ án\MyPaint\MyPaint\bin\Debug\MyPaint.exe
+D:\Bai tập UIT\Lập trình trực quan\Đồ án\MyPaint\MyPaint\bin\Debug\MyPaint.pdb
+D:\Bai tập UIT\Lập trình trực quan\Đồ án\MyPaint\MyPaint\obj\Debug\MyPaint.csprojAssemblyReference.cache
+D:\Bai tập UIT\Lập trình trực quan\Đồ án\MyPaint\MyPaint\obj\Debug\MyPaint.Properties.Resources.resources
+D:\Bai tập UIT\Lập trình trực quan\Đồ án\MyPaint\MyPaint\obj\Debug\MyPaint.csproj.GenerateResource.cache
+D:\Bai tập UIT\Lập trình trực quan\Đồ án\MyPaint\MyPaint\obj\Debug\MyPaint.csproj.CoreCompileInputs.cache
+D:\Bai tập UIT\Lập trình trực quan\Đồ án\MyPaint\MyPaint\obj\Debug\Paint.MyPaint.resources
