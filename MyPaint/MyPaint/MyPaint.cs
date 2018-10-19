@@ -18,6 +18,7 @@ namespace Paint
 
         bool isDrawing = false;
         bool isShifting = false;
+        bool isPictureClear = true;
 
         Point ptMouseDown;
         Point ptCurrent;
@@ -31,7 +32,7 @@ namespace Paint
         {
             InitializeComponent();
             Text = "MY PAINT :\">";
-
+            KeyPreview = true;
             DrawArea = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
             UndoList = new Stack<Image>();
             RedoList = new Stack<Image>();
@@ -90,6 +91,8 @@ namespace Paint
                 DrawPen = new Pen(colorPanel1.GetCurrentColor());
                 ptCurrent = ptMouseDown = mea.Location;
                 isDrawing = true;
+                isPictureClear = false;
+                RedoList.Clear();
             }
         }
 
@@ -206,6 +209,7 @@ namespace Paint
                                   () =>
                                   {
                                       _g.DrawString(textBox.Text, DefaultFont, Brushes.Black, ptMouseDown);
+                                      UndoList.Push(pictureBox1.BackgroundImage);
                                       RefreshFormBackground();
                                   }
                                   );
@@ -214,7 +218,7 @@ namespace Paint
                                 //_g.DrawString(textBox.Text, DefaultFont, Brushes.Black, ptMouseDown);
                             }
 
-                            UndoList.Push(pictureBox1.BackgroundImage);
+                            //UndoList.Push(pictureBox1.BackgroundImage);
                             break;
                         }
                     default:
@@ -248,28 +252,6 @@ namespace Paint
 
         #region Undo & Redo
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == (Keys.Control | Keys.Z))
-            {
-                Undo();
-                return true;
-            }
-            if (keyData == (Keys.Control | Keys.Y))
-            {
-                Redo();
-            }
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-        private void MyPaint_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Shift) isShifting = true;
-        }
-        private void MyPaint_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (!e.Shift) isShifting = false;
-        }
-
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
@@ -292,38 +274,40 @@ namespace Paint
 
         public void Undo()
         {
-            if (pictureBox1.BackgroundImage != null)
+            if (!isPictureClear)
             {
                 RedoList.Push(pictureBox1.BackgroundImage);
             }
 
-            if (UndoList.Count > 1)
-            {
-                pictureBox1.BackgroundImage = UndoList.Pop();
-                DrawArea = new Bitmap(pictureBox1.BackgroundImage, pictureBox1.Size);
-            }
+
+            if (UndoList.Count() != 0 && UndoList.Peek() != null)
+                DrawArea = new Bitmap(UndoList.Pop(), pictureBox1.Size);
             else
             {
-                DrawArea = null;
-                pictureBox1.BackgroundImage = null;
+                DrawArea = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
+                isPictureClear = true;
             }
+            if (UndoList.Count() == 1) UndoList.Pop();
             RefreshFormBackground();
         }
         public void Redo()
         {
-            if (RedoList.Count() == 0) return;
-
-            UndoList.Push(pictureBox1.BackgroundImage);
-
+            if (RedoList.Count() != 0)
+            {
+                UndoList.Push(pictureBox1.BackgroundImage);
+            }
+            else return;
             while (RedoList.Peek() == null)
             {
                 RedoList.Pop();
             }
-
             if (RedoList.Peek() != null)
+            {
                 DrawArea = new Bitmap(RedoList.Pop(), pictureBox1.Size);
-            else return;
+                isPictureClear = false;
 
+            }
+            else return;
             RefreshFormBackground();
 
         }
@@ -360,19 +344,14 @@ namespace Paint
             base.OnLoad(e);
             this.Controls.Add(_control);
             _control.Location = new Point(0, 0);
-            this.Size = _control.Size;
+            this.Size = new Size(150,25);
             this.Location = _point;
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
-            if (e.KeyCode == Keys.Enter)
-            {
-                _onAccept();
-                this.Close();
-            }
-            else if (e.KeyCode == Keys.Escape)
+            if (e.KeyCode == Keys.Escape)
             {
                 this.Close();
             }
@@ -381,6 +360,7 @@ namespace Paint
         protected override void OnDeactivate(EventArgs e)
         {
             base.OnDeactivate(e);
+            _onAccept();
             this.Close();
         }
     }
