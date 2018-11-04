@@ -52,7 +52,7 @@ namespace Paint
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.04318F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.73402F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.80656F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 274F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 276F));
             this.tableLayoutPanel2.Controls.Add(this.EllipseButton, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.RectangleButton, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.LineButton, 0, 0);
@@ -70,7 +70,7 @@ namespace Paint
             // 
             // EllipseButton
             // 
-            this.EllipseButton.Location = new System.Drawing.Point(278, 2);
+            this.EllipseButton.Location = new System.Drawing.Point(277, 2);
             this.EllipseButton.Margin = new System.Windows.Forms.Padding(2);
             this.EllipseButton.Name = "EllipseButton";
             this.EllipseButton.Size = new System.Drawing.Size(56, 21);
@@ -106,7 +106,7 @@ namespace Paint
             // 
             // TextBoxButton
             // 
-            this.TextBoxButton.Location = new System.Drawing.Point(431, 2);
+            this.TextBoxButton.Location = new System.Drawing.Point(429, 2);
             this.TextBoxButton.Margin = new System.Windows.Forms.Padding(2);
             this.TextBoxButton.Name = "TextBoxButton";
             this.TextBoxButton.Size = new System.Drawing.Size(56, 19);
@@ -119,7 +119,7 @@ namespace Paint
             // 
             this.colorPanel1.BackColor = System.Drawing.Color.White;
             this.colorPanel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.colorPanel1.Location = new System.Drawing.Point(596, 2);
+            this.colorPanel1.Location = new System.Drawing.Point(594, 2);
             this.colorPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.colorPanel1.Name = "colorPanel1";
             this.colorPanel1.Size = new System.Drawing.Size(203, 74);
@@ -166,6 +166,7 @@ namespace Paint
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MyPaint";
             this.Text = "Form1";
+            this.SizeChanged += new System.EventHandler(this.MyPaint_SizeChanged);
             this.tableLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);

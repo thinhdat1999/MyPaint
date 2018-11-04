@@ -277,6 +277,12 @@ namespace Paint
             RefreshFormBackground();
         }
         #endregion
+
+        private void MyPaint_SizeChanged(object sender, EventArgs e)
+        {
+            DrawArea = new Bitmap(pictureBox1.Size.Width, pictureBox1.Size.Height);
+            RefreshFormBackground();
+        }
     }
 
     public class PopupForm : Form
