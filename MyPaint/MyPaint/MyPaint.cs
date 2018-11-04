@@ -87,7 +87,7 @@ namespace Paint
         {
             if (mea.Button == MouseButtons.Left)
             {
-                if(DrawArea != null) _g = Graphics.FromImage(DrawArea);
+                if (DrawArea != null) _g = Graphics.FromImage(DrawArea);
                 DrawPen = new Pen(colorPanel1.GetCurrentColor());
                 ptCurrent = ptMouseDown = mea.Location;
                 isDrawing = true;
@@ -123,6 +123,7 @@ namespace Paint
                 switch (shapes)
                 {
                     case 1:
+                    case 4:
                         {
                             if (!isShifting) e.Graphics.DrawRectangle(DrawPen, getRectangle());
                             if (isShifting) e.Graphics.DrawRectangle(DrawPen, getSquare());
@@ -140,22 +141,8 @@ namespace Paint
                             e.Graphics.DrawLine(DrawPen, ptMouseDown, ptCurrent);
                             break;
                         }
-                    case 4:
-                        {
-                            e.Graphics.DrawRectangle(DrawPen, getRectangle());
-                            break;
-                        }
                 }
             }
-        }
-
-        private Tuple<Point, Point> getPoints()
-        {
-            return new Tuple<Point, Point>
-            (
-                item1: ptMouseDown,
-                item2: ptCurrent
-            );
         }
 
         private void PictureBox_MouseUp(object sender, MouseEventArgs mea)
@@ -169,7 +156,6 @@ namespace Paint
                             //Save rectangle in DrawArea
                             if (!isShifting) _g.DrawRectangle(DrawPen, getRectangle());
                             if (isShifting) _g.DrawRectangle(DrawPen, getSquare());
-                            UndoList.Push(pictureBox1.BackgroundImage);
                             break;
                         }
 
@@ -178,60 +164,44 @@ namespace Paint
                             //Save ellipse in DrawArea
                             if (!isShifting) _g.DrawEllipse(DrawPen, getRectangle());
                             if (isShifting) _g.DrawEllipse(DrawPen, getSquare());
-                            UndoList.Push(pictureBox1.BackgroundImage);
                             break;
                         }
                     case 3:
                         {
-                            _g.DrawLine(DrawPen, getPoints().Item1, getPoints().Item2);
+                            _g.DrawLine(DrawPen, ptMouseDown, ptCurrent);
                             UndoList.Push(pictureBox1.BackgroundImage);
-                            //_g.DrawLine(drawpen, ptMouseDown, ptCurrent);
                             break;
                         }
                     case 4:
                         {
-                            //if (!isShifting) _g.DrawRectangle(drawpen, getRectangle());
                             {
 
                                 RichTextBox textBox = new RichTextBox();
-                                /*
-                                {
-                                    Location = new Point(Math.Min(ptMouseDown.X, ptCurrent.X),
-                                                Math.Min(ptMouseDown.Y, ptCurrent.Y)),
-                                    Size = new Size(Math.Min(Math.Abs(ptCurrent.X - ptMouseDown.X), Math.Abs(ptMouseDown.Y - ptCurrent.Y)),
-                                                    Math.Min(Math.Abs(ptCurrent.X - ptMouseDown.X), Math.Abs(ptMouseDown.Y - ptCurrent.Y))),
-                                    Font = DefaultFont,
-                                };
-                                pictureBox1.Controls.Add(textBox);
-                                */
                                 Point location = pictureBox1.PointToScreen(ptMouseDown);
                                 PopupForm form = new PopupForm(textBox, location,
                                   () =>
                                   {
                                       _g.DrawString(textBox.Text, DefaultFont, Brushes.Black, ptMouseDown);
-                                      UndoList.Push(pictureBox1.BackgroundImage);
-                                      RefreshFormBackground();
                                   }
                                   );
                                 form.Show();
                                 Refresh();
-                                //_g.DrawString(textBox.Text, DefaultFont, Brushes.Black, ptMouseDown);
                             }
-
-                            //UndoList.Push(pictureBox1.BackgroundImage);
                             break;
                         }
                     default:
                         {
-                            UndoList.Push(pictureBox1.BackgroundImage);
                             break;
                         }
                 }
+                UndoList.Push(pictureBox1.BackgroundImage);
                 RefreshFormBackground();
                 isDrawing = false;
             }
         }
         #endregion
+
+        #region Click Button
         private void RectangleButton_Click(object sender, EventArgs e)
         {
             shapes = 1;
@@ -241,7 +211,7 @@ namespace Paint
         {
             shapes = 2;
         }
-        private void PenButton_Click(object sender, EventArgs e)
+        private void LineButton_Click(object sender, EventArgs e)
         {
             shapes = 3;
         }
@@ -249,26 +219,22 @@ namespace Paint
         {
             shapes = 4;
         }
+        #endregion
 
         #region Undo & Redo
-
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            base.OnKeyDown(e);
-            e.SuppressKeyPress = true;
-            if (e.KeyCode == Keys.Z && e.Modifiers == Keys.Control)
+            if (e.Modifiers == Keys.Control)
             {
-                Undo();
+                if (e.KeyCode == Keys.Z)
+                    Undo();
+                if (e.KeyCode == Keys.Y)
+                    Redo();
             }
-
-            else if (e.KeyCode == Keys.Y && e.Modifiers == Keys.Control)
-                Redo();
             if (e.Shift) isShifting = true;
         }
         protected override void OnKeyUp(KeyEventArgs e)
         {
-            base.OnKeyUp(e);
-            e.SuppressKeyPress = true;
             if (!e.Shift) isShifting = false;
         }
 
@@ -309,27 +275,18 @@ namespace Paint
             }
             else return;
             RefreshFormBackground();
-
         }
         #endregion
-
-
     }
+
     public class PopupForm : Form
     {
         private Action _onAccept;
         private Control _control;
         private Point _point;
 
-        public PopupForm(Control control, int x, int y, Action onAccept)
-          : this(control, new Point(x, y), onAccept)
-        {
-        }
-
         public PopupForm(Control control, Point point, Action onAccept)
         {
-            if (control == null) throw new ArgumentNullException("control");
-
             this.FormBorderStyle = FormBorderStyle.None;
             this.ShowInTaskbar = false;
             this.KeyPreview = true;
@@ -341,17 +298,14 @@ namespace Paint
 
         protected override void OnLoad(EventArgs e)
         {
-            base.OnLoad(e);
             this.Controls.Add(_control);
             _control.Location = new Point(0, 0);
-            this.Size = new Size(150,25);
+            this.Size = new Size(150, 25);
             this.Location = _point;
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
-        {
-            base.OnKeyDown(e);
-            if (e.KeyCode == Keys.Escape)
+        {       if (e.KeyCode == Keys.Escape)
             {
                 this.Close();
             }
@@ -359,7 +313,6 @@ namespace Paint
 
         protected override void OnDeactivate(EventArgs e)
         {
-            base.OnDeactivate(e);
             _onAccept();
             this.Close();
         }
