@@ -22,7 +22,7 @@ namespace Paint
         Point ptMouseDown;
         Point ptCurrent;
         Graphics _g;
-        int shapes;
+        int shapes = -1;
 
         ShapeFormer shapeFormer;
 
@@ -55,7 +55,7 @@ namespace Paint
             if (mea.Button == MouseButtons.Left)
             {
                 if (DrawArea != null) _g = Graphics.FromImage(DrawArea);
-                DrawPen = new Pen(colorPanel1.GetCurrentColor());
+                DrawPen = new Pen(BorderColorPanel.GetCurrentColor());
                 ptCurrent = ptMouseDown = mea.Location;
                 isDrawing = true;
                 isPictureClear = false;
@@ -72,12 +72,13 @@ namespace Paint
                     ptCurrent = mea.Location;
                     Refresh();
                 }
-                else
+
+                else if (shapes == 0)
                 {
                     Point ptNew = mea.Location;
-                    Graphics grfx = PictureBox.CreateGraphics();
-                    grfx.DrawLine(DrawPen, ptCurrent, ptNew);
-                    grfx.Dispose();
+                    Graphics _gpb = PictureBox.CreateGraphics();
+                    _gpb.DrawLine(DrawPen, ptCurrent, ptNew);
+                    _gpb.Dispose();
                     _g.DrawLine(DrawPen, ptCurrent, ptNew);
                     ptCurrent = ptNew;
                 }
@@ -92,7 +93,7 @@ namespace Paint
                     case 1:
                     case 4:
                         {
-                            if (!isShifting) e.Graphics.DrawRectangle(DrawPen, shapeFormer.FormRectangle(ptMouseDown,ptCurrent));
+                            if (!isShifting) e.Graphics.DrawRectangle(DrawPen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
                             if (isShifting) e.Graphics.DrawRectangle(DrawPen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
                             break;
                         }
@@ -200,9 +201,11 @@ namespace Paint
             {
                 if (e.KeyCode == Keys.Z)
                     Undo();
-                if (e.KeyCode == Keys.Y)
+                else if (e.KeyCode == Keys.Y)
                     Redo();
+                RefreshPictureBox();
             }
+
             if (e.Shift) isShifting = true;
         }
         protected override void OnKeyUp(KeyEventArgs e)
@@ -217,34 +220,30 @@ namespace Paint
                 RedoList.Push(PictureBox.BackgroundImage);
             }
 
-            if (UndoList.Count() != 0 && UndoList.Peek() != null)
+            if (UndoList.Count > 0 && UndoList.Peek() != null)
+            {
                 DrawArea = new Bitmap(UndoList.Pop(), PictureBox.Size);
+            }
             else
             {
                 DrawArea = new Bitmap(PictureBox.Size.Width, PictureBox.Size.Height);
                 isPictureClear = true;
             }
-            if (UndoList.Count() == 1) UndoList.Pop();
-            RefreshPictureBox();
         }
+
         public void Redo()
         {
-            if (RedoList.Count() != 0)
+            if (RedoList.Count > 0)
             {
                 UndoList.Push(PictureBox.BackgroundImage);
             }
-            else return;
-            while (RedoList.Peek() == null)
-            {
-                RedoList.Pop();
-            }
+
             if (RedoList.Peek() != null)
             {
                 DrawArea = new Bitmap(RedoList.Pop(), PictureBox.Size);
                 isPictureClear = false;
             }
             else return;
-            RefreshPictureBox();
         }
         #endregion
 

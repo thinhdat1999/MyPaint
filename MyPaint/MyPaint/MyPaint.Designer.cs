@@ -33,14 +33,14 @@ namespace Paint
         {
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.PenButton = new System.Windows.Forms.Button();
+            this.BorderColorPanel = new Paint.ColorPanel();
+            this.TextBoxButton = new System.Windows.Forms.Button();
             this.EllipseButton = new System.Windows.Forms.Button();
             this.RectangleButton = new System.Windows.Forms.Button();
             this.LineButton = new System.Windows.Forms.Button();
-            this.TextBoxButton = new System.Windows.Forms.Button();
-            this.colorPanel1 = new Paint.ColorPanel();
             this.PictureBox = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.PenButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBox)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
@@ -54,9 +54,9 @@ namespace Paint
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.73402F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.80656F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 141F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 237F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 254F));
             this.tableLayoutPanel2.Controls.Add(this.PenButton, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.colorPanel1, 5, 0);
+            this.tableLayoutPanel2.Controls.Add(this.BorderColorPanel, 5, 0);
             this.tableLayoutPanel2.Controls.Add(this.TextBoxButton, 4, 0);
             this.tableLayoutPanel2.Controls.Add(this.EllipseButton, 3, 0);
             this.tableLayoutPanel2.Controls.Add(this.RectangleButton, 2, 0);
@@ -71,9 +71,42 @@ namespace Paint
             this.tableLayoutPanel2.Size = new System.Drawing.Size(870, 88);
             this.tableLayoutPanel2.TabIndex = 2;
             // 
+            // PenButton
+            // 
+            this.PenButton.Location = new System.Drawing.Point(2, 2);
+            this.PenButton.Margin = new System.Windows.Forms.Padding(2);
+            this.PenButton.Name = "PenButton";
+            this.PenButton.Size = new System.Drawing.Size(56, 19);
+            this.PenButton.TabIndex = 5;
+            this.PenButton.TabStop = false;
+            this.PenButton.Text = "Pen";
+            this.PenButton.UseVisualStyleBackColor = true;
+            this.PenButton.Click += new System.EventHandler(this.PenButton_Click);
+            // 
+            // BorderColorPanel
+            // 
+            this.BorderColorPanel.BackColor = System.Drawing.Color.White;
+            this.BorderColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.BorderColorPanel.Location = new System.Drawing.Point(616, 2);
+            this.BorderColorPanel.Margin = new System.Windows.Forms.Padding(2);
+            this.BorderColorPanel.Name = "BorderColorPanel";
+            this.BorderColorPanel.Size = new System.Drawing.Size(221, 74);
+            this.BorderColorPanel.TabIndex = 3;
+            // 
+            // TextBoxButton
+            // 
+            this.TextBoxButton.Location = new System.Drawing.Point(475, 2);
+            this.TextBoxButton.Margin = new System.Windows.Forms.Padding(2);
+            this.TextBoxButton.Name = "TextBoxButton";
+            this.TextBoxButton.Size = new System.Drawing.Size(56, 19);
+            this.TextBoxButton.TabIndex = 4;
+            this.TextBoxButton.Text = "Text";
+            this.TextBoxButton.UseVisualStyleBackColor = true;
+            this.TextBoxButton.Click += new System.EventHandler(this.TextBoxButton_Click);
+            // 
             // EllipseButton
             // 
-            this.EllipseButton.Location = new System.Drawing.Point(356, 2);
+            this.EllipseButton.Location = new System.Drawing.Point(343, 2);
             this.EllipseButton.Margin = new System.Windows.Forms.Padding(2);
             this.EllipseButton.Name = "EllipseButton";
             this.EllipseButton.Size = new System.Drawing.Size(56, 21);
@@ -85,7 +118,7 @@ namespace Paint
             // 
             // RectangleButton
             // 
-            this.RectangleButton.Location = new System.Drawing.Point(230, 2);
+            this.RectangleButton.Location = new System.Drawing.Point(221, 2);
             this.RectangleButton.Margin = new System.Windows.Forms.Padding(2);
             this.RectangleButton.Name = "RectangleButton";
             this.RectangleButton.Size = new System.Drawing.Size(56, 21);
@@ -97,7 +130,7 @@ namespace Paint
             // 
             // LineButton
             // 
-            this.LineButton.Location = new System.Drawing.Point(107, 2);
+            this.LineButton.Location = new System.Drawing.Point(103, 2);
             this.LineButton.Margin = new System.Windows.Forms.Padding(2);
             this.LineButton.Name = "LineButton";
             this.LineButton.Size = new System.Drawing.Size(56, 19);
@@ -106,27 +139,6 @@ namespace Paint
             this.LineButton.Text = "Line";
             this.LineButton.UseVisualStyleBackColor = true;
             this.LineButton.Click += new System.EventHandler(this.LineButton_Click);
-            // 
-            // TextBoxButton
-            // 
-            this.TextBoxButton.Location = new System.Drawing.Point(492, 2);
-            this.TextBoxButton.Margin = new System.Windows.Forms.Padding(2);
-            this.TextBoxButton.Name = "TextBoxButton";
-            this.TextBoxButton.Size = new System.Drawing.Size(56, 19);
-            this.TextBoxButton.TabIndex = 4;
-            this.TextBoxButton.Text = "A";
-            this.TextBoxButton.UseVisualStyleBackColor = true;
-            this.TextBoxButton.Click += new System.EventHandler(this.TextBoxButton_Click);
-            // 
-            // colorPanel1
-            // 
-            this.colorPanel1.BackColor = System.Drawing.Color.White;
-            this.colorPanel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.colorPanel1.Location = new System.Drawing.Point(633, 2);
-            this.colorPanel1.Margin = new System.Windows.Forms.Padding(2);
-            this.colorPanel1.Name = "colorPanel1";
-            this.colorPanel1.Size = new System.Drawing.Size(221, 74);
-            this.colorPanel1.TabIndex = 3;
             // 
             // PictureBox
             // 
@@ -160,18 +172,6 @@ namespace Paint
             this.tableLayoutPanel1.Size = new System.Drawing.Size(874, 453);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // PenButton
-            // 
-            this.PenButton.Location = new System.Drawing.Point(2, 2);
-            this.PenButton.Margin = new System.Windows.Forms.Padding(2);
-            this.PenButton.Name = "PenButton";
-            this.PenButton.Size = new System.Drawing.Size(56, 19);
-            this.PenButton.TabIndex = 5;
-            this.PenButton.TabStop = false;
-            this.PenButton.Text = "Pen";
-            this.PenButton.UseVisualStyleBackColor = true;
-            this.PenButton.Click += new System.EventHandler(this.PenButton_Click);
-            // 
             // MyPaint
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -201,7 +201,7 @@ namespace Paint
         private Button LineButton;
         private System.Drawing.Pen DrawPen;
         private Button EllipseButton;
-        private ColorPanel colorPanel1;
+        private ColorPanel BorderColorPanel;
         private Button TextBoxButton;
         private Button PenButton;
     }
