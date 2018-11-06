@@ -29,6 +29,7 @@ namespace Paint
         private System.Windows.Forms.TextBox ShowColor;
         private System.Windows.Forms.Button Morecolor;
         private System.Windows.Forms.ColorDialog colorDialog1;
+
         private void Morecolor_Click(object sender, EventArgs e)
         {
             if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)

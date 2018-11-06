@@ -12,36 +12,41 @@ namespace Paint
 {
     public partial class MyPaint : Form
     {
+        public static Graphics _g;
+        public static Pen _pen;
+        public static Brush _brush;
 
-        Bitmap DrawArea;
+        private Point ptMouseDown;
+        private Point ptCurrent;
 
-        bool isDrawing = false;
-        bool isShifting = false;
-        bool isPictureClear = true;
+        private Bitmap DrawArea;
+        private bool isDrawing = false;
+        private bool isShifting = false;
+        private bool isPictureClear = true;
 
-        Point ptMouseDown;
-        Point ptCurrent;
-        Graphics _g;
-        int shapes = -1;
+        private int shapes = 0;
 
-        ShapeFormer shapeFormer;
+        private ShapeFormer shapeFormer;
+        private Stack<Image> UndoList;
+        private Stack<Image> RedoList;
 
-        Stack<Image> UndoList;
-        Stack<Image> RedoList;
-
+        //Khởi tạo các giá trị khi load form
         public MyPaint()
         {
             InitializeComponent();
             Text = "MY PAINT :\">";
             KeyPreview = true;
+            ActiveControl = PenButton;
+
             DrawArea = new Bitmap(PictureBox.Size.Width, PictureBox.Size.Height);
             UndoList = new Stack<Image>();
             RedoList = new Stack<Image>();
             shapeFormer = new ShapeFormer();
+            _g = Graphics.FromImage(DrawArea);
         }
 
         //Tải lại màn hình mỗi lần vẽ hình, phần pictureBox sẽ tải lại hình cũ khi cập nhật vẽ hình mới liên tục
-        private void RefreshPictureBox()
+        public void UpdatePictureBox()
         {
             if (DrawArea != null)
             {
@@ -54,11 +59,13 @@ namespace Paint
         {
             if (mea.Button == MouseButtons.Left)
             {
-                if (DrawArea != null) _g = Graphics.FromImage(DrawArea);
-                DrawPen = new Pen(BorderColorPanel.GetCurrentColor());
+                _pen = new Pen(PaintColorPanel.GetCurrentColor());
+                _brush = new SolidBrush(PaintColorPanel.GetCurrentColor());
+
                 ptCurrent = ptMouseDown = mea.Location;
                 isDrawing = true;
                 isPictureClear = false;
+
                 RedoList.Clear();
             }
         }
@@ -77,9 +84,9 @@ namespace Paint
                 {
                     Point ptNew = mea.Location;
                     Graphics _gpb = PictureBox.CreateGraphics();
-                    _gpb.DrawLine(DrawPen, ptCurrent, ptNew);
+                    _gpb.DrawLine(_pen, ptCurrent, ptNew);
                     _gpb.Dispose();
-                    _g.DrawLine(DrawPen, ptCurrent, ptNew);
+                    _g.DrawLine(_pen, ptCurrent, ptNew);
                     ptCurrent = ptNew;
                 }
             }
@@ -93,68 +100,65 @@ namespace Paint
                     case 1:
                     case 4:
                         {
-                            if (!isShifting) e.Graphics.DrawRectangle(DrawPen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
-                            if (isShifting) e.Graphics.DrawRectangle(DrawPen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
+                            if (!isShifting) e.Graphics.DrawRectangle(_pen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
+                            if (isShifting) e.Graphics.DrawRectangle(_pen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
                             break;
                         }
 
                     case 2:
                         {
-                            if (!isShifting) e.Graphics.DrawEllipse(DrawPen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
-                            if (isShifting) e.Graphics.DrawEllipse(DrawPen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
+                            if (!isShifting) e.Graphics.DrawEllipse(_pen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
+                            if (isShifting) e.Graphics.DrawEllipse(_pen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
                             break;
                         }
                     case 3:
                         {
-                            e.Graphics.DrawLine(DrawPen, ptMouseDown, ptCurrent);
+                            e.Graphics.DrawLine(_pen, ptMouseDown, ptCurrent);
                             break;
                         }
                 }
             }
         }
 
+        //Lưu lại các hình vẽ sau khi thả chuột lên PictureBox
         private void PictureBox_MouseUp(object sender, MouseEventArgs mea)
         {
             if (isDrawing)
             {
                 switch (shapes)
                 {
+                    //Vẽ hình chữ nhật (đè shift sẽ vẽ hình vuông)
                     case 1:
                         {
-                            //Save rectangle in DrawArea
-                            if (!isShifting) _g.DrawRectangle(DrawPen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
-                            if (isShifting) _g.DrawRectangle(DrawPen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
+                            if (!isShifting) _g.DrawRectangle(_pen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
+                            if (isShifting) _g.DrawRectangle(_pen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
                             break;
                         }
 
+                    //Vẽ hình elip (đè shift sẽ vẽ hình tròn)
                     case 2:
                         {
-                            //Save ellipse in DrawArea
-                            if (!isShifting) _g.DrawEllipse(DrawPen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
-                            if (isShifting) _g.DrawEllipse(DrawPen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
+                            if (!isShifting) _g.DrawEllipse(_pen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
+                            if (isShifting) _g.DrawEllipse(_pen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
                             break;
                         }
+
+                    //Vẽ đường thẳng
                     case 3:
                         {
-                            _g.DrawLine(DrawPen, ptMouseDown, ptCurrent);
+                            _g.DrawLine(_pen, ptMouseDown, ptCurrent);
                             UndoList.Push(PictureBox.BackgroundImage);
                             break;
                         }
+
+                    //Vẽ chữ - tạo textBox để nhập chữ, sau đó hủy textBox và vẽ chữ lên PictureBox
                     case 4:
                         {
-                            {
-                                RichTextBox textBox = new RichTextBox();
-                                Point location = PictureBox.PointToScreen(ptMouseDown);
-                                PopupTextForm form = new PopupTextForm(textBox, location,
-                                  () =>
-                                  {
-                                      _g.DrawString(textBox.Text, DefaultFont, Brushes.Black, ptMouseDown);
-                                  }
-                                  );
-                                form.Show();
-                                Refresh();
+                            Rectangle rect = !isShifting ? shapeFormer.FormRectangle(ptMouseDown, ptCurrent) : shapeFormer.FormSquare(ptMouseDown, ptCurrent);
+                            PopupTextBox textBox = new PopupTextBox(rect);
 
-                            }
+                            this.PictureBox.Controls.Add(textBox);
+                            this.ActiveControl = textBox;
                             break;
                         }
                     default:
@@ -162,8 +166,9 @@ namespace Paint
                             break;
                         }
                 }
+
                 UndoList.Push(PictureBox.BackgroundImage);
-                RefreshPictureBox();
+                UpdatePictureBox();
                 isDrawing = false;
             }
         }
@@ -195,19 +200,30 @@ namespace Paint
         #endregion
 
         #region Undo & Redo
+        //Tạo sự kiện Undo, Redo khi nhấn các tổ hợp phím Ctrl + Z, Ctrl + Y, Shift
         protected override void OnKeyDown(KeyEventArgs e)
         {
             if (e.Modifiers == Keys.Control)
             {
                 if (e.KeyCode == Keys.Z)
+                {
                     Undo();
+                }
+
                 else if (e.KeyCode == Keys.Y)
+                {
                     Redo();
-                RefreshPictureBox();
+                }
+                UpdatePictureBox();
             }
 
-            if (e.Shift) isShifting = true;
+            else if (e.Shift)
+            {
+                isShifting = true;
+            }
         }
+
+        //Khi thả nút shift
         protected override void OnKeyUp(KeyEventArgs e)
         {
             if (!e.Shift) isShifting = false;
@@ -233,25 +249,17 @@ namespace Paint
 
         public void Redo()
         {
-            if (RedoList.Count > 0)
+            if (!isPictureClear)
             {
                 UndoList.Push(PictureBox.BackgroundImage);
             }
 
-            if (RedoList.Peek() != null)
+            if (RedoList.Count > 0 && RedoList.Peek() != null)
             {
                 DrawArea = new Bitmap(RedoList.Pop(), PictureBox.Size);
                 isPictureClear = false;
             }
-            else return;
         }
         #endregion
-
-        private void MyPaint_SizeChanged(object sender, EventArgs e)
-        {
-            DrawArea = new Bitmap(PictureBox.Size.Width, PictureBox.Size.Height);
-            RefreshPictureBox();
-        }
-
     }
 }
