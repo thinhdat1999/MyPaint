@@ -49,7 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColorPanel.cs">
+    <Compile Include="CustomControl\ColorPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="MyPaint.cs">
@@ -58,12 +58,12 @@
     <Compile Include="MyPaint.Designer.cs">
       <DependentUpon>MyPaint.cs</DependentUpon>
     </Compile>
-    <Compile Include="PopupTextBox.cs">
+    <Compile Include="CustomControl\PopupTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ShapeFormer.cs" />
+    <Compile Include="PaintFormer\ShapeFormer.cs" />
     <EmbeddedResource Include="MyPaint.resx">
       <DependentUpon>MyPaint.cs</DependentUpon>
     </EmbeddedResource>

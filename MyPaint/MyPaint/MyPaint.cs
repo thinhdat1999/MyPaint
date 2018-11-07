@@ -228,7 +228,8 @@ namespace Paint
         {
             if (!e.Shift) isShifting = false;
         }
-
+        
+        //Thực hiện Undo - Đưa các trạng thái ảnh vào Stack
         public void Undo()
         {
             if (!isPictureClear)

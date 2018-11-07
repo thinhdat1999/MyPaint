@@ -34,6 +34,7 @@ namespace Paint
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.PenButton = new System.Windows.Forms.Button();
+            this.PaintColorPanel = new Paint.ColorPanel();
             this.TextBoxButton = new System.Windows.Forms.Button();
             this.EllipseButton = new System.Windows.Forms.Button();
             this.RectangleButton = new System.Windows.Forms.Button();
@@ -41,7 +42,6 @@ namespace Paint
             this.PictureBox = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.PaintColorPanel = new Paint.ColorPanel();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBox)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
@@ -55,7 +55,7 @@ namespace Paint
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.73402F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.80656F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 141F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 284F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 285F));
             this.tableLayoutPanel2.Controls.Add(this.PenButton, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.PaintColorPanel, 5, 0);
             this.tableLayoutPanel2.Controls.Add(this.TextBoxButton, 4, 0);
@@ -84,9 +84,19 @@ namespace Paint
             this.PenButton.UseVisualStyleBackColor = true;
             this.PenButton.Click += new System.EventHandler(this.PenButton_Click);
             // 
+            // PaintColorPanel
+            // 
+            this.PaintColorPanel.BackColor = System.Drawing.Color.White;
+            this.PaintColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.PaintColorPanel.Location = new System.Drawing.Point(715, 2);
+            this.PaintColorPanel.Margin = new System.Windows.Forms.Padding(2);
+            this.PaintColorPanel.Name = "PaintColorPanel";
+            this.PaintColorPanel.Size = new System.Drawing.Size(221, 74);
+            this.PaintColorPanel.TabIndex = 3;
+            // 
             // TextBoxButton
             // 
-            this.TextBoxButton.Location = new System.Drawing.Point(577, 2);
+            this.TextBoxButton.Location = new System.Drawing.Point(574, 2);
             this.TextBoxButton.Margin = new System.Windows.Forms.Padding(2);
             this.TextBoxButton.Name = "TextBoxButton";
             this.TextBoxButton.Size = new System.Drawing.Size(56, 19);
@@ -97,7 +107,7 @@ namespace Paint
             // 
             // EllipseButton
             // 
-            this.EllipseButton.Location = new System.Drawing.Point(417, 2);
+            this.EllipseButton.Location = new System.Drawing.Point(415, 2);
             this.EllipseButton.Margin = new System.Windows.Forms.Padding(2);
             this.EllipseButton.Name = "EllipseButton";
             this.EllipseButton.Size = new System.Drawing.Size(56, 21);
@@ -109,7 +119,7 @@ namespace Paint
             // 
             // RectangleButton
             // 
-            this.RectangleButton.Location = new System.Drawing.Point(269, 2);
+            this.RectangleButton.Location = new System.Drawing.Point(268, 2);
             this.RectangleButton.Margin = new System.Windows.Forms.Padding(2);
             this.RectangleButton.Name = "RectangleButton";
             this.RectangleButton.Size = new System.Drawing.Size(56, 21);
@@ -166,16 +176,6 @@ namespace Paint
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // PaintColorPanel
-            // 
-            this.PaintColorPanel.BackColor = System.Drawing.Color.White;
-            this.PaintColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.PaintColorPanel.Location = new System.Drawing.Point(718, 2);
-            this.PaintColorPanel.Margin = new System.Windows.Forms.Padding(2);
-            this.PaintColorPanel.Name = "PaintColorPanel";
-            this.PaintColorPanel.Size = new System.Drawing.Size(221, 74);
-            this.PaintColorPanel.TabIndex = 3;
             // 
             // MyPaint
             // 
