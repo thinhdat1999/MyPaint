@@ -12,9 +12,9 @@ namespace Paint
 {
     public partial class MyPaint : Form
     {
-        public static Graphics _g;
-        public static Pen _pen;
-        public static Brush _brush;
+        public Graphics _g;
+        public Pen _pen;
+        public Brush _brush;
 
         private Point ptMouseDown;
         private Point ptCurrent;
@@ -29,6 +29,7 @@ namespace Paint
         private ShapeFormer shapeFormer;
         private Stack<Image> UndoList;
         private Stack<Image> RedoList;
+        private PopupTextBox textBox;
 
         //Khởi tạo các giá trị khi load form
         public MyPaint()
@@ -65,7 +66,6 @@ namespace Paint
                 ptCurrent = ptMouseDown = mea.Location;
                 isDrawing = true;
                 isPictureClear = false;
-
                 RedoList.Clear();
             }
         }
@@ -147,18 +147,18 @@ namespace Paint
                     case 3:
                         {
                             _g.DrawLine(_pen, ptMouseDown, ptCurrent);
-                            UndoList.Push(PictureBox.BackgroundImage);
                             break;
                         }
 
-                    //Vẽ chữ - tạo textBox để nhập chữ, sau đó hủy textBox và vẽ chữ lên PictureBox
+                    //Vẽ chữ - tạo textBox để nhập chữ, chèn sự kiện vẽ chuỗi khi TextBox biến mất
+                    //do nhấn Escape nhấn chuột ngoài textBox
                     case 4:
                         {
                             Rectangle rect = !isShifting ? shapeFormer.FormRectangle(ptMouseDown, ptCurrent) : shapeFormer.FormSquare(ptMouseDown, ptCurrent);
-                            PopupTextBox textBox = new PopupTextBox(rect);
-
+                            textBox = new PopupTextBox(rect);
                             this.PictureBox.Controls.Add(textBox);
                             this.ActiveControl = textBox;
+                            textBox.VisibleChanged += textBox_DrawString;
                             break;
                         }
                     default:
@@ -171,6 +171,16 @@ namespace Paint
                 UpdatePictureBox();
                 isDrawing = false;
             }
+        }
+
+        //Vẽ chuỗi lên PictureBox và hủy textBox khi TextBox bị ẩn
+        private void textBox_DrawString(object sender, EventArgs e)
+        {
+            PopupTextBox s = sender as PopupTextBox;
+            _g.DrawString(s.Text, DefaultFont, _brush, new Rectangle(s.Location, s.Size));
+            UndoList.Push(PictureBox.BackgroundImage);
+            UpdatePictureBox();
+            textBox.Dispose();
         }
         #endregion
 
@@ -228,7 +238,7 @@ namespace Paint
         {
             if (!e.Shift) isShifting = false;
         }
-        
+
         //Thực hiện Undo - Đưa các trạng thái ảnh vào Stack
         public void Undo()
         {
