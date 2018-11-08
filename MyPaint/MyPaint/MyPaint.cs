@@ -39,7 +39,7 @@ namespace Paint
             KeyPreview = true;
             ActiveControl = PenButton;
 
-            DrawArea = new Bitmap(PictureBox.Size.Width, PictureBox.Size.Height);
+            DrawArea = new Bitmap(DrawBox.Size.Width, DrawBox.Size.Height);
             UndoList = new Stack<Image>();
             RedoList = new Stack<Image>();
             shapeFormer = new ShapeFormer();
@@ -51,7 +51,7 @@ namespace Paint
         {
             if (DrawArea != null)
             {
-                PictureBox.BackgroundImage = DrawArea.Clone(new Rectangle(0, 0, PictureBox.Width, PictureBox.Height), DrawArea.PixelFormat);
+                DrawBox.BackgroundImage = DrawArea.Clone(new Rectangle(0, 0, DrawBox.Width, DrawBox.Height), DrawArea.PixelFormat);
             }
         }
 
@@ -83,7 +83,7 @@ namespace Paint
                 else if (shapes == 0)
                 {
                     Point ptNew = mea.Location;
-                    Graphics _gpb = PictureBox.CreateGraphics();
+                    Graphics _gpb = DrawBox.CreateGraphics();
                     _gpb.DrawLine(_pen, ptCurrent, ptNew);
                     _gpb.Dispose();
                     _g.DrawLine(_pen, ptCurrent, ptNew);
@@ -156,7 +156,7 @@ namespace Paint
                         {
                             Rectangle rect = !isShifting ? shapeFormer.FormRectangle(ptMouseDown, ptCurrent) : shapeFormer.FormSquare(ptMouseDown, ptCurrent);
                             textBox = new PopupTextBox(rect);
-                            this.PictureBox.Controls.Add(textBox);
+                            this.DrawBox.Controls.Add(textBox);
                             this.ActiveControl = textBox;
                             textBox.VisibleChanged += textBox_DrawString;
                             break;
@@ -167,7 +167,7 @@ namespace Paint
                         }
                 }
 
-                UndoList.Push(PictureBox.BackgroundImage);
+                UndoList.Push(DrawBox.BackgroundImage);
                 UpdatePictureBox();
                 isDrawing = false;
             }
@@ -178,7 +178,7 @@ namespace Paint
         {
             PopupTextBox s = sender as PopupTextBox;
             _g.DrawString(s.Text, DefaultFont, _brush, new Rectangle(s.Location, s.Size));
-            UndoList.Push(PictureBox.BackgroundImage);
+            UndoList.Push(DrawBox.BackgroundImage);
             UpdatePictureBox();
             textBox.Dispose();
         }
@@ -244,16 +244,16 @@ namespace Paint
         {
             if (!isPictureClear)
             {
-                RedoList.Push(PictureBox.BackgroundImage);
+                RedoList.Push(DrawBox.BackgroundImage);
             }
 
             if (UndoList.Count > 0 && UndoList.Peek() != null)
             {
-                DrawArea = new Bitmap(UndoList.Pop(), PictureBox.Size);
+                DrawArea = new Bitmap(UndoList.Pop(), DrawBox.Size);
             }
             else
             {
-                DrawArea = new Bitmap(PictureBox.Size.Width, PictureBox.Size.Height);
+                DrawArea = new Bitmap(DrawBox.Size.Width, DrawBox.Size.Height);
                 isPictureClear = true;
             }
         }
@@ -262,12 +262,12 @@ namespace Paint
         {
             if (!isPictureClear)
             {
-                UndoList.Push(PictureBox.BackgroundImage);
+                UndoList.Push(DrawBox.BackgroundImage);
             }
 
             if (RedoList.Count > 0 && RedoList.Peek() != null)
             {
-                DrawArea = new Bitmap(RedoList.Pop(), PictureBox.Size);
+                DrawArea = new Bitmap(RedoList.Pop(), DrawBox.Size);
                 isPictureClear = false;
             }
         }

@@ -59,3 +59,4 @@ D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.csproj.CoreCompileInputs.cac
 D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.csproj.CopyComplete
 D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.exe
 D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.pdb
+D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\Paint.DrawBox.resources

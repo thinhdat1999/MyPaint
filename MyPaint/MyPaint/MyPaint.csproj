@@ -52,6 +52,9 @@
     <Compile Include="CustomControl\ColorPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="CustomControl\DrawBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MyPaint.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -64,6 +67,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PaintFormer\ShapeFormer.cs" />
+    <EmbeddedResource Include="CustomControl\DrawBox.resx">
+      <DependentUpon>DrawBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MyPaint.resx">
       <DependentUpon>MyPaint.cs</DependentUpon>
     </EmbeddedResource>
@@ -89,6 +95,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="ButtonImage\text.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ButtonImage\ellipse.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ButtonImage\rectangle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ButtonImage\line.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ButtonImage\pencil.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
