@@ -88,13 +88,14 @@ namespace Paint
             {
                 if (shapeType == 0)
                 {
-                    Point ptNew = e.Location;
-                    Graphics _g2 = CreateGraphics();
-                    _g2.DrawLine(MyPen, ptCurrent, ptNew);
-                    _g2.Dispose();
-                    _g.DrawLine(MyPen, ptCurrent, ptNew);
-                    ptCurrent = ptNew;
+                    ptCurrent = e.Location;
+                    _g = CreateGraphics();
+                    _g.DrawLine(MyPen, ptMouseDown, ptCurrent);
+                    _g = Graphics.FromImage(Image);
+                    _g.DrawLine(MyPen, ptMouseDown, ptCurrent);
+                    ptMouseDown = ptCurrent;
                 }
+
                 else
                 {
                     ptCurrent = e.Location;
@@ -108,7 +109,6 @@ namespace Paint
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-
             if (_isDrawing)
             {
                 _g = e.Graphics;
