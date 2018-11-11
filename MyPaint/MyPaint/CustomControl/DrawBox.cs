@@ -75,9 +75,8 @@ namespace Paint
                 _isDrawing = true;
                 ptCurrent = ptMouseDown = e.Location;
 
-                DrawBitmap = new Bitmap(Image);
-                RedoList.Clear();
                 UndoList.Push(new Bitmap(Image));
+                RedoList.Clear();
             }
         }
         
@@ -109,10 +108,10 @@ namespace Paint
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            _g = e.Graphics;
 
             if (_isDrawing)
             {
+                _g = e.Graphics;
                 switch (shapeType)
                 {
                     case 1:
@@ -187,8 +186,7 @@ namespace Paint
             }
 
             _isDrawing = false;
-            DrawBitmap = new Bitmap(Image);
-            UndoList.Push(new Bitmap(Image));
+            RedoList.Push(new Bitmap(Image));
         }
 
 
@@ -219,20 +217,17 @@ namespace Paint
             if (UndoList.Count > 0)
             {
                 RedoList.Push(UndoList.Peek());
-                DrawBitmap = UndoList.Pop();
-                Image = (Image)DrawBitmap;
+                Image = (Image)UndoList.Pop();
             }
         }
 
         //Thực hiện Redo, nếu DrawBox chưa trống thì chèn Bitmap hiện tại vào Redo để có thể hoàn tác
         public void Redo()
         {
-            if (RedoList.Count > 0)
+            if (RedoList.Count > 1)
             {
-                DrawBitmap = RedoList.Peek();
-                UndoList.Push(RedoList.Peek());
-                Image = (Image)DrawBitmap;
-                RedoList.Pop();
+                UndoList.Push(RedoList.Pop());
+                Image = (Image)RedoList.Peek();
             }
         }
     }
