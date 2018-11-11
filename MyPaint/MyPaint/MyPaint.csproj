@@ -34,6 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DevExpress.Data.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpo.v17.1, Version=17.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -47,8 +49,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ColorPanel.cs">
+    <Compile Include="CustomControl\ColorPanel.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CustomControl\DrawBox.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="MyPaint.cs">
       <SubType>Form</SubType>
@@ -56,8 +61,15 @@
     <Compile Include="MyPaint.Designer.cs">
       <DependentUpon>MyPaint.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControl\PopupTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PaintFormer\ShapeFormer.cs" />
+    <EmbeddedResource Include="CustomControl\DrawBox.resx">
+      <DependentUpon>DrawBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MyPaint.resx">
       <DependentUpon>MyPaint.cs</DependentUpon>
     </EmbeddedResource>
@@ -83,6 +95,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="ButtonImage\text.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ButtonImage\ellipse.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ButtonImage\rectangle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ButtonImage\line.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ButtonImage\pencil.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
