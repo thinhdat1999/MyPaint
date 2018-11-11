@@ -59,19 +59,14 @@ namespace Paint
         //Tạo sự kiện Undo, Redo khi nhấn các tổ hợp phím Ctrl + Z, Ctrl + Y, Shift
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            if (e.Modifiers == Keys.Control)
+            if (e.Control && e.KeyCode == Keys.Z)
             {
-                if (e.KeyCode == Keys.Z)
-                {
-                    drawBox.Undo();
-                }
-
-                else if (e.KeyCode == Keys.Y)
-                {
-                    drawBox.Redo();
-                }
+                drawBox.Undo();
             }
-
+            else if (e.Control && e.KeyCode == Keys.Y)
+            {
+                drawBox.Redo();
+            }
             else if (e.Shift) drawBox.isShiftPress = true;
         }
 

@@ -52,7 +52,7 @@ namespace Paint
             this.ToolLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.73402F));
             this.ToolLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.80656F));
             this.ToolLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 141F));
-            this.ToolLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 324F));
+            this.ToolLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 326F));
             this.ToolLayoutPanel.Controls.Add(this.PenButton, 0, 0);
             this.ToolLayoutPanel.Controls.Add(this.PaintColorPanel, 5, 0);
             this.ToolLayoutPanel.Controls.Add(this.TextBoxButton, 4, 0);
@@ -85,7 +85,7 @@ namespace Paint
             // 
             this.PaintColorPanel.BackColor = System.Drawing.Color.White;
             this.PaintColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.PaintColorPanel.Location = new System.Drawing.Point(677, 2);
+            this.PaintColorPanel.Location = new System.Drawing.Point(675, 2);
             this.PaintColorPanel.Margin = new System.Windows.Forms.Padding(2);
             this.PaintColorPanel.Name = "PaintColorPanel";
             this.PaintColorPanel.Size = new System.Drawing.Size(221, 74);
@@ -94,7 +94,7 @@ namespace Paint
             // TextBoxButton
             // 
             this.TextBoxButton.Image = global::MyPaint.Properties.Resources.text3;
-            this.TextBoxButton.Location = new System.Drawing.Point(536, 2);
+            this.TextBoxButton.Location = new System.Drawing.Point(534, 2);
             this.TextBoxButton.Margin = new System.Windows.Forms.Padding(2);
             this.TextBoxButton.Name = "TextBoxButton";
             this.TextBoxButton.Size = new System.Drawing.Size(48, 48);
@@ -105,7 +105,7 @@ namespace Paint
             // EllipseButton
             // 
             this.EllipseButton.Image = global::MyPaint.Properties.Resources.ellipse;
-            this.EllipseButton.Location = new System.Drawing.Point(387, 2);
+            this.EllipseButton.Location = new System.Drawing.Point(386, 2);
             this.EllipseButton.Margin = new System.Windows.Forms.Padding(2);
             this.EllipseButton.Name = "EllipseButton";
             this.EllipseButton.Size = new System.Drawing.Size(48, 48);
@@ -117,7 +117,7 @@ namespace Paint
             // RectangleButton
             // 
             this.RectangleButton.Image = global::MyPaint.Properties.Resources.rectangle;
-            this.RectangleButton.Location = new System.Drawing.Point(250, 2);
+            this.RectangleButton.Location = new System.Drawing.Point(249, 2);
             this.RectangleButton.Margin = new System.Windows.Forms.Padding(2);
             this.RectangleButton.Name = "RectangleButton";
             this.RectangleButton.Size = new System.Drawing.Size(48, 48);
