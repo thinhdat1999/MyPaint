@@ -83,7 +83,7 @@ namespace Paint
                 {
                     MyPen = new Pen(_borderColor);
                     MyBrush = new SolidBrush(_borderColor);
-                    Eraser = new SolidBrush(Color.White);
+                    Eraser = new SolidBrush(BackColor);
 
                     _isDrawing = true;
                     ptCurrent = ptMouseDown = e.Location;
@@ -238,21 +238,25 @@ namespace Paint
         //Đổ màu 
         private void FloodFill(Point node, Color oldColor, Color fillColor)
         {
-            oldColor = DrawBitmap.GetPixel(node.X, node.Y);
-            Color curColor;
+            // lấy màu tại vị trí click chuột, so sánh với màu cần đổ (nếu mà trùng thì return không thì tiếp tục)
+            oldColor = DrawBitmap.GetPixel(node.X, node.Y);           
             if (oldColor.A == fillColor.A && oldColor.G == fillColor.G && oldColor.R == fillColor.R && oldColor.B == fillColor.B)
                 return;
+            Color curColor;
+            //Khởi tạo stack chứa pixels, push pixel ở vị trí click vào stack
             pixels = new Stack<Point>();
             pixels.Push(node);
 
             while (pixels.Count > 0)
             {
                 Point popped = pixels.Pop();
-                if (popped.X < DrawBitmap.Width && popped.X > 0 && popped.Y < DrawBitmap.Height && popped.Y > 0)
+                //Check xem có còn trong bound hay không
+                if (popped.X < DrawBitmap.Width && popped.X > 0 && popped.Y < DrawBitmap.Height && popped.Y > 0) 
                 {
                     curColor = DrawBitmap.GetPixel(popped.X, popped.Y);
                     if (curColor == oldColor)
                     {
+                        //Đổi màu cũ của pixel thành màu cần đổ và push pixel ở 4 hướng vào stack nếu còn nằm trong bound
                         DrawBitmap.SetPixel(popped.X, popped.Y, fillColor);
                         if (popped.X - 1 < DrawBitmap.Width && popped.X -1 > 0)
                             pixels.Push(new Point(popped.X - 1, popped.Y));
