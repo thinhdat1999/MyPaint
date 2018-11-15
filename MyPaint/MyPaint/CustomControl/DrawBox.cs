@@ -15,6 +15,7 @@ namespace Paint
 
         private Stack<Bitmap> UndoList;
         private Stack<Bitmap> RedoList;
+        private Stack<Point> pixels;
 
         private Graphics _g;
         private Pen MyPen;
@@ -23,6 +24,7 @@ namespace Paint
 
         private Color _borderColor;
         private Color _fillColor;
+        private Color _oldColor;
 
         private ShapeFormer shapeFormer;
         private PopupTextBox textBox;
@@ -35,7 +37,7 @@ namespace Paint
         private bool _isShiftPress;
 
         public Color BorderColor { set => _borderColor = value; }
-        public Color FillColor { set => _fillColor = value; }
+        public Color FillColor { set => _fillColor = value; } 
         public int ShapeType { get => shapeType; set => shapeType = value; }
         public bool isShiftPress { set => _isShiftPress = value; }
 
@@ -70,16 +72,27 @@ namespace Paint
             base.OnMouseDown(e);
             if (e.Button == MouseButtons.Left)
             {
-                MyPen = new Pen(_borderColor);
-                MyBrush = new SolidBrush(_borderColor);
-                Eraser = new SolidBrush(Color.White);
+                if (shapeType == -2)
+                {
+                    ptMouseDown = e.Location;
+                    FloodFill(ptMouseDown, _oldColor, _fillColor);
+                    Image = (Image)DrawBitmap;
+                    UndoList.Push(new Bitmap(Image));
+                }
+                else
+                {
+                    MyPen = new Pen(_borderColor);
+                    MyBrush = new SolidBrush(_borderColor);
+                    Eraser = new SolidBrush(Color.White);
 
-                _isDrawing = true;
-                ptCurrent = ptMouseDown = e.Location;
+                    _isDrawing = true;
+                    ptCurrent = ptMouseDown = e.Location;
 
-                UndoList.Push(new Bitmap(Image));
-                RedoList.Clear();
+                    UndoList.Push(new Bitmap(Image));
+                    RedoList.Clear();
+                }
             }
+
         }
         
         //Khi di chuyển chuột (và đè chuột trái - tức đang vẽ) trên vùng DrawBox
@@ -201,7 +214,7 @@ namespace Paint
             RedoList.Push(new Bitmap(Image));
         }
 
-
+        
         private void DrawString_WhenPressEscape(object sender, KeyEventArgs e)
         {
             PopupTextBox s = sender as PopupTextBox;
@@ -222,6 +235,38 @@ namespace Paint
             s.Dispose();
         }
 
+        //Đổ màu 
+        private void FloodFill(Point node, Color oldColor, Color fillColor)
+        {
+            oldColor = DrawBitmap.GetPixel(node.X, node.Y);
+            Color curColor;
+            if (oldColor.A == fillColor.A && oldColor.G == fillColor.G && oldColor.R == fillColor.R && oldColor.B == fillColor.B)
+                return;
+            pixels = new Stack<Point>();
+            pixels.Push(node);
+
+            while (pixels.Count > 0)
+            {
+                Point popped = pixels.Pop();
+                if (popped.X < DrawBitmap.Width && popped.X > 0 && popped.Y < DrawBitmap.Height && popped.Y > 0)
+                {
+                    curColor = DrawBitmap.GetPixel(popped.X, popped.Y);
+                    if (curColor == oldColor)
+                    {
+                        DrawBitmap.SetPixel(popped.X, popped.Y, fillColor);
+                        if (popped.X - 1 < DrawBitmap.Width && popped.X -1 > 0)
+                            pixels.Push(new Point(popped.X - 1, popped.Y));
+                        if (popped.X +1 < DrawBitmap.Width && popped.X + 1 > 0)
+                            pixels.Push(new Point(popped.X + 1, popped.Y));
+                        if(popped.Y - 1 < DrawBitmap.Height && popped.Y - 1 > 0)
+                            pixels.Push(new Point(popped.X, popped.Y - 1));
+                        if(popped.Y + 1 < DrawBitmap.Height && popped.Y + 1 > 0)
+                            pixels.Push(new Point(popped.X, popped.Y + 1));
+                    }
+                }
+            }
+        
+        }
 
         //Thực hiện Undo, nếu DrawBox chưa trống thì chèn Bitmap hiện tại vào Redo để có thể hoàn tác
         public void Undo()

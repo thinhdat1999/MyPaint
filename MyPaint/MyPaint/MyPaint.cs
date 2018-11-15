@@ -30,6 +30,7 @@ namespace Paint
         private void drawBox_MouseDown(object sender, MouseEventArgs e)
         {
             drawBox.BorderColor = PaintColorPanel.GetCurrentColor();
+            drawBox.FillColor = PaintColorPanel.GetCurrentColor();
         }
 
         #region Click Button
