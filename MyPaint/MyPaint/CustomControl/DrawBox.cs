@@ -19,6 +19,7 @@ namespace Paint
         private Graphics _g;
         private Pen MyPen;
         private Brush MyBrush;
+        private Brush Eraser;
 
         private Color _borderColor;
         private Color _fillColor;
@@ -71,6 +72,7 @@ namespace Paint
             {
                 MyPen = new Pen(_borderColor);
                 MyBrush = new SolidBrush(_borderColor);
+                Eraser = new SolidBrush(Color.White);
 
                 _isDrawing = true;
                 ptCurrent = ptMouseDown = e.Location;
@@ -86,6 +88,7 @@ namespace Paint
             base.OnMouseMove(e);
             if (_isDrawing)
             {
+                //Scribble
                 if (shapeType == 0)
                 {
                     ptCurrent = e.Location;
@@ -95,7 +98,16 @@ namespace Paint
                     _g.DrawLine(MyPen, ptMouseDown, ptCurrent);
                     ptMouseDown = ptCurrent;
                 }
-
+                //Eraser
+                else if (shapeType == -1)
+                {
+                    ptCurrent = e.Location;
+                    _g = CreateGraphics();
+                    _g.FillRectangle(Eraser, new Rectangle(ptMouseDown, new Size(5, 5)));
+                    _g = Graphics.FromImage(Image);
+                    _g.FillRectangle(Eraser, new Rectangle(ptMouseDown, new Size(5, 5)));
+                    ptMouseDown = ptCurrent;
+                }
                 else
                 {
                     ptCurrent = e.Location;
