@@ -15,7 +15,6 @@ namespace Paint
 
         private Stack<Bitmap> UndoList;
         private Stack<Bitmap> RedoList;
-        private Stack<Point> pixels;
 
         private Graphics _g;
         private Pen MyPen;
@@ -24,7 +23,6 @@ namespace Paint
 
         private Color _borderColor;
         private Color _fillColor;
-        private Color _oldColor;
 
         private ShapeFormer shapeFormer;
         private PopupTextBox textBox;
@@ -37,7 +35,7 @@ namespace Paint
         private bool _isShiftPress;
 
         public Color BorderColor { set => _borderColor = value; }
-        public Color FillColor { set => _fillColor = value; } 
+        public Color FillColor { set => _fillColor = value; }
         public int ShapeType { get => shapeType; set => shapeType = value; }
         public bool isShiftPress { set => _isShiftPress = value; }
 
@@ -72,12 +70,13 @@ namespace Paint
             base.OnMouseDown(e);
             if (e.Button == MouseButtons.Left)
             {
+                UndoList.Push(new Bitmap(Image));
+                RedoList.Clear();
+
                 if (shapeType == -2)
                 {
-                    UndoList.Push(new Bitmap(Image));
                     ptMouseDown = e.Location;
-                    FloodFill(ptMouseDown, _oldColor, _fillColor);
-                    
+                    FloodFill(ptMouseDown, _fillColor);
                 }
                 else
                 {
@@ -87,14 +86,11 @@ namespace Paint
 
                     _isDrawing = true;
                     ptCurrent = ptMouseDown = e.Location;
-
-                    UndoList.Push(new Bitmap(Image));
-                    RedoList.Clear();
                 }
             }
 
         }
-        
+
         //Khi di chuyển chuột (và đè chuột trái - tức đang vẽ) trên vùng DrawBox
         protected override void OnMouseMove(MouseEventArgs e)
         {
@@ -214,7 +210,7 @@ namespace Paint
             RedoList.Push(new Bitmap(Image));
         }
 
-        
+
         private void DrawString_WhenPressEscape(object sender, KeyEventArgs e)
         {
             PopupTextBox s = sender as PopupTextBox;
@@ -235,39 +231,42 @@ namespace Paint
             s.Dispose();
         }
 
-        //Đổ màu 
-        private void FloodFill(Point node, Color oldColor, Color fillColor)
+        //Thuật toán Flood Fill dùng queue - tìm Bitmap lớn nhất trùng màu tại điểm đã chọn và đổ màu mới
+        private void FloodFill(Point node, Color replaceColor)
         {
-            // lấy màu tại vị trí click chuột, so sánh với màu cần đổ (nếu mà trùng thì return không thì tiếp tục)
+            //Lấy màu tại vị trí click chuột, so sánh với màu cần đổ (nếu mà trùng thì return không thì tiếp tục)
             Bitmap DrawBitmap = new Bitmap(Image);
-            oldColor = DrawBitmap.GetPixel(node.X, node.Y);           
-            if (oldColor.A == fillColor.A && oldColor.G == fillColor.G && oldColor.R == fillColor.R && oldColor.B == fillColor.B)
+            Color targetColor = DrawBitmap.GetPixel(node.X, node.Y);
+
+            if (targetColor.ToArgb() == replaceColor.ToArgb())
                 return;
-            Color curColor;
+
             //Khởi tạo stack chứa pixels, push pixel ở vị trí click vào stack
-            pixels = new Stack<Point>();
+            Stack<Point> pixels = new Stack<Point>();
             pixels.Push(node);
 
-            while (pixels.Count > 0)
+            //Thực hiện flood sang 4 vị trí xung quanh, nếu trùng màu với màu ban đầu thì đổi màu và duyệt tiếp xung quanh
+            while (pixels.Count != 0)
             {
-                Point popped = pixels.Pop();
-                //Check xem có còn trong bound hay không
-                if (popped.X < DrawBitmap.Width && popped.X > 0 && popped.Y < DrawBitmap.Height && popped.Y > 0) 
+                Point floodNode = pixels.Pop();
+
+                Color floodColor = DrawBitmap.GetPixel(floodNode.X, floodNode.Y);
+
+                if (floodColor == targetColor)
                 {
-                    curColor = DrawBitmap.GetPixel(popped.X, popped.Y);
-                    if (curColor == oldColor)
-                    {
-                        //Đổi màu cũ của pixel thành màu cần đổ và push pixel ở 4 hướng vào stack nếu còn nằm trong bound
-                        DrawBitmap.SetPixel(popped.X, popped.Y, fillColor);
-                        if (popped.X - 1 < DrawBitmap.Width && popped.X -1 > 0)
-                            pixels.Push(new Point(popped.X - 1, popped.Y));
-                        if (popped.X +1 < DrawBitmap.Width && popped.X + 1 > 0)
-                            pixels.Push(new Point(popped.X + 1, popped.Y));
-                        if(popped.Y - 1 < DrawBitmap.Height && popped.Y - 1 > 0)
-                            pixels.Push(new Point(popped.X, popped.Y - 1));
-                        if(popped.Y + 1 < DrawBitmap.Height && popped.Y + 1 > 0)
-                            pixels.Push(new Point(popped.X, popped.Y + 1));
-                    }
+                    DrawBitmap.SetPixel(floodNode.X, floodNode.Y, replaceColor);
+
+                    if (floodNode.X - 1 != 0)
+                        pixels.Push(new Point(floodNode.X - 1, floodNode.Y));
+
+                    if (floodNode.X + 1 != DrawBitmap.Width)
+                        pixels.Push(new Point(floodNode.X + 1, floodNode.Y));
+
+                    if (floodNode.Y - 1 != 0)
+                        pixels.Push(new Point(floodNode.X, floodNode.Y - 1));
+
+                    if (floodNode.Y + 1 != DrawBitmap.Height)
+                        pixels.Push(new Point(floodNode.X, floodNode.Y + 1));
                 }
             }
             Image = (Image)DrawBitmap;

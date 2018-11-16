@@ -178,7 +178,6 @@ namespace Paint
         private System.Windows.Forms.Button RectangleButton;
         private System.Windows.Forms.TableLayoutPanel DrawBoxLayoutPanel;
         private Button LineButton;
-        private System.Drawing.Pen DrawPen;
         private Button EllipseButton;
         private ColorPanel PaintColorPanel;
         private Button TextBoxButton;
