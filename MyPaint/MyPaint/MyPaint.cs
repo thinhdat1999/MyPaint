@@ -49,7 +49,7 @@ namespace Paint
         }
         private void LineButton_Click(object sender, EventArgs e)
         {
-            drawBox.ShapeType = 3;
+            drawBox.ShapeType = -2;
         }
         private void TextBoxButton_Click(object sender, EventArgs e)
         {

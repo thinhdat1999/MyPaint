@@ -74,10 +74,10 @@ namespace Paint
             {
                 if (shapeType == -2)
                 {
+                    UndoList.Push(new Bitmap(Image));
                     ptMouseDown = e.Location;
                     FloodFill(ptMouseDown, _oldColor, _fillColor);
-                    Image = (Image)DrawBitmap;
-                    UndoList.Push(new Bitmap(Image));
+                    
                 }
                 else
                 {
@@ -239,6 +239,7 @@ namespace Paint
         private void FloodFill(Point node, Color oldColor, Color fillColor)
         {
             // lấy màu tại vị trí click chuột, so sánh với màu cần đổ (nếu mà trùng thì return không thì tiếp tục)
+            Bitmap DrawBitmap = new Bitmap(Image);
             oldColor = DrawBitmap.GetPixel(node.X, node.Y);           
             if (oldColor.A == fillColor.A && oldColor.G == fillColor.G && oldColor.R == fillColor.R && oldColor.B == fillColor.B)
                 return;
@@ -269,7 +270,7 @@ namespace Paint
                     }
                 }
             }
-        
+            Image = (Image)DrawBitmap;
         }
 
         //Thực hiện Undo, nếu DrawBox chưa trống thì chèn Bitmap hiện tại vào Redo để có thể hoàn tác
