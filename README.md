@@ -9,3 +9,8 @@
   + PEN WIDTH: NOT YET
   + FILL : NOT YET
   + COLOR PANEL: DONE
+  
+11/16/2018:
+  + ERASER: DONE
+  + FILL: DONE
+  
