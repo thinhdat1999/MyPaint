@@ -56,6 +56,18 @@ namespace Paint
             Image = (Image)DrawBitmap;
         }
 
+        //Lấy Image để Save và Open
+        public Image GetImage()
+        {
+            return Image;
+        }
+
+        //Tạo Bitmap mới
+      //  public Bitmap NewBitmap()
+       // {
+         //   return 0;
+       // }
+
         //Chèn văn bản vào vùng DrawBox
         public void AddText(string txt, Point location)
         {
