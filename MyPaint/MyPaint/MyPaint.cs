@@ -12,11 +12,11 @@ using System.Drawing.Drawing2D;
 
 namespace Paint
 {
-    public partial class MyPaint : Form 
+    public partial class MyPaint : Form
     {
         private DrawBox drawBox;
         private string _filename = "";
-        private bool _Save ;
+        private bool _Save;
 
         //Khởi tạo các giá trị khi load form
         public MyPaint()
@@ -80,6 +80,7 @@ namespace Paint
             if (!e.Shift) drawBox.isShiftPress = false;
         }
 
+        //Lưu
         private void Askforsave()
         {
             var result = MessageBox.Show(@"Do you want to Save this Image?", @"Save",
@@ -100,65 +101,35 @@ namespace Paint
         }
         private void SaveImage()
         {
-            //var tmpBitmap = drawBox.GetBitmap();
-            Image img = drawBox.Image;
-           // switch (_filename)
-          //  {
-              //  case "":
-                  //  {
-                        SaveFileDialog saveFileDlg = new SaveFileDialog();
-                        saveFileDlg.Filter = "Images|*.png|*.bmp|*.jpg|All files(*.*)|*.*";
-                        ImageFormat format = ImageFormat.Bmp;
-                        if(saveFileDlg.ShowDialog()==DialogResult.OK)
-                        {
-                            string ext = System.IO.Path.GetExtension(saveFileDlg.FileName); 
-                                switch (ext)
-                            {
-                                case ".jpg":
-                                    format = ImageFormat.Jpeg;
-                                    break;
-                                case ".bmp":
-                                    format = ImageFormat.Bmp;
-                                    break;
-                            }
-                            img.Save(saveFileDlg.FileName, format);
-                     //   }
-                      //  {
-                         //   Filter = @"Image files (*.bmp)|*.bitmap|*.png|*.jpg|All files (*.*)|*.*",
-                       //     FileName = "MyPicture.bmp"
-                      //  };
-                    //    if (saveFileDlg.ShowDialog() != DialogResult.OK) return;
-                    //    _filename = saveFileDlg.FileName;
-                     //   img.Save(saveFileDialog1.FileName, ImageFormat.Bmp);            
-                   // }
-                   // break;
-              //  default:
-                  //  {
-                  //      img.Save(_filename, ImageFormat.Bmp);
-                  //  }
-                  //  break;
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Images|*.png|*.bmp|*.jpg|All files(*.*)|*.*";
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                int width = Convert.ToInt32(drawBox.Width);
+                int height = Convert.ToInt32(drawBox.Height);
+                Bitmap bmp = new Bitmap(width, height);
+                drawBox.DrawToBitmap(bmp, new Rectangle(0, 0, width, height));               
+                bmp.Save(sfd.FileName, ImageFormat.Jpeg);
             }
-
         }
-
+        //New Click
         private void FileNew_Click(object sender, EventArgs e)
         {
-
             var result = MessageBox.Show(@"Do you want to save this Image?", @"Save",
-                                                              MessageBoxButtons.YesNoCancel,
-                                                              MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+                                                          MessageBoxButtons.YesNoCancel,
+                                                          MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
             switch (result)
             {
                 case DialogResult.Yes:
                     SaveImage();
                     break;
                 case DialogResult.No:
+                    Bitmap DrawBitmap = new Bitmap(Width, Height);
+                    drawBox.Image = (Image)DrawBitmap;
                     break;
             }
         }
-
-      
-
+        //Open Click
         private void FileOpen_Click(object sender, EventArgs e)
         {
             var openDlg = new OpenFileDialog
@@ -172,24 +143,24 @@ namespace Paint
                         var img = Image.FromFile(openDlg.FileName);
                         drawBox.Image = img;
                     }
-                    break;
+                break;
             }
-            
+
+        }
+        //Exit Click
+        private void FileExit_Click(object sender, EventArgs e)
+        {
+            Askforsave();
+        }
+        //Save Click
+        private void FileSave_Click(object sender, EventArgs e)
+        {
+            SaveImage();
         }
 
         private void DrawBoxLayoutPanel_Paint(object sender, PaintEventArgs e)
         {
 
-        }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Askforsave();
-        }
-
-        private void FileSave_Click(object sender, EventArgs e)
-        {
-            SaveImage();
         }
     }
 }

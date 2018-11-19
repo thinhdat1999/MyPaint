@@ -34,7 +34,6 @@ namespace Paint
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.ToolLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.PenButton = new System.Windows.Forms.Button();
-            this.PaintColorPanel = new Paint.ColorPanel();
             this.TextBoxButton = new System.Windows.Forms.Button();
             this.EllipseButton = new System.Windows.Forms.Button();
             this.RectangleButton = new System.Windows.Forms.Button();
@@ -48,6 +47,7 @@ namespace Paint
             this.FileExit = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+            this.PaintColorPanel = new Paint.ColorPanel();
             this.ToolLayoutPanel.SuspendLayout();
             this.DrawBoxLayoutPanel.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -55,33 +55,36 @@ namespace Paint
             // 
             // ToolLayoutPanel
             // 
-            this.ToolLayoutPanel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.ToolLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.ToolLayoutPanel.ColumnCount = 6;
             this.ToolLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 21.41623F));
             this.ToolLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.04318F));
             this.ToolLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.73402F));
             this.ToolLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.80656F));
             this.ToolLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 141F));
-            this.ToolLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 383F));
-            this.ToolLayoutPanel.Controls.Add(this.PenButton, 0, 0);
+            this.ToolLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 409F));
             this.ToolLayoutPanel.Controls.Add(this.PaintColorPanel, 5, 0);
             this.ToolLayoutPanel.Controls.Add(this.TextBoxButton, 4, 0);
             this.ToolLayoutPanel.Controls.Add(this.EllipseButton, 3, 0);
             this.ToolLayoutPanel.Controls.Add(this.RectangleButton, 2, 0);
             this.ToolLayoutPanel.Controls.Add(this.LineButton, 1, 0);
+            this.ToolLayoutPanel.Controls.Add(this.PenButton, 0, 0);
             this.ToolLayoutPanel.Location = new System.Drawing.Point(2, 2);
             this.ToolLayoutPanel.Margin = new System.Windows.Forms.Padding(2);
             this.ToolLayoutPanel.Name = "ToolLayoutPanel";
             this.ToolLayoutPanel.RowCount = 1;
             this.ToolLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.ToolLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 89F));
-            this.ToolLayoutPanel.Size = new System.Drawing.Size(1001, 89);
+            this.ToolLayoutPanel.Size = new System.Drawing.Size(1001, 85);
             this.ToolLayoutPanel.TabIndex = 2;
             // 
             // PenButton
             // 
+            this.PenButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.PenButton.Image = global::MyPaint.Properties.Resources.pencil;
-            this.PenButton.Location = new System.Drawing.Point(2, 2);
+            this.PenButton.Location = new System.Drawing.Point(24, 18);
             this.PenButton.Margin = new System.Windows.Forms.Padding(2);
             this.PenButton.Name = "PenButton";
             this.PenButton.Size = new System.Drawing.Size(48, 48);
@@ -90,20 +93,11 @@ namespace Paint
             this.PenButton.UseVisualStyleBackColor = true;
             this.PenButton.Click += new System.EventHandler(this.PenButton_Click);
             // 
-            // PaintColorPanel
-            // 
-            this.PaintColorPanel.BackColor = System.Drawing.Color.White;
-            this.PaintColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.PaintColorPanel.Location = new System.Drawing.Point(618, 2);
-            this.PaintColorPanel.Margin = new System.Windows.Forms.Padding(2);
-            this.PaintColorPanel.Name = "PaintColorPanel";
-            this.PaintColorPanel.Size = new System.Drawing.Size(221, 74);
-            this.PaintColorPanel.TabIndex = 3;
-            // 
             // TextBoxButton
             // 
+            this.TextBoxButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.TextBoxButton.Image = global::MyPaint.Properties.Resources.text3;
-            this.TextBoxButton.Location = new System.Drawing.Point(477, 2);
+            this.TextBoxButton.Location = new System.Drawing.Point(495, 18);
             this.TextBoxButton.Margin = new System.Windows.Forms.Padding(2);
             this.TextBoxButton.Name = "TextBoxButton";
             this.TextBoxButton.Size = new System.Drawing.Size(48, 48);
@@ -113,8 +107,9 @@ namespace Paint
             // 
             // EllipseButton
             // 
+            this.EllipseButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.EllipseButton.Image = global::MyPaint.Properties.Resources.ellipse;
-            this.EllipseButton.Location = new System.Drawing.Point(345, 2);
+            this.EllipseButton.Location = new System.Drawing.Point(362, 18);
             this.EllipseButton.Margin = new System.Windows.Forms.Padding(2);
             this.EllipseButton.Name = "EllipseButton";
             this.EllipseButton.Size = new System.Drawing.Size(48, 48);
@@ -125,8 +120,9 @@ namespace Paint
             // 
             // RectangleButton
             // 
+            this.RectangleButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.RectangleButton.Image = global::MyPaint.Properties.Resources.rectangle;
-            this.RectangleButton.Location = new System.Drawing.Point(223, 2);
+            this.RectangleButton.Location = new System.Drawing.Point(242, 18);
             this.RectangleButton.Margin = new System.Windows.Forms.Padding(2);
             this.RectangleButton.Name = "RectangleButton";
             this.RectangleButton.Size = new System.Drawing.Size(48, 48);
@@ -137,8 +133,9 @@ namespace Paint
             // 
             // LineButton
             // 
+            this.LineButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.LineButton.Image = global::MyPaint.Properties.Resources.line1;
-            this.LineButton.Location = new System.Drawing.Point(104, 2);
+            this.LineButton.Location = new System.Drawing.Point(128, 18);
             this.LineButton.Margin = new System.Windows.Forms.Padding(2);
             this.LineButton.Name = "LineButton";
             this.LineButton.Size = new System.Drawing.Size(48, 48);
@@ -152,13 +149,12 @@ namespace Paint
             this.DrawBoxLayoutPanel.ColumnCount = 1;
             this.DrawBoxLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.DrawBoxLayoutPanel.Controls.Add(this.ToolLayoutPanel, 0, 0);
-            this.DrawBoxLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DrawBoxLayoutPanel.Location = new System.Drawing.Point(0, 24);
             this.DrawBoxLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.DrawBoxLayoutPanel.Name = "DrawBoxLayoutPanel";
             this.DrawBoxLayoutPanel.RowCount = 2;
-            this.DrawBoxLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20.44444F));
-            this.DrawBoxLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 79.55556F));
+            this.DrawBoxLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 19.38998F));
+            this.DrawBoxLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 80.61002F));
             this.DrawBoxLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 16F));
             this.DrawBoxLayoutPanel.Size = new System.Drawing.Size(1005, 459);
             this.DrawBoxLayoutPanel.TabIndex = 0;
@@ -188,34 +184,45 @@ namespace Paint
             // FileNew
             // 
             this.FileNew.Name = "FileNew";
-            this.FileNew.Size = new System.Drawing.Size(180, 22);
+            this.FileNew.Size = new System.Drawing.Size(122, 22);
             this.FileNew.Text = "New        ";
             this.FileNew.Click += new System.EventHandler(this.FileNew_Click);
             // 
             // FileOpen
             // 
             this.FileOpen.Name = "FileOpen";
-            this.FileOpen.Size = new System.Drawing.Size(180, 22);
+            this.FileOpen.Size = new System.Drawing.Size(122, 22);
             this.FileOpen.Text = "Open";
             this.FileOpen.Click += new System.EventHandler(this.FileOpen_Click);
             // 
             // FileSave
             // 
             this.FileSave.Name = "FileSave";
-            this.FileSave.Size = new System.Drawing.Size(180, 22);
+            this.FileSave.Size = new System.Drawing.Size(122, 22);
             this.FileSave.Text = "Save";
             this.FileSave.Click += new System.EventHandler(this.FileSave_Click);
             // 
             // FileExit
             // 
             this.FileExit.Name = "FileExit";
-            this.FileExit.Size = new System.Drawing.Size(180, 22);
+            this.FileExit.Size = new System.Drawing.Size(122, 22);
             this.FileExit.Text = "Exit";
-            this.FileExit.Click += new System.EventHandler(this.FileSave_Click);
+            this.FileExit.Click += new System.EventHandler(this.FileExit_Click);
             // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // PaintColorPanel
+            // 
+            this.PaintColorPanel.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.PaintColorPanel.BackColor = System.Drawing.Color.White;
+            this.PaintColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.PaintColorPanel.Location = new System.Drawing.Point(685, 5);
+            this.PaintColorPanel.Margin = new System.Windows.Forms.Padding(2);
+            this.PaintColorPanel.Name = "PaintColorPanel";
+            this.PaintColorPanel.Size = new System.Drawing.Size(221, 74);
+            this.PaintColorPanel.TabIndex = 3;
             // 
             // MyPaint
             // 
