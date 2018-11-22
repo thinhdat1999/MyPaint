@@ -11,18 +11,13 @@ namespace Paint
 {
     class DrawBox : PictureBox
     {
-        private Bitmap DrawBitmap;
-
         private Stack<Bitmap> UndoList;
         private Stack<Bitmap> RedoList;
 
         private Graphics _g;
-        private Pen MyPen;
-        private Brush MyBrush;
-        private Brush Eraser;
-
-        private Color _borderColor;
-        private Color _fillColor;
+        private Pen _pen;
+        private Brush _brush;
+        private Color _drawColor;
 
         private ShapeFormer shapeFormer;
         private PopupTextBox textBox;
@@ -30,15 +25,15 @@ namespace Paint
         private Point ptMouseDown;
         private Point ptCurrent;
 
-        private int shapeType = 0;
+        private int shapeType;
         private bool _isDrawing;
         private bool _isShiftPress;
 
-        public Color BorderColor { set => _borderColor = value; }
-        public Color FillColor { set => _fillColor = value; }
-        public int ShapeType { get => shapeType; set => shapeType = value; }
+        public Color DrawColor { set => _drawColor = value; }
+        public int ShapeType { set => shapeType = value; }
         public bool isShiftPress { set => _isShiftPress = value; }
 
+        #region Constructor
         //Constructor tạo DrawBox
         public DrawBox(Size size)
         {
@@ -46,24 +41,15 @@ namespace Paint
             BackColor = Color.White;
             BorderStyle = BorderStyle.FixedSingle;
 
-            _isDrawing = false;
-            _isShiftPress = false;
-
             UndoList = new Stack<Bitmap>();
             RedoList = new Stack<Bitmap>();
+
             shapeFormer = new ShapeFormer();
-
-            DrawBitmap = new Bitmap(Width, Height);
-            Image = (Image)DrawBitmap;
+            Image = (Image)(new Bitmap(Width, Height));
         }
+        #endregion
 
-        //Chèn văn bản vào vùng DrawBox
-        public void AddText(string txt, Point location)
-        {
-            _g.DrawString(txt, DefaultFont, MyBrush, location);
-            UndoList.Push(new Bitmap(Image));
-        }
-
+        #region Mouse Down
         //Khởi tạo các thuộc tính khi nhấn chuột trái vào vùng DrawBox
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -73,59 +59,72 @@ namespace Paint
                 UndoList.Push(new Bitmap(Image));
                 RedoList.Clear();
 
-                if (shapeType == -2)
+                switch (shapeType)
                 {
-                    ptMouseDown = e.Location;
-                    FloodFill(ptMouseDown, _fillColor);
-                }
-                else
-                {
-                    MyPen = new Pen(_borderColor);
-                    MyBrush = new SolidBrush(_borderColor);
-                    Eraser = new SolidBrush(BackColor);
+                    //Tô màu (Bucket)
+                    case -2:
+                        {
+                            ptMouseDown = e.Location;
+                            FloodFill(ptMouseDown, _drawColor);
+                            break;
+                        }
 
-                    _isDrawing = true;
-                    ptCurrent = ptMouseDown = e.Location;
+                    //Xóa (Erase - note: nhớ chỉnh lại màu backcolor)
+                    case -1:
+                        {
+                            _brush = new SolidBrush(Color.White);
+                            break;
+                        }
+
+                    //Vẽ pen, line, rectangle, circle
+                    default:
+                        {
+                            _pen = new Pen(_drawColor);
+                            break;
+                        }
                 }
+                _isDrawing = true;
+                ptCurrent = ptMouseDown = e.Location;
             }
-
         }
+        #endregion
 
+        #region Mouse Move
         //Khi di chuyển chuột (và đè chuột trái - tức đang vẽ) trên vùng DrawBox
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
             if (_isDrawing)
             {
-                //Scribble
-                if (shapeType == 0)
+                ptCurrent = e.Location;
+
+                switch (shapeType)
                 {
-                    ptCurrent = e.Location;
-                    _g = CreateGraphics();
-                    _g.DrawLine(MyPen, ptMouseDown, ptCurrent);
-                    _g = Graphics.FromImage(Image);
-                    _g.DrawLine(MyPen, ptMouseDown, ptCurrent);
-                    ptMouseDown = ptCurrent;
-                }
-                //Eraser
-                else if (shapeType == -1)
-                {
-                    ptCurrent = e.Location;
-                    _g = CreateGraphics();
-                    _g.FillRectangle(Eraser, new Rectangle(ptMouseDown, new Size(5, 5)));
-                    _g = Graphics.FromImage(Image);
-                    _g.FillRectangle(Eraser, new Rectangle(ptMouseDown, new Size(5, 5)));
-                    ptMouseDown = ptCurrent;
-                }
-                else
-                {
-                    ptCurrent = e.Location;
-                    Refresh();
+                    case 0:
+                        {
+                            DrawPen();
+                            ptMouseDown = ptCurrent;
+                            break;
+                        }
+
+                    case -1:
+                        {
+                            DrawErase();
+                            ptMouseDown = ptCurrent;
+                            break;
+                        }
+
+                    default:
+                        {
+                            Refresh();
+                            break;
+                        }
                 }
             }
         }
+        #endregion
 
-
+        #region OnPaint
         //Cập nhật lại DrawBox liên tục khi đang vẽ để tạo độ mượt
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -135,113 +134,88 @@ namespace Paint
                 _g = e.Graphics;
                 switch (shapeType)
                 {
-                    case 1:
-                    case 4:
-                        {
-                            if (!_isShiftPress) _g.DrawRectangle(MyPen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
-                            if (_isShiftPress) _g.DrawRectangle(MyPen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
-                            break;
-                        }
-
-                    case 2:
-                        {
-                            if (!_isShiftPress) _g.DrawEllipse(MyPen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
-                            if (_isShiftPress) _g.DrawEllipse(MyPen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
-                            break;
-                        }
-
-                    case 3:
-                        {
-                            _g.DrawLine(MyPen, ptMouseDown, ptCurrent);
-                            break;
-                        }
+                    case 1: { DrawRectangle(); break; }
+                    case 2: { DrawEllipse(); break; }
+                    case 3: { DrawLine(); break; }
+                    case 4: { DrawRectangle(); break; }
                 }
             }
         }
+        #endregion
 
+        #region Mouse Up
         //Khi thả chuột
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
             _g = Graphics.FromImage(Image);
+
             switch (shapeType)
             {
-                //Vẽ hình chữ nhật (đè shift sẽ vẽ hình vuông)
-                case 1:
-                    {
-                        if (!_isShiftPress) _g.DrawRectangle(MyPen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
-                        if (_isShiftPress) _g.DrawRectangle(MyPen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
-                        break;
-                    }
-
-                //Vẽ hình elip (đè shift sẽ vẽ hình tròn)
-                case 2:
-                    {
-                        if (!_isShiftPress) _g.DrawEllipse(MyPen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
-                        if (_isShiftPress) _g.DrawEllipse(MyPen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
-                        break;
-                    }
-
-                //Vẽ đường thẳng
-                case 3:
-                    {
-                        _g.DrawLine(MyPen, ptMouseDown, ptCurrent);
-                        break;
-                    }
-
-                //Vẽ chữ - tạo textBox để nhập chữ, chèn sự kiện vẽ chuỗi khi TextBox biến mất
-                //do nhấn Escape nhấn chuột ngoài textBox
-                case 4:
-                    {
-                        Rectangle rect = !_isShiftPress ? shapeFormer.FormRectangle(ptMouseDown, ptCurrent) : shapeFormer.FormSquare(ptMouseDown, ptCurrent);
-                        textBox = new PopupTextBox(rect.Size, rect.Location);
-                        textBox.Leave += DrawString_WhenLeave;
-                        textBox.KeyDown += DrawString_WhenPressEscape;
-                        this.Controls.Add(textBox);
-                        break;
-                    }
-                default:
-                    {
-                        break;
-                    }
+                case 1: { DrawRectangle(); break; }
+                case 2: { DrawEllipse(); break; }
+                case 3: { DrawLine(); break; }
+                case 4: { DrawTextBox(); break; }
             }
 
             _isDrawing = false;
             RedoList.Push(new Bitmap(Image));
         }
-
-
-        private void DrawString_WhenPressEscape(object sender, KeyEventArgs e)
+        #endregion
+        
+        #region Pen
+        private void DrawPen()
         {
-            PopupTextBox s = sender as PopupTextBox;
-            if (e.KeyCode == Keys.Escape)
-            {
-                _g.DrawString(s.Text, DefaultFont, MyBrush, s.Location);
-                UndoList.Push(new Bitmap(Image));
-                s.Dispose();
-            }
+            _g = CreateGraphics();
+            _g.DrawLine(_pen, ptMouseDown, ptCurrent);
+            _g = Graphics.FromImage(Image);
+            _g.DrawLine(_pen, ptMouseDown, ptCurrent);
         }
+        #endregion
 
-
-        private void DrawString_WhenLeave(object sender, EventArgs e)
+        #region Line
+        private void DrawLine()
         {
-            PopupTextBox s = sender as PopupTextBox;
-            _g.DrawString(s.Text, DefaultFont, MyBrush, s.Location);
-            UndoList.Push(new Bitmap(Image));
-            s.Dispose();
+            _g.DrawLine(_pen, ptMouseDown, ptCurrent);
         }
+        #endregion
 
-        //Thuật toán Flood Fill dùng queue - tìm Bitmap lớn nhất trùng màu tại điểm đã chọn và đổ màu mới
+        #region Erase
+        private void DrawErase()
+        {
+            _g = CreateGraphics();
+            _g.FillRectangle(_brush, new Rectangle(ptMouseDown, new Size(5, 5)));
+            _g = Graphics.FromImage(Image);
+            _g.FillRectangle(_brush, new Rectangle(ptMouseDown, new Size(5, 5)));
+        }
+        #endregion
+
+        #region Rectangle
+        private void DrawRectangle()
+        {
+            if (!_isShiftPress) _g.DrawRectangle(_pen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
+            if (_isShiftPress) _g.DrawRectangle(_pen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
+        }
+        #endregion
+
+        #region Ellipse
+        private void DrawEllipse()
+        {
+            if (!_isShiftPress) _g.DrawEllipse(_pen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
+            if (_isShiftPress) _g.DrawEllipse(_pen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
+        }
+        #endregion
+
+        #region Bucket
+        //Thuật toán Flood Fill dùng stack - tìm Bitmap lớn nhất trùng màu tại điểm đã chọn và đổ màu mới
         private void FloodFill(Point node, Color replaceColor)
         {
-            //Lấy màu tại vị trí click chuột, so sánh với màu cần đổ (nếu mà trùng thì return không thì tiếp tục)
             Bitmap DrawBitmap = new Bitmap(Image);
             Color targetColor = DrawBitmap.GetPixel(node.X, node.Y);
 
             if (targetColor.ToArgb() == replaceColor.ToArgb())
                 return;
 
-            //Khởi tạo stack chứa pixels, push pixel ở vị trí click vào stack
             Stack<Point> pixels = new Stack<Point>();
             pixels.Push(node);
 
@@ -271,7 +245,45 @@ namespace Paint
             }
             Image = (Image)DrawBitmap;
         }
+        #endregion
 
+        #region TextBox
+        private void DrawTextBox()
+        {
+            Rectangle rect = !_isShiftPress ? shapeFormer.FormRectangle(ptMouseDown, ptCurrent) : shapeFormer.FormSquare(ptMouseDown, ptCurrent);
+            textBox = new PopupTextBox(rect.Size, rect.Location);
+            textBox.Leave += DrawString_WhenLeave;
+            textBox.KeyDown += DrawString_WhenPressEscape;
+            this.Controls.Add(textBox);
+        }
+
+        //Chèn văn bản vào vùng DrawBox
+        public void AddText(string txt, Point location)
+        {
+            _brush = new SolidBrush(_drawColor);
+            _g.DrawString(txt, DefaultFont, _brush, location);
+            UndoList.Push(new Bitmap(Image));
+        }
+
+        private void DrawString_WhenPressEscape(object sender, KeyEventArgs e)
+        {
+            PopupTextBox s = sender as PopupTextBox;
+            if (e.KeyCode == Keys.Escape)
+            {
+                AddText(s.Text, s.Location);
+                s.Dispose();
+            }
+        }
+
+        private void DrawString_WhenLeave(object sender, EventArgs e)
+        {
+            PopupTextBox s = sender as PopupTextBox;
+            AddText(s.Text, s.Location);
+            s.Dispose();
+        }
+        #endregion
+
+        #region Undo & Redo
         //Thực hiện Undo, nếu DrawBox chưa trống thì chèn Bitmap hiện tại vào Redo để có thể hoàn tác
         public void Undo()
         {
@@ -291,5 +303,6 @@ namespace Paint
                 Image = (Image)RedoList.Peek();
             }
         }
+        #endregion
     }
 }

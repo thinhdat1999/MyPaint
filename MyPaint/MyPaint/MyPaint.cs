@@ -29,8 +29,7 @@ namespace Paint
 
         private void drawBox_MouseDown(object sender, MouseEventArgs e)
         {
-            drawBox.BorderColor = PaintColorPanel.GetCurrentColor();
-            drawBox.FillColor = PaintColorPanel.GetCurrentColor();
+            drawBox.DrawColor = PaintColorPanel.GetCurrentColor();
         }
 
         #region Click Button
@@ -49,7 +48,7 @@ namespace Paint
         }
         private void LineButton_Click(object sender, EventArgs e)
         {
-            drawBox.ShapeType = -2;
+            drawBox.ShapeType = -1;
         }
         private void TextBoxButton_Click(object sender, EventArgs e)
         {
@@ -57,6 +56,7 @@ namespace Paint
         }
         #endregion
 
+        #region Keyboard Event
         //Tạo sự kiện Undo, Redo khi nhấn các tổ hợp phím Ctrl + Z, Ctrl + Y, Shift
         protected override void OnKeyDown(KeyEventArgs e)
         {
@@ -76,5 +76,6 @@ namespace Paint
         {
             if (!e.Shift) drawBox.isShiftPress = false;
         }
+        #endregion
     }
 }

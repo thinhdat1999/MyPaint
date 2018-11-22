@@ -18,5 +18,10 @@ namespace Paint
             Location = location;
             BorderStyle = BorderStyle.FixedSingle;
         }
+
+        protected override void OnCreateControl()
+        {
+            Focus();
+        }
     }
 }
