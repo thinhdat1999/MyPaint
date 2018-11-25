@@ -67,6 +67,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PaintFormer\ShapeFormer.cs" />
+    <EmbeddedResource Include="CustomControl\ColorPanel.resx">
+      <DependentUpon>ColorPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\DrawBox.resx">
       <DependentUpon>DrawBox.cs</DependentUpon>
     </EmbeddedResource>
