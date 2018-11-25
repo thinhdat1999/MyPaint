@@ -24,13 +24,14 @@ namespace Paint
             KeyPreview = true;
             ActiveControl = PenButton;
 
-            drawBox = new DrawBox(DrawBoxLayoutPanel.Size);
+            drawBox = new DrawBox(DrawBoxPanel.Size);
             drawBox.MouseDown += drawBox_MouseDown;
-            DrawBoxLayoutPanel.Controls.Add(drawBox);
+            DrawBoxPanel.Controls.Add(drawBox);
         }
 
         private void drawBox_MouseDown(object sender, MouseEventArgs e)
         {
+            drawBox.DrawColor = colorPanel.LeftColor;
         }
 
         #region Click Button

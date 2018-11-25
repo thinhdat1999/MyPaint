@@ -5,55 +5,55 @@ using System.Text;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MyPaint.CustomControl;
 
 namespace Paint
 {
     public partial class ColorPanel : UserControl
     {
+        public Color LeftColor { get => leftColorButton.BackColor; }
+        public Color RightColor { get => rightColorButton.BackColor; }
+
+        #region Init Component
         private TableLayoutPanel tableLayoutPanel1;
         private Label colorPanelLabel;
         private Label rightColorLabel;
-        private Label leftColorLabel;
-        private Button cyanButton;
-        private Button yellowButton;
-        private Button purpleButton;
-        private Button pinkButton;
-        private Button brownButton;
-        private Button grayButton;
-        private Button orangeButton;
-        private Button blueButton;
-        private Button greenButton;
-        private Button redButton;
-        private Button whiteButton;
-        private Button blackButton;
         private Button rightColorButton;
+        private Label leftColorLabel;
+        private ColorButton colorButton12;
+        private ColorButton colorButton11;
+        private ColorButton colorButton10;
+        private ColorButton colorButton9;
+        private ColorButton colorButton8;
+        private ColorButton colorButton7;
+        private ColorButton colorButton6;
+        private ColorButton colorButton5;
+        private ColorButton colorButton4;
+        private ColorButton colorButton3;
+        private ColorButton colorButton1;
+        private ColorButton colorButton2;
         private Button leftColorButton;
-
-        public ColorPanel()
-        {
-            InitializeComponent();
-        }
 
         private void InitializeComponent()
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.leftColorButton = new System.Windows.Forms.Button();
-            this.rightColorButton = new System.Windows.Forms.Button();
-            this.blackButton = new System.Windows.Forms.Button();
-            this.whiteButton = new System.Windows.Forms.Button();
-            this.redButton = new System.Windows.Forms.Button();
-            this.greenButton = new System.Windows.Forms.Button();
-            this.blueButton = new System.Windows.Forms.Button();
-            this.orangeButton = new System.Windows.Forms.Button();
-            this.grayButton = new System.Windows.Forms.Button();
-            this.brownButton = new System.Windows.Forms.Button();
-            this.pinkButton = new System.Windows.Forms.Button();
-            this.purpleButton = new System.Windows.Forms.Button();
-            this.yellowButton = new System.Windows.Forms.Button();
-            this.cyanButton = new System.Windows.Forms.Button();
+            this.colorButton12 = new ColorButton();
+            this.colorButton11 = new ColorButton();
+            this.colorButton10 = new ColorButton();
+            this.colorButton9 = new ColorButton();
+            this.colorButton8 = new ColorButton();
+            this.colorButton7 = new ColorButton();
+            this.colorButton6 = new ColorButton();
+            this.colorButton5 = new ColorButton();
+            this.colorButton4 = new ColorButton();
+            this.colorButton3 = new ColorButton();
+            this.colorButton1 = new ColorButton();
             this.leftColorLabel = new System.Windows.Forms.Label();
-            this.rightColorLabel = new System.Windows.Forms.Label();
             this.colorPanelLabel = new System.Windows.Forms.Label();
+            this.rightColorLabel = new System.Windows.Forms.Label();
+            this.rightColorButton = new System.Windows.Forms.Button();
+            this.leftColorButton = new System.Windows.Forms.Button();
+            this.colorButton2 = new ColorButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,23 +68,23 @@ namespace Paint
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel1.Controls.Add(this.colorButton12, 7, 1);
+            this.tableLayoutPanel1.Controls.Add(this.colorButton11, 6, 1);
+            this.tableLayoutPanel1.Controls.Add(this.colorButton10, 5, 1);
+            this.tableLayoutPanel1.Controls.Add(this.colorButton9, 4, 1);
+            this.tableLayoutPanel1.Controls.Add(this.colorButton8, 3, 1);
+            this.tableLayoutPanel1.Controls.Add(this.colorButton7, 2, 1);
+            this.tableLayoutPanel1.Controls.Add(this.colorButton6, 7, 0);
+            this.tableLayoutPanel1.Controls.Add(this.colorButton5, 6, 0);
+            this.tableLayoutPanel1.Controls.Add(this.colorButton4, 5, 0);
+            this.tableLayoutPanel1.Controls.Add(this.colorButton3, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.colorButton1, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.leftColorLabel, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.colorPanelLabel, 2, 2);
             this.tableLayoutPanel1.Controls.Add(this.rightColorLabel, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.leftColorLabel, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.cyanButton, 7, 1);
-            this.tableLayoutPanel1.Controls.Add(this.yellowButton, 6, 1);
-            this.tableLayoutPanel1.Controls.Add(this.purpleButton, 5, 1);
-            this.tableLayoutPanel1.Controls.Add(this.pinkButton, 4, 1);
-            this.tableLayoutPanel1.Controls.Add(this.brownButton, 3, 1);
-            this.tableLayoutPanel1.Controls.Add(this.grayButton, 2, 1);
-            this.tableLayoutPanel1.Controls.Add(this.orangeButton, 7, 0);
-            this.tableLayoutPanel1.Controls.Add(this.blueButton, 6, 0);
-            this.tableLayoutPanel1.Controls.Add(this.greenButton, 5, 0);
-            this.tableLayoutPanel1.Controls.Add(this.redButton, 4, 0);
-            this.tableLayoutPanel1.Controls.Add(this.whiteButton, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.blackButton, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.rightColorButton, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.leftColorButton, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.colorButton2, 2, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -92,150 +92,153 @@ namespace Paint
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(300, 80);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
-            // leftColorButton
+            // colorButton12
             // 
-            this.leftColorButton.BackColor = System.Drawing.Color.Black;
-            this.leftColorButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.leftColorButton.Location = new System.Drawing.Point(3, 3);
-            this.leftColorButton.Name = "leftColorButton";
-            this.tableLayoutPanel1.SetRowSpan(this.leftColorButton, 2);
-            this.leftColorButton.Size = new System.Drawing.Size(54, 54);
-            this.leftColorButton.TabIndex = 0;
-            this.leftColorButton.UseVisualStyleBackColor = false;
+            this.colorButton12.AutoSize = true;
+            this.colorButton12.BackColor = System.Drawing.Color.Brown;
+            this.colorButton12.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.colorButton12.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.colorButton12.Location = new System.Drawing.Point(273, 33);
+            this.colorButton12.Name = "colorButton12";
+            this.colorButton12.Size = new System.Drawing.Size(24, 24);
+            this.colorButton12.TabIndex = 42;
+            this.colorButton12.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
+            this.colorButton12.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
             // 
-            // rightColorButton
+            // colorButton11
             // 
-            this.rightColorButton.BackColor = System.Drawing.Color.White;
-            this.rightColorButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rightColorButton.Location = new System.Drawing.Point(63, 3);
-            this.rightColorButton.Name = "rightColorButton";
-            this.tableLayoutPanel1.SetRowSpan(this.rightColorButton, 2);
-            this.rightColorButton.Size = new System.Drawing.Size(54, 54);
-            this.rightColorButton.TabIndex = 1;
-            this.rightColorButton.UseVisualStyleBackColor = false;
+            this.colorButton11.AutoSize = true;
+            this.colorButton11.BackColor = System.Drawing.Color.Purple;
+            this.colorButton11.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.colorButton11.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.colorButton11.Location = new System.Drawing.Point(243, 33);
+            this.colorButton11.Name = "colorButton11";
+            this.colorButton11.Size = new System.Drawing.Size(24, 24);
+            this.colorButton11.TabIndex = 41;
+            this.colorButton11.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
+            this.colorButton11.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
             // 
-            // blackButton
+            // colorButton10
             // 
-            this.blackButton.BackColor = System.Drawing.Color.Black;
-            this.blackButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.blackButton.Location = new System.Drawing.Point(123, 3);
-            this.blackButton.Name = "blackButton";
-            this.blackButton.Size = new System.Drawing.Size(24, 24);
-            this.blackButton.TabIndex = 2;
-            this.blackButton.UseVisualStyleBackColor = false;
+            this.colorButton10.AutoSize = true;
+            this.colorButton10.BackColor = System.Drawing.Color.Violet;
+            this.colorButton10.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.colorButton10.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.colorButton10.Location = new System.Drawing.Point(213, 33);
+            this.colorButton10.Name = "colorButton10";
+            this.colorButton10.Size = new System.Drawing.Size(24, 24);
+            this.colorButton10.TabIndex = 40;
+            this.colorButton10.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
+            this.colorButton10.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
             // 
-            // whiteButton
+            // colorButton9
             // 
-            this.whiteButton.BackColor = System.Drawing.Color.White;
-            this.whiteButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.whiteButton.Location = new System.Drawing.Point(153, 3);
-            this.whiteButton.Name = "whiteButton";
-            this.whiteButton.Size = new System.Drawing.Size(24, 24);
-            this.whiteButton.TabIndex = 3;
-            this.whiteButton.UseVisualStyleBackColor = false;
+            this.colorButton9.AutoSize = true;
+            this.colorButton9.BackColor = System.Drawing.Color.Cyan;
+            this.colorButton9.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.colorButton9.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.colorButton9.Location = new System.Drawing.Point(183, 33);
+            this.colorButton9.Name = "colorButton9";
+            this.colorButton9.Size = new System.Drawing.Size(24, 24);
+            this.colorButton9.TabIndex = 39;
+            this.colorButton9.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
+            this.colorButton9.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
             // 
-            // redButton
+            // colorButton8
             // 
-            this.redButton.BackColor = System.Drawing.Color.Red;
-            this.redButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.redButton.Location = new System.Drawing.Point(183, 3);
-            this.redButton.Name = "redButton";
-            this.redButton.Size = new System.Drawing.Size(24, 24);
-            this.redButton.TabIndex = 4;
-            this.redButton.UseVisualStyleBackColor = false;
+            this.colorButton8.AutoSize = true;
+            this.colorButton8.BackColor = System.Drawing.Color.Blue;
+            this.colorButton8.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.colorButton8.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.colorButton8.Location = new System.Drawing.Point(153, 33);
+            this.colorButton8.Name = "colorButton8";
+            this.colorButton8.Size = new System.Drawing.Size(24, 24);
+            this.colorButton8.TabIndex = 38;
+            this.colorButton8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
+            this.colorButton8.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
             // 
-            // greenButton
+            // colorButton7
             // 
-            this.greenButton.BackColor = System.Drawing.Color.Green;
-            this.greenButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.greenButton.Location = new System.Drawing.Point(213, 3);
-            this.greenButton.Name = "greenButton";
-            this.greenButton.Size = new System.Drawing.Size(24, 24);
-            this.greenButton.TabIndex = 5;
-            this.greenButton.UseVisualStyleBackColor = false;
+            this.colorButton7.AutoSize = true;
+            this.colorButton7.BackColor = System.Drawing.Color.White;
+            this.colorButton7.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.colorButton7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.colorButton7.Location = new System.Drawing.Point(123, 33);
+            this.colorButton7.Name = "colorButton7";
+            this.colorButton7.Size = new System.Drawing.Size(24, 24);
+            this.colorButton7.TabIndex = 37;
+            this.colorButton7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
+            this.colorButton7.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
             // 
-            // blueButton
+            // colorButton6
             // 
-            this.blueButton.BackColor = System.Drawing.Color.Blue;
-            this.blueButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.blueButton.Location = new System.Drawing.Point(243, 3);
-            this.blueButton.Name = "blueButton";
-            this.blueButton.Size = new System.Drawing.Size(24, 24);
-            this.blueButton.TabIndex = 6;
-            this.blueButton.UseVisualStyleBackColor = false;
+            this.colorButton6.AutoSize = true;
+            this.colorButton6.BackColor = System.Drawing.Color.Green;
+            this.colorButton6.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.colorButton6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.colorButton6.Location = new System.Drawing.Point(273, 3);
+            this.colorButton6.Name = "colorButton6";
+            this.colorButton6.Size = new System.Drawing.Size(24, 24);
+            this.colorButton6.TabIndex = 36;
+            this.colorButton6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
+            this.colorButton6.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
             // 
-            // orangeButton
+            // colorButton5
             // 
-            this.orangeButton.BackColor = System.Drawing.Color.Orange;
-            this.orangeButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.orangeButton.Location = new System.Drawing.Point(273, 3);
-            this.orangeButton.Name = "orangeButton";
-            this.orangeButton.Size = new System.Drawing.Size(24, 24);
-            this.orangeButton.TabIndex = 7;
-            this.orangeButton.UseVisualStyleBackColor = false;
+            this.colorButton5.AutoSize = true;
+            this.colorButton5.BackColor = System.Drawing.Color.Orange;
+            this.colorButton5.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.colorButton5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.colorButton5.Location = new System.Drawing.Point(243, 3);
+            this.colorButton5.Name = "colorButton5";
+            this.colorButton5.Size = new System.Drawing.Size(24, 24);
+            this.colorButton5.TabIndex = 35;
+            this.colorButton5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
+            this.colorButton5.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
             // 
-            // grayButton
+            // colorButton4
             // 
-            this.grayButton.BackColor = System.Drawing.Color.Gray;
-            this.grayButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grayButton.Location = new System.Drawing.Point(123, 33);
-            this.grayButton.Name = "grayButton";
-            this.grayButton.Size = new System.Drawing.Size(24, 24);
-            this.grayButton.TabIndex = 8;
-            this.grayButton.UseVisualStyleBackColor = false;
+            this.colorButton4.AutoSize = true;
+            this.colorButton4.BackColor = System.Drawing.Color.Yellow;
+            this.colorButton4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.colorButton4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.colorButton4.Location = new System.Drawing.Point(213, 3);
+            this.colorButton4.Name = "colorButton4";
+            this.colorButton4.Size = new System.Drawing.Size(24, 24);
+            this.colorButton4.TabIndex = 34;
+            this.colorButton4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
+            this.colorButton4.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
             // 
-            // brownButton
+            // colorButton3
             // 
-            this.brownButton.BackColor = System.Drawing.Color.Brown;
-            this.brownButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.brownButton.Location = new System.Drawing.Point(153, 33);
-            this.brownButton.Name = "brownButton";
-            this.brownButton.Size = new System.Drawing.Size(24, 24);
-            this.brownButton.TabIndex = 9;
-            this.brownButton.UseVisualStyleBackColor = false;
+            this.colorButton3.AutoSize = true;
+            this.colorButton3.BackColor = System.Drawing.Color.Red;
+            this.colorButton3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.colorButton3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.colorButton3.Location = new System.Drawing.Point(183, 3);
+            this.colorButton3.Name = "colorButton3";
+            this.colorButton3.Size = new System.Drawing.Size(24, 24);
+            this.colorButton3.TabIndex = 33;
+            this.colorButton3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
+            this.colorButton3.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
             // 
-            // pinkButton
+            // colorButton1
             // 
-            this.pinkButton.BackColor = System.Drawing.Color.Pink;
-            this.pinkButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pinkButton.Location = new System.Drawing.Point(183, 33);
-            this.pinkButton.Name = "pinkButton";
-            this.pinkButton.Size = new System.Drawing.Size(24, 24);
-            this.pinkButton.TabIndex = 10;
-            this.pinkButton.UseVisualStyleBackColor = false;
-            // 
-            // purpleButton
-            // 
-            this.purpleButton.BackColor = System.Drawing.Color.Purple;
-            this.purpleButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.purpleButton.Location = new System.Drawing.Point(213, 33);
-            this.purpleButton.Name = "purpleButton";
-            this.purpleButton.Size = new System.Drawing.Size(24, 24);
-            this.purpleButton.TabIndex = 11;
-            this.purpleButton.UseVisualStyleBackColor = false;
-            // 
-            // yellowButton
-            // 
-            this.yellowButton.BackColor = System.Drawing.Color.Yellow;
-            this.yellowButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.yellowButton.Location = new System.Drawing.Point(243, 33);
-            this.yellowButton.Name = "yellowButton";
-            this.yellowButton.Size = new System.Drawing.Size(24, 24);
-            this.yellowButton.TabIndex = 12;
-            this.yellowButton.UseVisualStyleBackColor = false;
-            // 
-            // cyanButton
-            // 
-            this.cyanButton.BackColor = System.Drawing.Color.Cyan;
-            this.cyanButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cyanButton.Location = new System.Drawing.Point(273, 33);
-            this.cyanButton.Name = "cyanButton";
-            this.cyanButton.Size = new System.Drawing.Size(24, 24);
-            this.cyanButton.TabIndex = 13;
-            this.cyanButton.UseVisualStyleBackColor = false;
+            this.colorButton1.AutoSize = true;
+            this.colorButton1.BackColor = System.Drawing.Color.Gray;
+            this.colorButton1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.colorButton1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.colorButton1.Location = new System.Drawing.Point(153, 3);
+            this.colorButton1.Name = "colorButton1";
+            this.colorButton1.Size = new System.Drawing.Size(24, 24);
+            this.colorButton1.TabIndex = 32;
+            this.colorButton1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
+            this.colorButton1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
             // 
             // leftColorLabel
             // 
@@ -244,20 +247,9 @@ namespace Paint
             this.leftColorLabel.Location = new System.Drawing.Point(3, 60);
             this.leftColorLabel.Name = "leftColorLabel";
             this.leftColorLabel.Size = new System.Drawing.Size(54, 20);
-            this.leftColorLabel.TabIndex = 15;
+            this.leftColorLabel.TabIndex = 19;
             this.leftColorLabel.Text = "Color 1";
             this.leftColorLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // rightColorLabel
-            // 
-            this.rightColorLabel.AutoSize = true;
-            this.rightColorLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rightColorLabel.Location = new System.Drawing.Point(63, 60);
-            this.rightColorLabel.Name = "rightColorLabel";
-            this.rightColorLabel.Size = new System.Drawing.Size(54, 20);
-            this.rightColorLabel.TabIndex = 16;
-            this.rightColorLabel.Text = "Color 2";
-            this.rightColorLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // colorPanelLabel
             // 
@@ -271,6 +263,52 @@ namespace Paint
             this.colorPanelLabel.Text = "Colors (double-click to edit)";
             this.colorPanelLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // rightColorLabel
+            // 
+            this.rightColorLabel.AutoSize = true;
+            this.rightColorLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rightColorLabel.Location = new System.Drawing.Point(63, 60);
+            this.rightColorLabel.Name = "rightColorLabel";
+            this.rightColorLabel.Size = new System.Drawing.Size(54, 20);
+            this.rightColorLabel.TabIndex = 16;
+            this.rightColorLabel.Text = "Color 2";
+            this.rightColorLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // rightColorButton
+            // 
+            this.rightColorButton.BackColor = System.Drawing.Color.White;
+            this.rightColorButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rightColorButton.Location = new System.Drawing.Point(63, 3);
+            this.rightColorButton.Name = "rightColorButton";
+            this.tableLayoutPanel1.SetRowSpan(this.rightColorButton, 2);
+            this.rightColorButton.Size = new System.Drawing.Size(54, 54);
+            this.rightColorButton.TabIndex = 1;
+            this.rightColorButton.UseVisualStyleBackColor = false;
+            // 
+            // leftColorButton
+            // 
+            this.leftColorButton.BackColor = System.Drawing.Color.Black;
+            this.leftColorButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.leftColorButton.Location = new System.Drawing.Point(3, 3);
+            this.leftColorButton.Name = "leftColorButton";
+            this.tableLayoutPanel1.SetRowSpan(this.leftColorButton, 2);
+            this.leftColorButton.Size = new System.Drawing.Size(54, 54);
+            this.leftColorButton.TabIndex = 0;
+            this.leftColorButton.UseVisualStyleBackColor = false;
+            // 
+            // colorButton2
+            // 
+            this.colorButton2.AutoSize = true;
+            this.colorButton2.BackColor = System.Drawing.Color.Black;
+            this.colorButton2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.colorButton2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.colorButton2.Location = new System.Drawing.Point(123, 3);
+            this.colorButton2.Name = "colorButton2";
+            this.colorButton2.Size = new System.Drawing.Size(24, 24);
+            this.colorButton2.TabIndex = 31;
+            this.colorButton2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
+            this.colorButton2.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
+            // 
             // ColorPanel
             // 
             this.Controls.Add(this.tableLayoutPanel1);
@@ -280,6 +318,48 @@ namespace Paint
             this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
 
+        }
+        #endregion
+
+        public ColorPanel()
+        {
+            InitializeComponent();
+        }
+
+        //Nhấn chuột trái/phải vào ô màu sẽ đổi màu được chọn tương ứng
+        private void colorButton_MouseClick(object sender, MouseEventArgs e)
+        {
+            ColorButton colorButton = sender as ColorButton;
+
+            if (e.Button == MouseButtons.Left)
+            {
+                leftColorButton.BackColor = colorButton.BackColor;
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                rightColorButton.BackColor = colorButton.BackColor;
+            }
+        }
+
+        //Nhấn đúp chuột trái/phải vào ô màu sẽ đổi màu trong ô và màu được chọn tương ứng
+        private void colorButton_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ColorButton colorButton = sender as ColorButton;
+            ColorDialog colorDlg = new ColorDialog();
+
+            if (colorDlg.ShowDialog() == DialogResult.OK)
+            {
+                colorButton.BackColor = colorDlg.Color;
+
+                if (e.Button == MouseButtons.Left)
+                {
+                    leftColorButton.BackColor = colorButton.BackColor;
+                }
+                else if (e.Button == MouseButtons.Right)
+                {
+                    rightColorButton.BackColor = colorButton.BackColor;
+                }
+            }
         }
     }
 }

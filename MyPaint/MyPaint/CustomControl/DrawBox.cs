@@ -39,7 +39,6 @@ namespace Paint
         {
             Size = size;
             BackColor = Color.White;
-            BorderStyle = BorderStyle.FixedSingle;
 
             UndoList = new Stack<Bitmap>();
             RedoList = new Stack<Bitmap>();
