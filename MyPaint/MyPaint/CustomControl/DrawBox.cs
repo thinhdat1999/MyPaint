@@ -32,7 +32,15 @@ namespace Paint
 
         private int dragHandle = 0;
         private int shapeType;
-        private bool _isResizing = false;
+        
+        
+        //ResizeStage: 
+        // Stage 0: vẽ như bt
+        // Stage 1: đang resize
+        // Stage 2: resize xong
+        private int _ResizeStage = 0;
+
+
         private bool _isDrawing;
         private bool _isShiftPress;
 
@@ -52,10 +60,7 @@ namespace Paint
 
             shapeFormer = new ShapeFormer();
             Image = (Image)(new Bitmap(Width, Height));
-            // bitmap tạm dùng để vẽ hình chữ nhật chứ các point resize 
-            // Sau khi resize xong sẽ clear tất cả ( đang để ở OnPaint chưa xoá)
-            // NOTE: Cần sửa lại
-            temp = new Bitmap(Width, Height);
+            
         }
         #endregion
 
@@ -66,10 +71,11 @@ namespace Paint
             base.OnMouseDown(e);
             if (e.Button == MouseButtons.Left)
             {
-                // Nếu đang resize thì lấy thông tin tại điểm click
-                if (_isResizing)
+                // Nếu đang resize thì lấy thông tin tại điểm đặt chuột
+                if (_ResizeStage == 1)
                 {
                     bool isDragPointClicked = false;
+                    _isDrawing = false;
                     for (int i = 1; i < 9; i++)
                     {
                         //Check xem vị trí đặt chuột có trùng với dragPoint nào không
@@ -88,7 +94,7 @@ namespace Paint
                     // Nếu không thì kết thúc resize và vẽ hình mới vào Image
                     if (isDragPointClicked == false)
                     {
-                        _isResizing = false;
+                        _ResizeStage = 2;
                         _g = Graphics.FromImage(Image);
                         switch (shapeType)
                         {
@@ -103,10 +109,10 @@ namespace Paint
                                     break;
                                 }
                         }
-
+                        Refresh();
                     }
                 }
-                if (!_isResizing)
+                if (_ResizeStage != 1)
                 {
                     UndoList.Push(new Bitmap(Image));
                     RedoList.Clear();
@@ -175,8 +181,8 @@ namespace Paint
                         }
                 }
             }
-            // nếu _isResizing true thì check vị trí dragHandle và chỉnh sửa theo mouseMove
-            if (_isResizing == true)
+            // nếu _ResizeStage = 1 thì check vị trí dragHandle và chỉnh sửa theo mouseMove
+            if (_ResizeStage == 1)
             {
                 if (dragHandle == 1)
                 {
@@ -212,25 +218,38 @@ namespace Paint
             base.OnPaint(e);
             if (_isDrawing)
             {
-                _g = Graphics.FromImage(temp);
+                _g = e.Graphics;
                 switch (shapeType)
                 {
-                    case 1: { DrawRectangle(_pen); break; }
+                    case 1: { DrawRectangle(); break; }
                     case 2: { DrawEllipse(); break; }
                     case 3: { DrawLine(); break; }
-                    case 4: { DrawRectangle(_pen); break; }
+                    case 4: { DrawRectangle(); break; }
                 }
                
             }
             
-            if (_isResizing)
+            if (_ResizeStage == 1)
             {
                 _g = e.Graphics;
-                //Vẽ lại hình  cần resize 
+                Pen pen = new Pen(Color.LightBlue);
+                pen.Width = 1;
+                pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                //Vẽ lại hình cần resize và khung hình chữ nhật chứa các drag point
                 switch (shapeType)
                 {
-                    case 1: { _g.DrawRectangle(_pen, areaRect); break; }
-                    case 2: { _g.DrawEllipse(_pen, areaRect); break; }
+                    case 1:
+                        {
+                            _g.DrawRectangle(_pen, areaRect);
+                            _g.DrawRectangle(pen, areaRect);
+                            break;
+                        }
+                    case 2:
+                        {
+                            _g.DrawEllipse(_pen, areaRect);
+                            _g.DrawRectangle(pen, areaRect);
+                            break;
+                        }
                 }
                 
                 //set lại 9 điểm drag point dựa trên hình mới
@@ -250,41 +269,44 @@ namespace Paint
             
             //_g = Graphics.FromImage(Image);
             _g = CreateGraphics();
-            if (!_isResizing)
+            Pen pen = new Pen(Color.LightBlue);
+            pen.Width = 1;
+            pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+            if (_ResizeStage == 0)
             {
                 switch (shapeType)
                 {
                     case 1:
-                        {
-                            Rectangle rec = shapeFormer.FormRectangle(ptMouseDown, ptCurrent);
+                        {  
                             // Check xem hình chữ nhật vẽ có lớn hơn 1x1 px không
-                            if (rec.Width > 1 || rec.Height > 1)
+                            if (areaRect.Width > 1 || areaRect.Height > 1)
                             {
-                                // NOTE: cần sửa đoạn này
-                                Pen pen = new Pen(Color.Black);
-                                pen.Width = 2;
-                                pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-                                DrawRectangle(pen);
-                                _isResizing = true;
+                                //Vẽ hình chữ nhật và hình chữ nhật chứa drag point
+                                DrawRectangle();
+                                _g.DrawRectangle(pen, areaRect);
+                                    _ResizeStage = 1;                        
                                 for (int i = 1; i < 9; i++)
                                 {
                                     _g.DrawRectangle(new Pen(Color.Black), GetHandleRect(i));
 
                                 }
                             }
-                            
                             break;
                         }
                     case 2: {
-                            DrawEllipse();
-                            _isResizing = true;
-                            for (int i = 1; i < 9; i++)
+                            if (areaRect.Width > 1 || areaRect.Height > 1)
                             {
-                                _g.DrawRectangle(new Pen(Color.Black), GetHandleRect(i));
-
+                                //Vẽ hình tròn và hình chữ nhật chứa drag point 
+                                DrawEllipse();
+                                _g.DrawRectangle(pen, areaRect);
+                                if (_ResizeStage == 0)
+                                    _ResizeStage = 1;                              
+                                for (int i = 1; i < 9; i++)
+                                {
+                                    _g.DrawRectangle(new Pen(Color.Black), GetHandleRect(i));
+                                }
                             }
                             break;
-
                         }
                     case 3: { DrawLine(); break; }
                     case 4: { DrawTextBox(); break; }
@@ -293,10 +315,14 @@ namespace Paint
                 _isDrawing = false;
                 RedoList.Push(new Bitmap(Image));
             }
-            if (_isResizing)
+            if (_ResizeStage == 2)
+            {
+                _ResizeStage = 0;
+                _isDrawing = false;
+            }
+            if (_ResizeStage == 1)
             {
                 dragHandle = 0;
-                //_isResizing = false;
             }
 
         }
@@ -330,7 +356,7 @@ namespace Paint
         #endregion
 
         #region Rectangle
-        private void DrawRectangle(Pen _pen)
+        private void DrawRectangle()
         {
             if (!_isShiftPress) {
                 _g.DrawRectangle(_pen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
