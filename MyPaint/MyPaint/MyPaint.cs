@@ -15,7 +15,6 @@ namespace Paint
     public partial class MyPaint : Form
     {
         private DrawBox drawBox;
-
         //Khởi tạo các giá trị khi load form
         public MyPaint()
         {
@@ -25,7 +24,10 @@ namespace Paint
             ActiveControl = PenButton;
 
             drawBox = new DrawBox(DrawBoxPanel.Size);
+            DrawBoxSize.Text = drawBox.Size.Height + " x " + drawBox.Size.Width + "px";
             drawBox.MouseDown += drawBox_MouseDown;
+            drawBox.MouseMove += drawBox_MouseMove;
+            drawBox.MouseLeave += drawBox_MouseLeave;
             DrawBoxPanel.Controls.Add(drawBox);
         }
 
@@ -33,7 +35,14 @@ namespace Paint
         {
             drawBox.DrawColor = colorPanel.LeftColor;
         }
-
+        private void drawBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            MouseLocation.Text = e.Location.X + ", " + e.Location.Y + "px";
+        }
+        private void drawBox_MouseLeave(object sender, EventArgs e)
+        {
+            MouseLocation.Text = "";
+        }
         #region Click Button
         private void PenButton_Click(object sender, EventArgs e)
         {

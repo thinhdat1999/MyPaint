@@ -96,7 +96,6 @@ namespace Paint
             if (_isDrawing)
             {
                 ptCurrent = e.Location;
-
                 switch (shapeType)
                 {
                     case 0:
@@ -161,7 +160,7 @@ namespace Paint
             RedoList.Push(new Bitmap(Image));
         }
         #endregion
-        
+
         #region Pen
         private void DrawPen()
         {
