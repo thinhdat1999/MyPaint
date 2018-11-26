@@ -13,6 +13,7 @@ namespace Paint
     {
         private Stack<Bitmap> UndoList;
         private Stack<Bitmap> RedoList;
+        private Bitmap temp;
 
         private Graphics _g;
         private Pen _pen;
@@ -24,8 +25,14 @@ namespace Paint
 
         private Point ptMouseDown;
         private Point ptCurrent;
+        private Point dragPoint;
 
+        private Rectangle oldRect;
+        private Rectangle areaRect;
+
+        private int dragHandle = 0;
         private int shapeType;
+        private bool _isResizing = false;
         private bool _isDrawing;
         private bool _isShiftPress;
 
@@ -45,6 +52,10 @@ namespace Paint
 
             shapeFormer = new ShapeFormer();
             Image = (Image)(new Bitmap(Width, Height));
+            // bitmap tạm dùng để vẽ hình chữ nhật chứ các point resize 
+            // Sau khi resize xong sẽ clear tất cả ( đang để ở OnPaint chưa xoá)
+            // NOTE: Cần sửa lại
+            temp = new Bitmap(Width, Height);
         }
         #endregion
 
@@ -55,35 +66,80 @@ namespace Paint
             base.OnMouseDown(e);
             if (e.Button == MouseButtons.Left)
             {
-                UndoList.Push(new Bitmap(Image));
-                RedoList.Clear();
-
-                switch (shapeType)
+                // Nếu đang resize thì lấy thông tin tại điểm click
+                if (_isResizing)
                 {
-                    //Tô màu (Bucket)
-                    case -2:
+                    bool isDragPointClicked = false;
+                    for (int i = 1; i < 9; i++)
+                    {
+                        //Check xem vị trí đặt chuột có trùng với dragPoint nào không
+                        // Nếu có thì isDragPointClicked = true và break
+                        if (GetHandleRect(i).Contains(e.Location))
                         {
-                            ptMouseDown = e.Location;
-                            FloodFill(ptMouseDown, _drawColor);
+                            dragHandle = i;
+                            oldRect = areaRect;
+                            dragPoint = GetHandlePoint(i);
+                            isDragPointClicked = true;
                             break;
                         }
 
-                    //Xóa (Erase - note: nhớ chỉnh lại màu backcolor)
-                    case -1:
+                    }
+                    // Check xem có dragPoint nào được click hay không
+                    // Nếu không thì kết thúc resize và vẽ hình mới vào Image
+                    if (isDragPointClicked == false)
+                    {
+                        _isResizing = false;
+                        _g = Graphics.FromImage(Image);
+                        switch (shapeType)
                         {
-                            _brush = new SolidBrush(Color.White);
-                            break;
+                            case 1:
+                                {
+                                    _g.DrawRectangle(_pen, areaRect);
+                                    break;
+                                }
+                            case 2:
+                                {
+                                    _g.DrawEllipse(_pen, areaRect);
+                                    break;
+                                }
                         }
 
-                    //Vẽ pen, line, rectangle, circle
-                    default:
-                        {
-                            _pen = new Pen(_drawColor);
-                            break;
-                        }
+                    }
                 }
-                _isDrawing = true;
-                ptCurrent = ptMouseDown = e.Location;
+                if (!_isResizing)
+                {
+                    UndoList.Push(new Bitmap(Image));
+                    RedoList.Clear();
+
+                    switch (shapeType)
+                    {
+                        //Tô màu (Bucket)
+                        case -2:
+                            {
+                                ptMouseDown = e.Location;
+                                FloodFill(ptMouseDown, _drawColor);
+                                break;
+                            }
+
+                        //Xóa (Erase - note: nhớ chỉnh lại màu backcolor)
+                        case -1:
+                            {
+                                _brush = new SolidBrush(Color.White);
+                                break;
+                            }
+
+                        //Vẽ pen, line, rectangle, circle
+                        default:
+                            {
+                                _pen = new Pen(_drawColor);
+                                break;
+                            }
+                    }
+                    
+                    _isDrawing = true;
+                    ptCurrent = ptMouseDown = e.Location;
+                }
+                
             }
         }
         #endregion
@@ -119,6 +175,33 @@ namespace Paint
                         }
                 }
             }
+            // nếu _isResizing true thì check vị trí dragHandle và chỉnh sửa theo mouseMove
+            if (_isResizing == true)
+            {
+                if (dragHandle == 1)
+                {
+                    // to do
+                }
+                // Những điểm khác tương tự ( từ 1 - 8)
+                /* Các drag Point trên hình chữ nhật như sau:
+                    1--4--6
+                    2-----7
+                    3--5--8
+                */
+                else if (dragHandle == 2)
+                {
+                    int diff = dragPoint.X - e.Location.X;
+                    areaRect = new Rectangle(oldRect.Left - diff, oldRect.Top, oldRect.Width + diff, oldRect.Height);
+                }
+                else if (dragHandle == 7)
+                {
+                    int diff = dragPoint.X - e.Location.X;
+                    areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diff, oldRect.Height);
+                }
+
+                if (dragHandle > 0)
+                    this.Invalidate();
+            }
         }
         #endregion
 
@@ -129,13 +212,31 @@ namespace Paint
             base.OnPaint(e);
             if (_isDrawing)
             {
-                _g = e.Graphics;
+                _g = Graphics.FromImage(temp);
                 switch (shapeType)
                 {
-                    case 1: { DrawRectangle(); break; }
+                    case 1: { DrawRectangle(_pen); break; }
                     case 2: { DrawEllipse(); break; }
                     case 3: { DrawLine(); break; }
-                    case 4: { DrawRectangle(); break; }
+                    case 4: { DrawRectangle(_pen); break; }
+                }
+               
+            }
+            
+            if (_isResizing)
+            {
+                _g = e.Graphics;
+                //Vẽ lại hình  cần resize 
+                switch (shapeType)
+                {
+                    case 1: { _g.DrawRectangle(_pen, areaRect); break; }
+                    case 2: { _g.DrawEllipse(_pen, areaRect); break; }
+                }
+                
+                //set lại 9 điểm drag point dựa trên hình mới
+                for (int i = 1; i < 9; i++)
+                {
+                    _g.DrawRectangle(new Pen(Color.Black), GetHandleRect(i));
                 }
             }
         }
@@ -146,18 +247,58 @@ namespace Paint
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-            _g = Graphics.FromImage(Image);
-
-            switch (shapeType)
+            
+            //_g = Graphics.FromImage(Image);
+            _g = CreateGraphics();
+            if (!_isResizing)
             {
-                case 1: { DrawRectangle(); break; }
-                case 2: { DrawEllipse(); break; }
-                case 3: { DrawLine(); break; }
-                case 4: { DrawTextBox(); break; }
+                switch (shapeType)
+                {
+                    case 1:
+                        {
+                            Rectangle rec = shapeFormer.FormRectangle(ptMouseDown, ptCurrent);
+                            // Check xem hình chữ nhật vẽ có lớn hơn 1x1 px không
+                            if (rec.Width > 1 || rec.Height > 1)
+                            {
+                                // NOTE: cần sửa đoạn này
+                                Pen pen = new Pen(Color.Black);
+                                pen.Width = 2;
+                                pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                                DrawRectangle(pen);
+                                _isResizing = true;
+                                for (int i = 1; i < 9; i++)
+                                {
+                                    _g.DrawRectangle(new Pen(Color.Black), GetHandleRect(i));
+
+                                }
+                            }
+                            
+                            break;
+                        }
+                    case 2: {
+                            DrawEllipse();
+                            _isResizing = true;
+                            for (int i = 1; i < 9; i++)
+                            {
+                                _g.DrawRectangle(new Pen(Color.Black), GetHandleRect(i));
+
+                            }
+                            break;
+
+                        }
+                    case 3: { DrawLine(); break; }
+                    case 4: { DrawTextBox(); break; }
+                }
+
+                _isDrawing = false;
+                RedoList.Push(new Bitmap(Image));
+            }
+            if (_isResizing)
+            {
+                dragHandle = 0;
+                //_isResizing = false;
             }
 
-            _isDrawing = false;
-            RedoList.Push(new Bitmap(Image));
         }
         #endregion
 
@@ -189,18 +330,32 @@ namespace Paint
         #endregion
 
         #region Rectangle
-        private void DrawRectangle()
+        private void DrawRectangle(Pen _pen)
         {
-            if (!_isShiftPress) _g.DrawRectangle(_pen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
-            if (_isShiftPress) _g.DrawRectangle(_pen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
+            if (!_isShiftPress) {
+                _g.DrawRectangle(_pen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
+                areaRect = shapeFormer.FormRectangle(ptMouseDown, ptCurrent);
+            }
+            if (_isShiftPress) {
+                _g.DrawRectangle(_pen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
+                areaRect = shapeFormer.FormSquare(ptMouseDown, ptCurrent);
+            }
         }
         #endregion
 
         #region Ellipse
         private void DrawEllipse()
         {
-            if (!_isShiftPress) _g.DrawEllipse(_pen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
-            if (_isShiftPress) _g.DrawEllipse(_pen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
+            if (!_isShiftPress)
+            {
+                _g.DrawEllipse(_pen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
+                areaRect = shapeFormer.FormRectangle(ptMouseDown, ptCurrent);
+            }
+
+            if (_isShiftPress) {
+                _g.DrawEllipse(_pen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
+                areaRect = shapeFormer.FormSquare(ptMouseDown, ptCurrent);
+            }
         }
         #endregion
 
@@ -300,6 +455,39 @@ namespace Paint
                 UndoList.Push(RedoList.Pop());
                 Image = (Image)RedoList.Peek();
             }
+        }
+        #endregion
+
+        #region Resize
+        private Point GetHandlePoint(int value)
+        {
+            Point result = Point.Empty;
+
+            if (value == 1)
+                result = new Point(areaRect.Left, areaRect.Top);
+            else if (value == 2)
+                result = new Point(areaRect.Left, areaRect.Top + (areaRect.Height / 2));
+            else if (value == 3)
+                result = new Point(areaRect.Left, areaRect.Bottom);
+            else if (value == 4)
+                result = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Top);
+            else if (value == 5)
+                result = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Bottom);
+            else if (value == 6)
+                result = new Point(areaRect.Right, areaRect.Top);
+            else if (value == 7)
+                result = new Point(areaRect.Right, areaRect.Top + (areaRect.Height / 2));
+            else if (value == 8)
+                result = new Point(areaRect.Right, areaRect.Bottom);
+
+            return result;
+        }
+
+        private Rectangle GetHandleRect(int value)
+        {
+            Point p = GetHandlePoint(value);
+            p.Offset(-2, -2);
+            return new Rectangle(p, new Size(5, 5));
         }
         #endregion
     }
