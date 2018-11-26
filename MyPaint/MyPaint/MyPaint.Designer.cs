@@ -33,11 +33,11 @@ namespace Paint
         {
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.ToolBoxPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.TextBoxButton = new System.Windows.Forms.Button();
             this.EllipseButton = new System.Windows.Forms.Button();
             this.RectangleButton = new System.Windows.Forms.Button();
             this.PenButton = new System.Windows.Forms.Button();
             this.LineButton = new System.Windows.Forms.Button();
+            this.colorPanel = new Paint.ColorPanel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FileNew = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,7 +47,7 @@ namespace Paint
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.DrawBoxPanel = new System.Windows.Forms.Panel();
-            this.colorPanel = new Paint.ColorPanel();
+            this.drawPanel1 = new DrawPanel();
             this.ToolBoxPanel.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -59,14 +59,14 @@ namespace Paint
             this.ToolBoxPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 85F));
             this.ToolBoxPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 85F));
             this.ToolBoxPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 85F));
-            this.ToolBoxPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 85F));
-            this.ToolBoxPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 580F));
-            this.ToolBoxPanel.Controls.Add(this.TextBoxButton, 4, 0);
+            this.ToolBoxPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 208F));
+            this.ToolBoxPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 457F));
             this.ToolBoxPanel.Controls.Add(this.EllipseButton, 3, 0);
             this.ToolBoxPanel.Controls.Add(this.RectangleButton, 2, 0);
             this.ToolBoxPanel.Controls.Add(this.PenButton, 0, 0);
             this.ToolBoxPanel.Controls.Add(this.LineButton, 1, 0);
             this.ToolBoxPanel.Controls.Add(this.colorPanel, 5, 0);
+            this.ToolBoxPanel.Controls.Add(this.drawPanel1, 4, 0);
             this.ToolBoxPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.ToolBoxPanel.Location = new System.Drawing.Point(0, 24);
             this.ToolBoxPanel.Margin = new System.Windows.Forms.Padding(0);
@@ -76,21 +76,9 @@ namespace Paint
             this.ToolBoxPanel.Size = new System.Drawing.Size(1005, 85);
             this.ToolBoxPanel.TabIndex = 0;
             // 
-            // TextBoxButton
-            // 
-            this.TextBoxButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TextBoxButton.Image = global::MyPaint.Properties.Resources.text3;
-            this.TextBoxButton.Location = new System.Drawing.Point(342, 2);
-            this.TextBoxButton.Margin = new System.Windows.Forms.Padding(2);
-            this.TextBoxButton.Name = "TextBoxButton";
-            this.TextBoxButton.Size = new System.Drawing.Size(81, 81);
-            this.TextBoxButton.TabIndex = 4;
-            this.TextBoxButton.UseVisualStyleBackColor = true;
-            // 
             // EllipseButton
             // 
             this.EllipseButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.EllipseButton.Image = global::MyPaint.Properties.Resources.ellipse;
             this.EllipseButton.Location = new System.Drawing.Point(257, 2);
             this.EllipseButton.Margin = new System.Windows.Forms.Padding(2);
             this.EllipseButton.Name = "EllipseButton";
@@ -102,7 +90,6 @@ namespace Paint
             // RectangleButton
             // 
             this.RectangleButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.RectangleButton.Image = global::MyPaint.Properties.Resources.rectangle;
             this.RectangleButton.Location = new System.Drawing.Point(172, 2);
             this.RectangleButton.Margin = new System.Windows.Forms.Padding(2);
             this.RectangleButton.Name = "RectangleButton";
@@ -114,7 +101,6 @@ namespace Paint
             // PenButton
             // 
             this.PenButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.PenButton.Image = global::MyPaint.Properties.Resources.pencil;
             this.PenButton.Location = new System.Drawing.Point(2, 2);
             this.PenButton.Margin = new System.Windows.Forms.Padding(2);
             this.PenButton.Name = "PenButton";
@@ -126,7 +112,6 @@ namespace Paint
             // LineButton
             // 
             this.LineButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LineButton.Image = global::MyPaint.Properties.Resources.line1;
             this.LineButton.Location = new System.Drawing.Point(87, 2);
             this.LineButton.Margin = new System.Windows.Forms.Padding(2);
             this.LineButton.Name = "LineButton";
@@ -134,6 +119,14 @@ namespace Paint
             this.LineButton.TabIndex = 0;
             this.LineButton.TabStop = false;
             this.LineButton.UseVisualStyleBackColor = true;
+            // 
+            // colorPanel
+            // 
+            this.colorPanel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.colorPanel.Location = new System.Drawing.Point(551, 3);
+            this.colorPanel.Name = "colorPanel";
+            this.colorPanel.Size = new System.Drawing.Size(300, 79);
+            this.colorPanel.TabIndex = 10;
             // 
             // menuStrip1
             // 
@@ -201,13 +194,12 @@ namespace Paint
             this.DrawBoxPanel.Size = new System.Drawing.Size(1005, 371);
             this.DrawBoxPanel.TabIndex = 2;
             // 
-            // colorPanel
+            // drawPanel1
             // 
-            this.colorPanel.Dock = System.Windows.Forms.DockStyle.Left;
-            this.colorPanel.Location = new System.Drawing.Point(428, 3);
-            this.colorPanel.Name = "colorPanel";
-            this.colorPanel.Size = new System.Drawing.Size(300, 79);
-            this.colorPanel.TabIndex = 10;
+            this.drawPanel1.Location = new System.Drawing.Point(343, 3);
+            this.drawPanel1.Name = "drawPanel1";
+            this.drawPanel1.Size = new System.Drawing.Size(200, 79);
+            this.drawPanel1.TabIndex = 11;
             // 
             // MyPaint
             // 
@@ -243,13 +235,13 @@ namespace Paint
         private ToolStripMenuItem FileExit;
         private OpenFileDialog openFileDialog1;
         private SaveFileDialog saveFileDialog1;
-        private Button TextBoxButton;
         private Button EllipseButton;
         private Button RectangleButton;
         private Button PenButton;
         private Button LineButton;
         private Panel DrawBoxPanel;
         private ColorPanel colorPanel;
+        private DrawPanel drawPanel1;
     }
 }
 

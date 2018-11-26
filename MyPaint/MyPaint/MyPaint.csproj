@@ -59,6 +59,12 @@
     <Compile Include="CustomControl\DrawBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomControl\DrawPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CustomControl\DrawPanel.Designer.cs">
+      <DependentUpon>DrawPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="MyPaint.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -80,23 +86,26 @@
     <EmbeddedResource Include="CustomControl\DrawBox.resx">
       <DependentUpon>DrawBox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\DrawPanel.resx">
+      <DependentUpon>DrawPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MyPaint.resx">
       <DependentUpon>MyPaint.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -106,21 +115,17 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <None Include="ButtonImage\text.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ButtonImage\ellipse.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ButtonImage\rectangle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ButtonImage\line.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ButtonImage\pencil.png" />
+    <Content Include="ButtonImage\brushIcon.png" />
+    <Content Include="ButtonImage\bucketIcon.png" />
+    <Content Include="ButtonImage\ellipseIcon.png" />
+    <Content Include="ButtonImage\eraserIcon.png" />
+    <Content Include="ButtonImage\lineIcon.png" />
+    <Content Include="ButtonImage\penIcon.png" />
+    <Content Include="ButtonImage\rectangleIcon.png" />
+    <Content Include="ButtonImage\textIcon.png" />
+    <Content Include="ButtonImage\triangleIcon.png" />
+    <Content Include="ButtonImage\ziczacIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
