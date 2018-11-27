@@ -50,8 +50,6 @@ E:\Bai tap\Nam 2\Lap trinh truc quan\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.p
 D:\Github\MyPaint\MyPaint\MyPaint\bin\Debug\MyPaint.exe.config
 D:\Github\MyPaint\MyPaint\MyPaint\bin\Debug\MyPaint.exe
 D:\Github\MyPaint\MyPaint\MyPaint\bin\Debug\MyPaint.pdb
-D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.CustomControl.ColorButton.resources
-D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\Paint.ColorPanel.resources
 D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\Paint.DrawBox.resources
 D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\Paint.MyPaint.resources
 D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.Properties.Resources.resources
@@ -61,3 +59,5 @@ D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.exe
 D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.pdb
 D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.csprojAssemblyReference.cache
 D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\Paint.DrawPanel.resources
+D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\Paint.ColorButton.resources
+D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\Paint.ColorPanel.resources

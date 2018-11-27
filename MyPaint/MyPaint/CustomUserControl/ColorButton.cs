@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Paint
 {
-    public partial class DrawPanel : UserControl
+    public partial class ColorButton : UserControl
     {
-        public DrawPanel()
+        public ColorButton()
         {
             InitializeComponent();
         }

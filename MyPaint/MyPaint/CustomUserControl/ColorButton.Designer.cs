@@ -1,4 +1,4 @@
-﻿namespace MyPaint.CustomControl
+﻿namespace Paint
 {
     partial class ColorButton
     {

@@ -47,22 +47,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomControl\ColorButton.cs">
+    <Compile Include="CustomUserControl\ColorPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="CustomControl\ColorButton.Designer.cs">
+    <Compile Include="CustomUserControl\ColorPanel.Designer.cs">
+      <DependentUpon>ColorPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomUserControl\ColorButton.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CustomUserControl\ColorButton.Designer.cs">
       <DependentUpon>ColorButton.cs</DependentUpon>
-    </Compile>
-    <Compile Include="CustomControl\ColorPanel.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="CustomControl\DrawBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControl\DrawPanel.cs">
+    <Compile Include="CustomUserControl\DrawPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="CustomControl\DrawPanel.Designer.cs">
+    <Compile Include="CustomUserControl\DrawPanel.Designer.cs">
       <DependentUpon>DrawPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="MyPaint.cs">
@@ -77,16 +80,16 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PaintFormer\ShapeFormer.cs" />
-    <EmbeddedResource Include="CustomControl\ColorButton.resx">
-      <DependentUpon>ColorButton.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\ColorPanel.resx">
+    <EmbeddedResource Include="CustomUserControl\ColorPanel.resx">
       <DependentUpon>ColorPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomUserControl\ColorButton.resx">
+      <DependentUpon>ColorButton.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\DrawBox.resx">
       <DependentUpon>DrawBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CustomControl\DrawPanel.resx">
+    <EmbeddedResource Include="CustomUserControl\DrawPanel.resx">
       <DependentUpon>DrawPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MyPaint.resx">

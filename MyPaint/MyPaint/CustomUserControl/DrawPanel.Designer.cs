@@ -83,7 +83,9 @@
             this.textButton.Name = "textButton";
             this.textButton.Size = new System.Drawing.Size(34, 34);
             this.textButton.TabIndex = 9;
+            this.textButton.Tag = "Text";
             this.textButton.UseVisualStyleBackColor = false;
+            this.textButton.Click += new System.EventHandler(this.DrawButton_Click);
             // 
             // DrawIconList
             // 
@@ -110,7 +112,9 @@
             this.bucketButton.Name = "bucketButton";
             this.bucketButton.Size = new System.Drawing.Size(34, 34);
             this.bucketButton.TabIndex = 8;
+            this.bucketButton.Tag = "Bucket";
             this.bucketButton.UseVisualStyleBackColor = false;
+            this.bucketButton.Click += new System.EventHandler(this.DrawButton_Click);
             // 
             // ziczagButton
             // 
@@ -123,7 +127,9 @@
             this.ziczagButton.Name = "ziczagButton";
             this.ziczagButton.Size = new System.Drawing.Size(34, 34);
             this.ziczagButton.TabIndex = 7;
+            this.ziczagButton.Tag = "Ziczac";
             this.ziczagButton.UseVisualStyleBackColor = false;
+            this.ziczagButton.Click += new System.EventHandler(this.DrawButton_Click);
             // 
             // brushButton
             // 
@@ -135,7 +141,9 @@
             this.brushButton.Name = "brushButton";
             this.brushButton.Size = new System.Drawing.Size(34, 34);
             this.brushButton.TabIndex = 6;
+            this.brushButton.Tag = "Brush";
             this.brushButton.UseVisualStyleBackColor = false;
+            this.brushButton.Click += new System.EventHandler(this.DrawButton_Click);
             // 
             // eraseButton
             // 
@@ -147,7 +155,9 @@
             this.eraseButton.Name = "eraseButton";
             this.eraseButton.Size = new System.Drawing.Size(34, 34);
             this.eraseButton.TabIndex = 5;
+            this.eraseButton.Tag = "Erase";
             this.eraseButton.UseVisualStyleBackColor = false;
+            this.eraseButton.Click += new System.EventHandler(this.DrawButton_Click);
             // 
             // triangleButton
             // 
@@ -159,7 +169,9 @@
             this.triangleButton.Name = "triangleButton";
             this.triangleButton.Size = new System.Drawing.Size(34, 34);
             this.triangleButton.TabIndex = 4;
+            this.triangleButton.Tag = "Triangle";
             this.triangleButton.UseVisualStyleBackColor = false;
+            this.triangleButton.Click += new System.EventHandler(this.DrawButton_Click);
             // 
             // circleButton
             // 
@@ -171,7 +183,9 @@
             this.circleButton.Name = "circleButton";
             this.circleButton.Size = new System.Drawing.Size(34, 34);
             this.circleButton.TabIndex = 3;
+            this.circleButton.Tag = "Circle";
             this.circleButton.UseVisualStyleBackColor = false;
+            this.circleButton.Click += new System.EventHandler(this.DrawButton_Click);
             // 
             // rectangleButton
             // 
@@ -183,7 +197,9 @@
             this.rectangleButton.Name = "rectangleButton";
             this.rectangleButton.Size = new System.Drawing.Size(34, 34);
             this.rectangleButton.TabIndex = 2;
+            this.rectangleButton.Tag = "Rectangle";
             this.rectangleButton.UseVisualStyleBackColor = false;
+            this.rectangleButton.Click += new System.EventHandler(this.DrawButton_Click);
             // 
             // lineButton
             // 
@@ -195,7 +211,9 @@
             this.lineButton.Name = "lineButton";
             this.lineButton.Size = new System.Drawing.Size(34, 34);
             this.lineButton.TabIndex = 1;
+            this.lineButton.Tag = "Line";
             this.lineButton.UseVisualStyleBackColor = false;
+            this.lineButton.Click += new System.EventHandler(this.DrawButton_Click);
             // 
             // penButton
             // 
@@ -207,7 +225,9 @@
             this.penButton.Name = "penButton";
             this.penButton.Size = new System.Drawing.Size(34, 34);
             this.penButton.TabIndex = 0;
+            this.penButton.Tag = "Pen";
             this.penButton.UseVisualStyleBackColor = false;
+            this.penButton.Click += new System.EventHandler(this.DrawButton_Click);
             // 
             // DrawPanel
             // 
