@@ -15,7 +15,7 @@ namespace Paint
     public partial class MyPaint : Form
     {
         private DrawBox drawBox;
-        //Khởi tạo các giá trị khi load form
+
         public MyPaint()
         {
             InitializeComponent();
@@ -43,6 +43,7 @@ namespace Paint
         {
             MouseLocation.Text = "";
         }
+
         #region Click Button
         private void PenButton_Click(object sender, EventArgs e)
         {
