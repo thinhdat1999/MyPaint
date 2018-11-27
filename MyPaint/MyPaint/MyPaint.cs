@@ -21,50 +21,31 @@ namespace Paint
             InitializeComponent();
             Text = "MY PAINT :\">";
             KeyPreview = true;
-            ActiveControl = PenButton;
 
             drawBox = new DrawBox(DrawBoxPanel.Size);
+            DrawBoxPanel.Controls.Add(drawBox);
             DrawBoxSize.Text = drawBox.Size.Height + " x " + drawBox.Size.Width + "px";
+
             drawBox.MouseDown += drawBox_MouseDown;
             drawBox.MouseMove += drawBox_MouseMove;
             drawBox.MouseLeave += drawBox_MouseLeave;
-            DrawBoxPanel.Controls.Add(drawBox);
         }
 
+        #region Mouse Location
         private void drawBox_MouseDown(object sender, MouseEventArgs e)
         {
-           drawBox.DrawColor = colorPanel.LeftColor;
+            drawBox.DrawColor = colorPanel1.LeftColor;
+            drawBox.DrawType = drawPanel.DrawLabel;
         }
+
         private void drawBox_MouseMove(object sender, MouseEventArgs e)
         {
-            MouseLocation.Text = e.Location.X + ", " + e.Location.Y + "px";
+            MouseLocation.Text = "X: " + e.Location.X.ToString() + "px  Y: " + e.Location.Y.ToString() + "px";
         }
+
         private void drawBox_MouseLeave(object sender, EventArgs e)
         {
-            MouseLocation.Text = "";
-        }
-
-        #region Click Button
-        private void PenButton_Click(object sender, EventArgs e)
-        {
-            drawBox.ShapeType = 0;
-        }
-        private void RectangleButton_Click(object sender, EventArgs e)
-        {
-            drawBox.ShapeType = 1;
-        }
-
-        private void EllipseButton_Click(object sender, EventArgs e)
-        {
-            drawBox.ShapeType = 2;
-        }
-        private void LineButton_Click(object sender, EventArgs e)
-        {
-            drawBox.ShapeType = -1;
-        }
-        private void TextBoxButton_Click(object sender, EventArgs e)
-        {
-            drawBox.ShapeType = 4;
+            MouseLocation.Text = null;
         }
         #endregion
 

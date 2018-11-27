@@ -183,7 +183,7 @@
             this.circleButton.Name = "circleButton";
             this.circleButton.Size = new System.Drawing.Size(34, 34);
             this.circleButton.TabIndex = 3;
-            this.circleButton.Tag = "Circle";
+            this.circleButton.Tag = "Ellipse";
             this.circleButton.UseVisualStyleBackColor = false;
             this.circleButton.Click += new System.EventHandler(this.DrawButton_Click);
             // 
