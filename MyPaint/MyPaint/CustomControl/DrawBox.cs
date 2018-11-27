@@ -105,6 +105,16 @@ namespace Paint
                                     _g.DrawEllipse(_pen, areaRect);
                                     break;
                                 }
+                            case "Triangle":
+                                {
+                                    DrawTriangle();
+                                    break;
+                                }
+                            case "Ziczac":
+                                {
+                                    DrawArrow();
+                                    break;
+                                }
                         }
                         Refresh();
                     }
@@ -273,6 +283,8 @@ namespace Paint
                 {
                     case "Rectangle": { DrawRectangle(); break; }
                     case "Ellipse": { DrawEllipse(); break; }
+                    case "Triangle": { DrawTriangle(); break; }
+                    case "Ziczac": { DrawArrow(); break; }
                     case "Line": { DrawLine(); break; }
                     case "Text": { DrawRectangle(); break; }
                 }
@@ -297,6 +309,18 @@ namespace Paint
                     case "Ellipse":
                         {
                             _g.DrawEllipse(_pen, areaRect);
+                            _g.DrawRectangle(pen, areaRect);
+                            break;
+                        }
+                    case "Triangle":
+                        {
+                            DrawTriangle();
+                            _g.DrawRectangle(pen, areaRect);
+                            break;
+                        }
+                    case "Ziczac":
+                        {
+                            DrawArrow();
                             _g.DrawRectangle(pen, areaRect);
                             break;
                         }
@@ -328,7 +352,7 @@ namespace Paint
                     case "Rectangle":
                         {
                             // Check xem hình chữ nhật vẽ có lớn hơn 1x1 px không
-                            if (areaRect.Width > 1 || areaRect.Height > 1)
+                            if (areaRect.Width > 1 && areaRect.Height > 1)
                             {
                                 //Vẽ hình chữ nhật và hình chữ nhật chứa drag point
                                 DrawRectangle();
@@ -344,13 +368,42 @@ namespace Paint
                         }
                     case "Ellipse":
                         {
-                            if (areaRect.Width > 1 || areaRect.Height > 1)
+                            if (areaRect.Width > 1 && areaRect.Height > 1)
                             {
                                 //Vẽ hình tròn và hình chữ nhật chứa drag point 
                                 DrawEllipse();
                                 _g.DrawRectangle(pen, areaRect);
-                                if (_ResizeStage == 0)
-                                    _ResizeStage = 1;
+                                _ResizeStage = 1;
+                                for (int i = 1; i < 9; i++)
+                                {
+                                    _g.DrawRectangle(new Pen(Color.Black), GetHandleRect(i));
+                                }
+                            }
+                            break;
+                        }
+                    case "Triangle":
+                        {
+                            if(areaRect.Width > 1 && areaRect.Height > 1)
+                            {
+                                //Vẽ hình tam giác và hình chữ nhật chứa drag point
+                                DrawTriangle();
+                                _g.DrawRectangle(pen, areaRect);
+                                _ResizeStage = 1;
+                                for (int i = 1; i < 9; i++)
+                                {
+                                    _g.DrawRectangle(new Pen(Color.Black), GetHandleRect(i));
+                                }
+                            }
+                            break;
+                        }
+                    case "Ziczac":
+                        {
+                            if (areaRect.Width > 1 && areaRect.Height > 1)
+                            {
+                                //Vẽ hình mũi tên và hình chữ nhật chứa drag point
+                                DrawArrow();
+                                _g.DrawRectangle(pen, areaRect);
+                                _ResizeStage = 1;
                                 for (int i = 1; i < 9; i++)
                                 {
                                     _g.DrawRectangle(new Pen(Color.Black), GetHandleRect(i));
@@ -439,6 +492,69 @@ namespace Paint
                 areaRect = shapeFormer.FormSquare(ptMouseDown, ptCurrent);
             }
         }
+        #endregion
+
+        #region Triangle
+        void DrawTriangle ()
+        {
+            
+            if (!_isShiftPress)
+            {
+                Point[] points = shapeFormer.FormTriangle(areaRect);
+                _g.DrawLine(_pen, points[0], points[1]);
+                _g.DrawLine(_pen, points[0], points[2]);
+                _g.DrawLine(_pen, points[1], points[2]);
+                if (_ResizeStage == 0)
+                {
+                    areaRect = shapeFormer.FormRectangle(ptMouseDown, ptCurrent);
+                }
+            }
+            if (_isShiftPress)
+            {                 
+                Point[] points = shapeFormer.FormTriangle(areaRect);
+                _g.DrawLine(_pen, points[0], points[1]);
+                _g.DrawLine(_pen, points[0], points[2]);
+                _g.DrawLine(_pen, points[1], points[2]);
+                if(_ResizeStage == 0)
+                    areaRect = shapeFormer.FormSquare(ptMouseDown, ptCurrent);
+            }
+        }
+        #endregion
+
+        #region Arrow
+        void DrawArrow()
+        {
+            if (!_isShiftPress)
+            {
+                Point[] points = shapeFormer.FormArrow(areaRect);
+                _g.DrawLine(_pen, points[0], points[1]);
+                _g.DrawLine(_pen, points[0], points[2]);
+                _g.DrawLine(_pen, points[1], points[3]);
+                _g.DrawLine(_pen, points[2], points[4]);
+                _g.DrawLine(_pen, points[4], points[6]);
+                _g.DrawLine(_pen, points[3], points[5]);
+                _g.DrawLine(_pen, points[5], points[6]);
+                if (_ResizeStage == 0)
+                {
+                    areaRect = shapeFormer.FormRectangle(ptMouseDown, ptCurrent);
+                }
+            }
+            if (_isShiftPress)
+            {
+                Point[] points = shapeFormer.FormArrow(areaRect);
+                _g.DrawLine(_pen, points[0], points[1]);
+                _g.DrawLine(_pen, points[0], points[2]);
+                _g.DrawLine(_pen, points[1], points[3]);
+                _g.DrawLine(_pen, points[2], points[4]);
+                _g.DrawLine(_pen, points[4], points[6]);
+                _g.DrawLine(_pen, points[3], points[5]);
+                _g.DrawLine(_pen, points[5], points[6]);
+                if (_ResizeStage == 0)
+                    areaRect = shapeFormer.FormSquare(ptMouseDown, ptCurrent);
+            }
+        }
+
+
         #endregion
 
         #region Bucket

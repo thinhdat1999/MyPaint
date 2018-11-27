@@ -42,5 +42,28 @@ namespace Paint
                 Math.Min(Math.Abs(ptCurrent.X - ptMouseDown.X), Math.Abs(ptMouseDown.Y - ptCurrent.Y)),
                 Math.Min(Math.Abs(ptCurrent.X - ptMouseDown.X), Math.Abs(ptMouseDown.Y - ptCurrent.Y)));
         }
+
+        public Point[] FormTriangle(Rectangle areaRect)
+        {
+            Point[] points = new Point[3];
+            
+            points[0] = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Top);
+            points[1] = new Point(areaRect.Left, areaRect.Bottom);
+            points[2] = new Point(areaRect.Right, areaRect.Bottom);
+            return points;
+        }
+        public Point[] FormArrow(Rectangle areaRect)
+        {
+            Point[] points = new Point[7];
+            points[0] = new Point(areaRect.Right, areaRect.Top + (areaRect.Height / 2));
+            points[1] = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Top); 
+            points[2] = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Bottom);
+            points[3] = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Top + (areaRect.Height / 4));
+            points[4] = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Bottom - (areaRect.Height / 4));
+            points[5] = new Point(areaRect.Left, areaRect.Top + (areaRect.Height / 4));
+            points[6] = new Point(areaRect.Left, areaRect.Bottom - (areaRect.Height / 4));
+            
+            return points;
+        }
     }
 }

@@ -75,3 +75,17 @@ D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.csproj.GenerateResource.cach
 D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.csproj.CoreCompileInputs.cache
 D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.exe
 D:\Github\MyPaint\MyPaint\MyPaint\obj\Debug\MyPaint.pdb
+C:\Users\vuong\Source\Repos\MyPaint6\MyPaint\MyPaint\bin\Debug\MyPaint.exe.config
+C:\Users\vuong\Source\Repos\MyPaint6\MyPaint\MyPaint\bin\Debug\MyPaint.exe
+C:\Users\vuong\Source\Repos\MyPaint6\MyPaint\MyPaint\bin\Debug\MyPaint.pdb
+C:\Users\vuong\Source\Repos\MyPaint6\MyPaint\MyPaint\obj\Debug\MyPaint.csprojAssemblyReference.cache
+C:\Users\vuong\Source\Repos\MyPaint6\MyPaint\MyPaint\obj\Debug\Paint.ColorPanel.resources
+C:\Users\vuong\Source\Repos\MyPaint6\MyPaint\MyPaint\obj\Debug\Paint.ColorButton.resources
+C:\Users\vuong\Source\Repos\MyPaint6\MyPaint\MyPaint\obj\Debug\Paint.DrawBox.resources
+C:\Users\vuong\Source\Repos\MyPaint6\MyPaint\MyPaint\obj\Debug\Paint.DrawPanel.resources
+C:\Users\vuong\Source\Repos\MyPaint6\MyPaint\MyPaint\obj\Debug\Paint.MyPaint.resources
+C:\Users\vuong\Source\Repos\MyPaint6\MyPaint\MyPaint\obj\Debug\MyPaint.Properties.Resources.resources
+C:\Users\vuong\Source\Repos\MyPaint6\MyPaint\MyPaint\obj\Debug\MyPaint.csproj.GenerateResource.cache
+C:\Users\vuong\Source\Repos\MyPaint6\MyPaint\MyPaint\obj\Debug\MyPaint.csproj.CoreCompileInputs.cache
+C:\Users\vuong\Source\Repos\MyPaint6\MyPaint\MyPaint\obj\Debug\MyPaint.exe
+C:\Users\vuong\Source\Repos\MyPaint6\MyPaint\MyPaint\obj\Debug\MyPaint.pdb
