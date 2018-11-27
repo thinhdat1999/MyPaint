@@ -184,29 +184,81 @@ namespace Paint
             // nếu _ResizeStage = 1 thì check vị trí dragHandle và chỉnh sửa theo mouseMove
             if (_ResizeStage == 1)
             {
-                if (dragHandle == 1)
-                {
-                    // to do
-                }
+
                 // Những điểm khác tương tự ( từ 1 - 8)
                 /* Các drag Point trên hình chữ nhật như sau:
                     1--4--6
                     2-----7
                     3--5--8
                 */
-                else if (dragHandle == 2)
-                {
-                    int diff = dragPoint.X - e.Location.X;
-                    areaRect = new Rectangle(oldRect.Left - diff, oldRect.Top, oldRect.Width + diff, oldRect.Height);
-                }
-                else if (dragHandle == 7)
-                {
-                    int diff = dragPoint.X - e.Location.X;
-                    areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diff, oldRect.Height);
-                }
+                if (dragHandle > 0) {
+                    switch (dragHandle)
+                    {
+                        case 1:
+                            {
+                                int diffX = dragPoint.X - e.Location.X;
+                                int diffY = dragPoint.Y - e.Location.Y;
+                                if (oldRect.Width + diffX >= 9 && oldRect.Height + diffY >= 9)
+                                    areaRect = new Rectangle(oldRect.Left - diffX, oldRect.Top - diffY, oldRect.Width + diffX, oldRect.Height + diffY);
+                                break;
+                            }
 
-                if (dragHandle > 0)
+                        case 2:
+                            {
+                                int diff = dragPoint.X - e.Location.X;
+                                if(oldRect.Width + diff >= 9)
+                                    areaRect = new Rectangle(oldRect.Left - diff, oldRect.Top, oldRect.Width + diff, oldRect.Height);
+                                break;
+                            }
+                        case 3:
+                            {
+                                int diffX = dragPoint.X - e.Location.X;
+                                int diffY = dragPoint.Y - e.Location.Y;
+                                if (oldRect.Width + diffX >= 9 && oldRect.Height - diffY >= 9)
+                                    areaRect = new Rectangle(oldRect.Left - diffX, oldRect.Top, oldRect.Width + diffX, oldRect.Height - diffY);
+                                break;
+                            }
+                        case 4:
+                            { 
+                                int diff = dragPoint.Y - e.Location.Y;
+                                if(oldRect.Height + diff >= 9)
+                                    areaRect = new Rectangle(oldRect.Left, oldRect.Top - diff, oldRect.Width, oldRect.Height + diff);
+                                break;
+                            }
+                        case 5:
+                            {
+                                int diff = dragPoint.Y - e.Location.Y;
+                                if (oldRect.Height - diff >= 9) 
+                                    areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width, oldRect.Height - diff);
+                                break;
+                            }
+                        case 6:
+                            {
+                                int diffX = dragPoint.X - e.Location.X;
+                                int diffY = dragPoint.Y - e.Location.Y;
+                                if (oldRect.Width - diffX >= 9 && oldRect.Height + diffY >= 9)
+                                    areaRect = new Rectangle(oldRect.Left, oldRect.Top - diffY, oldRect.Width - diffX, oldRect.Height + diffY);
+                                break;
+                            }                       
+                        case 7:
+                            {
+                                int diff = dragPoint.X - e.Location.X;
+                                if(oldRect.Width - diff >= 9)
+                                    areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diff, oldRect.Height);
+                                break;
+                            }
+                        case 8:
+                            {
+                                int diffX = dragPoint.X - e.Location.X;
+                                int diffY = dragPoint.Y - e.Location.Y;
+                                if (oldRect.Width - diffX >= 9 && oldRect.Height - diffY >= 9)
+                                    areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diffX, oldRect.Height - diffY);
+                                break;
+                            }
+
+                    }
                     this.Invalidate();
+                }
             }
         }
         #endregion
