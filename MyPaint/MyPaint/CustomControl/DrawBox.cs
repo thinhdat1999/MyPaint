@@ -20,11 +20,10 @@ namespace Paint
         Brush _brush;
         Color _drawColor;
 
-        ShapeFormer shapeFormer;
+        ShapeTool shapeTool;
         PopupTextBox textBox;
 
-        Point ptMouseDown;
-        Point ptCurrent;
+        Point ptMouseDown, ptMouseMove;
         Point dragPoint;
 
         Rectangle oldRect;
@@ -58,7 +57,7 @@ namespace Paint
             UndoList = new Stack<Bitmap>();
             RedoList = new Stack<Bitmap>();
 
-            shapeFormer = new ShapeFormer();
+            shapeTool = new ShapeTool();
             Image = (Image)(new Bitmap(Width, Height));
 
         }
@@ -119,7 +118,7 @@ namespace Paint
                     }
                 }
 
-                if (_resizeStage == 0)
+                if (_resizeStage == ResizeStage.Idle)
                 {
                     switch (_drawType)
                     {
@@ -142,10 +141,11 @@ namespace Paint
                     }
 
                     _isDrawable = true;
-                    ptCurrent = ptMouseDown = e.Location;
-                    UndoList.Push(new Bitmap(Image));
-                    RedoList.Clear();
+                    ptMouseMove = ptMouseDown = e.Location;
                 }
+
+                UndoList.Push(new Bitmap(Image));
+                RedoList.Clear();
             }
         }
         #endregion
@@ -157,17 +157,17 @@ namespace Paint
             base.OnMouseMove(e);
             if (_isDrawable)
             {
-                ptCurrent = e.Location;
+                ptMouseMove = e.Location;
                 switch (_drawType)
                 {
                     case "Pen":
                         DrawPen();
-                        ptMouseDown = ptCurrent;
+                        ptMouseDown = ptMouseMove;
                         break;
 
                     case "Erase":
                         DrawErase();
-                        ptMouseDown = ptCurrent;
+                        ptMouseDown = ptMouseMove;
                         break;
                         
                     default:
@@ -238,7 +238,6 @@ namespace Paint
                         if (oldRect.Width - diffX > 0 && oldRect.Height - diffY > 0)
                             areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diffX, oldRect.Height - diffY);
                         break;
-
                 }
                 this.Invalidate();
             }
@@ -394,16 +393,16 @@ namespace Paint
         void DrawPen()
         {
             _g = CreateGraphics();
-            _g.DrawLine(_pen, ptMouseDown, ptCurrent);
+            _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
             _g = Graphics.FromImage(Image);
-            _g.DrawLine(_pen, ptMouseDown, ptCurrent);
+            _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
         }
         #endregion
 
         #region Line
         void DrawLine()
         {
-            _g.DrawLine(_pen, ptMouseDown, ptCurrent);
+            _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
         }
         #endregion
 
@@ -422,13 +421,13 @@ namespace Paint
         {
             if (!_isShiftPress)
             {
-                _g.DrawRectangle(_pen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
-                areaRect = shapeFormer.FormRectangle(ptMouseDown, ptCurrent);
+                _g.DrawRectangle(_pen, shapeTool.FormRectangle(ptMouseDown, ptMouseMove));
+                areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
             }
             if (_isShiftPress)
             {
-                _g.DrawRectangle(_pen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
-                areaRect = shapeFormer.FormSquare(ptMouseDown, ptCurrent);
+                _g.DrawRectangle(_pen, shapeTool.FormSquare(ptMouseDown, ptMouseMove));
+                areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
             }
         }
         #endregion
@@ -438,14 +437,14 @@ namespace Paint
         {
             if (!_isShiftPress)
             {
-                _g.DrawEllipse(_pen, shapeFormer.FormRectangle(ptMouseDown, ptCurrent));
-                areaRect = shapeFormer.FormRectangle(ptMouseDown, ptCurrent);
+                _g.DrawEllipse(_pen, shapeTool.FormRectangle(ptMouseDown, ptMouseMove));
+                areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
             }
 
             if (_isShiftPress)
             {
-                _g.DrawEllipse(_pen, shapeFormer.FormSquare(ptMouseDown, ptCurrent));
-                areaRect = shapeFormer.FormSquare(ptMouseDown, ptCurrent);
+                _g.DrawEllipse(_pen, shapeTool.FormSquare(ptMouseDown, ptMouseMove));
+                areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
             }
         }
         #endregion
@@ -456,23 +455,23 @@ namespace Paint
 
             if (!_isShiftPress)
             {
-                Point[] points = shapeFormer.FormTriangle(areaRect);
+                Point[] points = shapeTool.FormTriangle(areaRect);
                 _g.DrawLine(_pen, points[0], points[1]);
                 _g.DrawLine(_pen, points[0], points[2]);
                 _g.DrawLine(_pen, points[1], points[2]);
                 if (_resizeStage == 0)
                 {
-                    areaRect = shapeFormer.FormRectangle(ptMouseDown, ptCurrent);
+                    areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
                 }
             }
             if (_isShiftPress)
             {
-                Point[] points = shapeFormer.FormTriangle(areaRect);
+                Point[] points = shapeTool.FormTriangle(areaRect);
                 _g.DrawLine(_pen, points[0], points[1]);
                 _g.DrawLine(_pen, points[0], points[2]);
                 _g.DrawLine(_pen, points[1], points[2]);
                 if (_resizeStage == 0)
-                    areaRect = shapeFormer.FormSquare(ptMouseDown, ptCurrent);
+                    areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
             }
         }
         #endregion
@@ -482,7 +481,7 @@ namespace Paint
         {
             if (!_isShiftPress)
             {
-                Point[] points = shapeFormer.FormArrow(areaRect);
+                Point[] points = shapeTool.FormArrow(areaRect);
                 _g.DrawLine(_pen, points[0], points[1]);
                 _g.DrawLine(_pen, points[0], points[2]);
                 _g.DrawLine(_pen, points[1], points[3]);
@@ -492,12 +491,12 @@ namespace Paint
                 _g.DrawLine(_pen, points[5], points[6]);
                 if (_resizeStage == 0)
                 {
-                    areaRect = shapeFormer.FormRectangle(ptMouseDown, ptCurrent);
+                    areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
                 }
             }
             if (_isShiftPress)
             {
-                Point[] points = shapeFormer.FormArrow(areaRect);
+                Point[] points = shapeTool.FormArrow(areaRect);
                 _g.DrawLine(_pen, points[0], points[1]);
                 _g.DrawLine(_pen, points[0], points[2]);
                 _g.DrawLine(_pen, points[1], points[3]);
@@ -506,7 +505,7 @@ namespace Paint
                 _g.DrawLine(_pen, points[3], points[5]);
                 _g.DrawLine(_pen, points[5], points[6]);
                 if (_resizeStage == 0)
-                    areaRect = shapeFormer.FormSquare(ptMouseDown, ptCurrent);
+                    areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
             }
         }
 
@@ -557,7 +556,7 @@ namespace Paint
         #region TextBox
         void DrawTextBox()
         {
-            Rectangle rect = !_isShiftPress ? shapeFormer.FormRectangle(ptMouseDown, ptCurrent) : shapeFormer.FormSquare(ptMouseDown, ptCurrent);
+            Rectangle rect = !_isShiftPress ? shapeTool.FormRectangle(ptMouseDown, ptMouseMove) : shapeTool.FormSquare(ptMouseDown, ptMouseMove);
             textBox = new PopupTextBox(rect.Size, rect.Location);
             textBox.Leave += DrawString_WhenLeave;
             textBox.KeyDown += DrawString_WhenPressEscape;
@@ -633,7 +632,6 @@ namespace Paint
                 result = new Point(areaRect.Right, areaRect.Top + (areaRect.Height / 2));
             else if (value == 8)
                 result = new Point(areaRect.Right, areaRect.Bottom);
-
             return result;
         }
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Paint
 {
-    public class ShapeFormer
+    public class ShapeTool
     {
         //Tạo hình chữ nhật tại các tọa độ chuột
         public Rectangle FormRectangle(Point ptMouseDown, Point ptCurrent)
@@ -52,6 +52,7 @@ namespace Paint
             points[2] = new Point(areaRect.Right, areaRect.Bottom);
             return points;
         }
+        
         public Point[] FormArrow(Rectangle areaRect)
         {
             Point[] points = new Point[7];
@@ -62,7 +63,6 @@ namespace Paint
             points[4] = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Bottom - (areaRect.Height / 4));
             points[5] = new Point(areaRect.Left, areaRect.Top + (areaRect.Height / 4));
             points[6] = new Point(areaRect.Left, areaRect.Bottom - (areaRect.Height / 4));
-            
             return points;
         }
     }

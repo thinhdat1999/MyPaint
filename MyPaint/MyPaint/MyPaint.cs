@@ -23,6 +23,7 @@ namespace Paint
             KeyPreview = true;
 
             drawBox = new DrawBox(DrawBoxPanel.Size);
+
             DrawBoxPanel.Controls.Add(drawBox);
             DrawBoxSize.Text = drawBox.Size.Height + " x " + drawBox.Size.Width + "px";
 
@@ -31,10 +32,10 @@ namespace Paint
             drawBox.MouseLeave += drawBox_MouseLeave;
         }
 
-        #region Mouse Location
+        #region Mouse Event
         private void drawBox_MouseDown(object sender, MouseEventArgs e)
         {
-            drawBox.DrawColor = colorPanel1.LeftColor;
+            drawBox.DrawColor = colorPanel.LeftColor;
             drawBox.DrawType = drawPanel.DrawLabel;
         }
 
@@ -71,82 +72,65 @@ namespace Paint
         }
         #endregion
 
-        //Lưu
-        private void Askforsave()
+        #region Save And Open
+        private void AskForSave()
         {
             var result = MessageBox.Show(@"Do you want to Save this Image?", @"Save",
                                                      MessageBoxButtons.YesNoCancel,
                                                      MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
-            switch (result)
+            if (result == DialogResult.Yes)
             {
-                case DialogResult.Yes:
-                    SaveImage();
-                    Close();
-                    break;
-                case DialogResult.No:
-                    Close();
-                    break;
-                case DialogResult.Cancel:
-                    break;
+                SaveImage();
             }
         }
+
         private void SaveImage()
         {
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Images|*.png|*.bmp|*.jpg|All files(*.*)|*.*";
+            sfd.Filter = @"Bitmap Image|*.bmp|JPEG Image|*.jpeg|Png Image|*.png|Tiff Image|*.tiff|Wmf Image|*.wmf";
+            
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                int width = Convert.ToInt32(drawBox.Width);
-                int height = Convert.ToInt32(drawBox.Height);
-                Bitmap bmp = new Bitmap(width, height);
-                drawBox.DrawToBitmap(bmp, new Rectangle(0, 0, width, height));               
-                bmp.Save(sfd.FileName, ImageFormat.Jpeg);
+                Bitmap bmp = new Bitmap(drawBox.Width, drawBox.Height);
+                drawBox.DrawToBitmap(bmp, new Rectangle(0, 0, drawBox.Width, drawBox.Height));
+                bmp.Save(sfd.FileName, ImageFormat.Bmp);
             }
         }
-        //New Click
+
         private void FileNew_Click(object sender, EventArgs e)
         {
-            var result = MessageBox.Show(@"Do you want to save this Image?", @"Save",
-                                                          MessageBoxButtons.YesNoCancel,
-                                                          MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
-            switch (result)
-            {
-                case DialogResult.Yes:
-                    SaveImage();
-                    break;
-                case DialogResult.No:
-                    Bitmap DrawBitmap = new Bitmap(Width, Height);
-                    drawBox.Image = (Image)DrawBitmap;
-                    break;
-            }
+            AskForSave();
+            int width = Convert.ToInt32(drawBox.Width);
+            int height = Convert.ToInt32(drawBox.Height);
+            Bitmap bmp = new Bitmap(width, height);
+            drawBox.Image = (Image)bmp;
         }
+
         //Open Click
         private void FileOpen_Click(object sender, EventArgs e)
         {
-            var openDlg = new OpenFileDialog
-            {
-                Filter = @"Image files (*.bmp)|*.bmp|All files (*.*)|*.*"
-            };
-            switch (openDlg.ShowDialog())
-            {
-                case DialogResult.OK:
-                    {
-                        var img = Image.FromFile(openDlg.FileName);
-                        drawBox.Image = img;
-                    }
-                break;
-            }
+            AskForSave();
 
+            var openDlg = new OpenFileDialog();
+            openDlg.Filter = @"Bitmap Image|*.bmp|JPEG Image|*.jpeg|Png Image|*.png|Tiff Image|*.tiff|Wmf Image|*.wmf";
+
+            if (openDlg.ShowDialog() == DialogResult.OK)
+            {
+                var img = Image.FromFile(openDlg.FileName);
+                drawBox.Image = img;
+            }
         }
+
         //Exit Click
         private void FileExit_Click(object sender, EventArgs e)
         {
-            Askforsave();
+            AskForSave();
         }
         //Save Click
         private void FileSave_Click(object sender, EventArgs e)
         {
             SaveImage();
         }
+        #endregion
     }
 }

@@ -39,9 +39,9 @@ namespace Paint
             this.FileOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.FileSave = new System.Windows.Forms.ToolStripMenuItem();
             this.FileExit = new System.Windows.Forms.ToolStripMenuItem();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.MouseLocationLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.MouseLocation = new System.Windows.Forms.ToolStripStatusLabel();
             this.DrawBoxSizeLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -50,9 +50,9 @@ namespace Paint
             this.DrawBoxPanel = new System.Windows.Forms.Panel();
             this.DrawToolPanel = new System.Windows.Forms.TableLayoutPanel();
             this.drawPanel = new Paint.DrawPanel();
-            this.colorPanel1 = new Paint.ColorPanel();
+            this.colorPanel = new Paint.ColorPanel();
             this.menuStrip.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
+            this.statusStrip.SuspendLayout();
             this.ToolsPanel.SuspendLayout();
             this.DrawToolPanel.SuspendLayout();
             this.SuspendLayout();
@@ -83,49 +83,52 @@ namespace Paint
             // FileNew
             // 
             this.FileNew.Name = "FileNew";
-            this.FileNew.Size = new System.Drawing.Size(122, 22);
+            this.FileNew.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.FileNew.Size = new System.Drawing.Size(180, 22);
             this.FileNew.Text = "New        ";
             this.FileNew.Click += new System.EventHandler(this.FileNew_Click);
             // 
             // FileOpen
             // 
             this.FileOpen.Name = "FileOpen";
-            this.FileOpen.Size = new System.Drawing.Size(122, 22);
+            this.FileOpen.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.FileOpen.Size = new System.Drawing.Size(180, 22);
             this.FileOpen.Text = "Open";
             this.FileOpen.Click += new System.EventHandler(this.FileOpen_Click);
             // 
             // FileSave
             // 
             this.FileSave.Name = "FileSave";
-            this.FileSave.Size = new System.Drawing.Size(122, 22);
+            this.FileSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.FileSave.Size = new System.Drawing.Size(180, 22);
             this.FileSave.Text = "Save";
             this.FileSave.Click += new System.EventHandler(this.FileSave_Click);
             // 
             // FileExit
             // 
             this.FileExit.Name = "FileExit";
-            this.FileExit.Size = new System.Drawing.Size(122, 22);
+            this.FileExit.Size = new System.Drawing.Size(180, 22);
             this.FileExit.Text = "Exit";
             this.FileExit.Click += new System.EventHandler(this.FileExit_Click);
             // 
-            // openFileDialog1
+            // openFileDialog
             // 
-            this.openFileDialog1.FileName = "openFileDialog1";
+            this.openFileDialog.FileName = "openFileDialog1";
             // 
-            // statusStrip1
+            // statusStrip
             // 
-            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MouseLocationLabel,
             this.MouseLocation,
             this.DrawBoxSizeLabel,
             this.DrawBoxSize});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 454);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 10, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1005, 29);
-            this.statusStrip1.TabIndex = 3;
-            this.statusStrip1.Text = "statusStrip1";
+            this.statusStrip.Location = new System.Drawing.Point(0, 454);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 10, 0);
+            this.statusStrip.Size = new System.Drawing.Size(1005, 29);
+            this.statusStrip.TabIndex = 3;
+            this.statusStrip.Text = "statusStrip1";
             // 
             // MouseLocationLabel
             // 
@@ -185,7 +188,7 @@ namespace Paint
             this.DrawToolPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 208F));
             this.DrawToolPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.DrawToolPanel.Controls.Add(this.drawPanel, 0, 0);
-            this.DrawToolPanel.Controls.Add(this.colorPanel1, 1, 0);
+            this.DrawToolPanel.Controls.Add(this.colorPanel, 1, 0);
             this.DrawToolPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DrawToolPanel.Location = new System.Drawing.Point(3, 3);
             this.DrawToolPanel.Name = "DrawToolPanel";
@@ -201,12 +204,12 @@ namespace Paint
             this.drawPanel.Size = new System.Drawing.Size(200, 78);
             this.drawPanel.TabIndex = 1;
             // 
-            // colorPanel1
+            // colorPanel
             // 
-            this.colorPanel1.Location = new System.Drawing.Point(211, 3);
-            this.colorPanel1.Name = "colorPanel1";
-            this.colorPanel1.Size = new System.Drawing.Size(300, 78);
-            this.colorPanel1.TabIndex = 0;
+            this.colorPanel.Location = new System.Drawing.Point(211, 3);
+            this.colorPanel.Name = "colorPanel";
+            this.colorPanel.Size = new System.Drawing.Size(300, 78);
+            this.colorPanel.TabIndex = 0;
             // 
             // MyPaint
             // 
@@ -214,7 +217,7 @@ namespace Paint
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1005, 483);
             this.Controls.Add(this.ToolsPanel);
-            this.Controls.Add(this.statusStrip1);
+            this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
             this.Margin = new System.Windows.Forms.Padding(2);
@@ -222,8 +225,8 @@ namespace Paint
             this.Text = "Form1";
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ToolsPanel.ResumeLayout(false);
             this.DrawToolPanel.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -242,9 +245,9 @@ namespace Paint
         private ToolStripMenuItem FileOpen;
         private ToolStripMenuItem FileSave;
         private ToolStripMenuItem FileExit;
-        private OpenFileDialog openFileDialog1;
-        private SaveFileDialog saveFileDialog1;
-        private StatusStrip statusStrip1;
+        private OpenFileDialog openFileDialog;
+        private SaveFileDialog saveFileDialog;
+        private StatusStrip statusStrip;
         private ToolStripStatusLabel MouseLocation;
         private ToolStripStatusLabel DrawBoxSize;
         private ToolStripStatusLabel MouseLocationLabel;
@@ -252,7 +255,7 @@ namespace Paint
         private TableLayoutPanel ToolsPanel;
         private Panel DrawBoxPanel;
         private TableLayoutPanel DrawToolPanel;
-        private ColorPanel colorPanel1;
+        private ColorPanel colorPanel;
         private DrawPanel drawPanel;
     }
 }
