@@ -9,42 +9,46 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using System.IO;
 
 namespace Paint
 {
     public partial class MyPaint : Form
     {
-        private DrawBox drawBox;
+        private DrawBox _drawBox;
+        private bool _isSaved;
+        private string _filePath;
 
         public MyPaint()
         {
             InitializeComponent();
-            Text = "MY PAINT :\">";
             KeyPreview = true;
 
-            drawBox = new DrawBox(DrawBoxPanel.Size);
+            _drawBox = new DrawBox(DrawBoxPanel.Size);
+            _isSaved = false;
 
-            DrawBoxPanel.Controls.Add(drawBox);
-            DrawBoxSize.Text = drawBox.Size.Height + " x " + drawBox.Size.Width + "px";
+            DrawBoxPanel.Controls.Add(_drawBox);
+            DrawBoxSize.Text = _drawBox.Size.Height + " x " + _drawBox.Size.Width + "px";
 
-            drawBox.MouseDown += drawBox_MouseDown;
-            drawBox.MouseMove += drawBox_MouseMove;
-            drawBox.MouseLeave += drawBox_MouseLeave;
+            _drawBox.MouseDown += _drawBox_MouseDown;
+            _drawBox.MouseMove += _drawBox_MouseMove;
+            _drawBox.MouseLeave += _drawBox_MouseLeave;
         }
 
         #region Mouse Event
-        private void drawBox_MouseDown(object sender, MouseEventArgs e)
+        private void _drawBox_MouseDown(object sender, MouseEventArgs e)
         {
-            drawBox.DrawColor = colorPanel.LeftColor;
-            drawBox.DrawType = drawPanel.DrawLabel;
+            _drawBox.DrawColor = colorPanel.LeftColor;
+            _drawBox.DrawType = drawPanel.DrawLabel;
+            _isSaved = false;
         }
 
-        private void drawBox_MouseMove(object sender, MouseEventArgs e)
+        private void _drawBox_MouseMove(object sender, MouseEventArgs e)
         {
             MouseLocation.Text = "X: " + e.Location.X.ToString() + "px  Y: " + e.Location.Y.ToString() + "px";
         }
 
-        private void drawBox_MouseLeave(object sender, EventArgs e)
+        private void _drawBox_MouseLeave(object sender, EventArgs e)
         {
             MouseLocation.Text = null;
         }
@@ -56,80 +60,128 @@ namespace Paint
         {
             if (e.Control && e.KeyCode == Keys.Z)
             {
-                drawBox.Undo();
             }
             else if (e.Control && e.KeyCode == Keys.Y)
             {
-                drawBox.Redo();
+                _drawBox.Redo();
             }
-            else if (e.Shift) drawBox.isShiftPress = true;
+            else if (e.Shift) _drawBox.isShiftPress = true;
         }
 
         //Khi thả nút shift
         protected override void OnKeyUp(KeyEventArgs e)
         {
-            if (!e.Shift) drawBox.isShiftPress = false;
+            if (!e.Shift) _drawBox.isShiftPress = false;
         }
         #endregion
 
-        #region Save And Open
+        #region File MenuStrip
+        // Hỏi trước khi Save
         private void AskForSave()
         {
-            var result = MessageBox.Show(@"Do you want to Save this Image?", @"Save",
-                                                     MessageBoxButtons.YesNoCancel,
-                                                     MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
-            if (result == DialogResult.Yes)
+            if (!_isSaved)
             {
-                SaveImage();
+                if (MessageBox.Show(@"Do you want to Save this Image?", @"Save",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Question,
+                    MessageBoxDefaultButton.Button1) == DialogResult.Yes)
+                {
+                    SaveImage();
+                }
             }
         }
 
+        // Save hình (kiểm tra trường hợp: đã có filePath và chưa có)
         private void SaveImage()
         {
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = @"Bitmap Image|*.bmp|JPEG Image|*.jpeg|Png Image|*.png|Tiff Image|*.tiff|Wmf Image|*.wmf";
-            
-            if (sfd.ShowDialog() == DialogResult.OK)
+            if (_filePath == null)
             {
-                Bitmap bmp = new Bitmap(drawBox.Width, drawBox.Height);
-                drawBox.DrawToBitmap(bmp, new Rectangle(0, 0, drawBox.Width, drawBox.Height));
-                bmp.Save(sfd.FileName, ImageFormat.Bmp);
+                SaveFileDialog saveDlg = new SaveFileDialog();
+                saveDlg.Filter = @"Bitmap Image|*.bmp|JPEG Image|*.jpeg|Png Image|*.png|Tiff Image|*.tiff|Wmf Image|*.wmf";
+
+                if (saveDlg.ShowDialog() == DialogResult.OK)
+                {
+                    this.Text = Path.GetFileName(saveDlg.FileName) + " - MyPaint";
+                    _filePath = saveDlg.FileName;
+                    _isSaved = true;
+                }
+            }
+
+            else
+            {
+                Bitmap _bmp = new Bitmap(_drawBox.Width, _drawBox.Height);
+                _drawBox.DrawToBitmap(_bmp, new Rectangle(0, 0, _drawBox.Width, _drawBox.Height));
+                _bmp.Save(_filePath);
+                _isSaved = true;
             }
         }
 
+        // Tạo File vẽ mới - tạo bitmap mới gắn vào vùng DrawBox
         private void FileNew_Click(object sender, EventArgs e)
         {
             AskForSave();
-            int width = Convert.ToInt32(drawBox.Width);
-            int height = Convert.ToInt32(drawBox.Height);
-            Bitmap bmp = new Bitmap(width, height);
-            drawBox.Image = (Image)bmp;
+            Bitmap bmp = new Bitmap(_drawBox.Width, _drawBox.Height);
+            _drawBox.Image = (Image)bmp;
+            _filePath = null;
+            _isSaved = false;
+            this.Text = "MyPaint";
         }
 
-        //Open Click
+        // Mở một file hình - tương tự Save (hỏi lưu trước khi Open)
         private void FileOpen_Click(object sender, EventArgs e)
         {
             AskForSave();
 
             var openDlg = new OpenFileDialog();
-            openDlg.Filter = @"Bitmap Image|*.bmp|JPEG Image|*.jpeg|Png Image|*.png|Tiff Image|*.tiff|Wmf Image|*.wmf";
+            openDlg.Filter = @"Bitmap Image|*.bmp|JPEG Image|*.jpeg|JPG Image|*.jpg|Png Image|*.png|Tiff Image|*.tiff|Wmf Image|*.wmf|All file|*.";
 
             if (openDlg.ShowDialog() == DialogResult.OK)
             {
                 var img = Image.FromFile(openDlg.FileName);
-                drawBox.Image = img;
+                _drawBox.Image = img;
+                _isSaved = true;
+                _filePath = openDlg.FileName;
+                this.Text = Path.GetFileName(openDlg.FileName) + " - MyPaint";
             }
         }
 
-        //Exit Click
+        // Thoát Form - Hỏi lưu hình trước khi thoát
         private void FileExit_Click(object sender, EventArgs e)
         {
             AskForSave();
+            this.Close();
         }
-        //Save Click
+
+        // Save hình
         private void FileSave_Click(object sender, EventArgs e)
         {
             SaveImage();
+        }
+
+        // Save As -> mở SaveDialog (không cần kiểm điều kiện)
+        private void FileSaveAs_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveDlg = new SaveFileDialog();
+            saveDlg.Filter = @"Bitmap Image|*.bmp|JPEG Image|*.jpeg|JPG Image|*.jpg|Png Image|*.png|Tiff Image|*.tiff|Wmf Image|*.wmf|All file|*.";
+
+            if (saveDlg.ShowDialog() == DialogResult.OK)
+            {
+                this.Text = Path.GetFileName(saveDlg.FileName) + " - MyPaint";
+                _filePath = saveDlg.FileName;
+                _isSaved = true;
+            }
+        }
+        #endregion
+
+        #region Edit MenuStrip
+        private void EditUndo_Click(object sender, EventArgs e)
+        {
+            _drawBox.Undo();
+        }
+
+        private void EditRedo_Click(object sender, EventArgs e)
+        {
+            _drawBox.Redo();
         }
         #endregion
     }

@@ -34,10 +34,11 @@ namespace Paint
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MyPaint));
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FileToolStrip = new System.Windows.Forms.ToolStripMenuItem();
             this.FileNew = new System.Windows.Forms.ToolStripMenuItem();
             this.FileOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.FileSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.FileSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.FileExit = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
@@ -49,6 +50,9 @@ namespace Paint
             this.ToolsPanel = new System.Windows.Forms.TableLayoutPanel();
             this.DrawBoxPanel = new System.Windows.Forms.Panel();
             this.DrawToolPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.EditToolStrip = new System.Windows.Forms.ToolStripMenuItem();
+            this.EditUndo = new System.Windows.Forms.ToolStripMenuItem();
+            this.EditRedo = new System.Windows.Forms.ToolStripMenuItem();
             this.drawPanel = new Paint.DrawPanel();
             this.colorPanel = new Paint.ColorPanel();
             this.menuStrip.SuspendLayout();
@@ -62,29 +66,32 @@ namespace Paint
             this.menuStrip.BackColor = System.Drawing.SystemColors.Control;
             this.menuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
+            this.FileToolStrip,
+            this.EditToolStrip});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(1005, 24);
             this.menuStrip.TabIndex = 1;
             this.menuStrip.Text = "menuStrip1";
             // 
-            // fileToolStripMenuItem
+            // FileToolStrip
             // 
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.FileToolStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileNew,
             this.FileOpen,
             this.FileSave,
+            this.FileSaveAs,
             this.FileExit});
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem.Text = "File";
+            this.FileToolStrip.Name = "FileToolStrip";
+            this.FileToolStrip.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.FileToolStrip.Size = new System.Drawing.Size(37, 20);
+            this.FileToolStrip.Text = "File";
             // 
             // FileNew
             // 
             this.FileNew.Name = "FileNew";
             this.FileNew.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.FileNew.Size = new System.Drawing.Size(180, 22);
+            this.FileNew.Size = new System.Drawing.Size(186, 22);
             this.FileNew.Text = "New        ";
             this.FileNew.Click += new System.EventHandler(this.FileNew_Click);
             // 
@@ -92,7 +99,7 @@ namespace Paint
             // 
             this.FileOpen.Name = "FileOpen";
             this.FileOpen.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.FileOpen.Size = new System.Drawing.Size(180, 22);
+            this.FileOpen.Size = new System.Drawing.Size(186, 22);
             this.FileOpen.Text = "Open";
             this.FileOpen.Click += new System.EventHandler(this.FileOpen_Click);
             // 
@@ -100,14 +107,24 @@ namespace Paint
             // 
             this.FileSave.Name = "FileSave";
             this.FileSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.FileSave.Size = new System.Drawing.Size(180, 22);
+            this.FileSave.Size = new System.Drawing.Size(186, 22);
             this.FileSave.Text = "Save";
             this.FileSave.Click += new System.EventHandler(this.FileSave_Click);
+            // 
+            // FileSaveAs
+            // 
+            this.FileSaveAs.Name = "FileSaveAs";
+            this.FileSaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
+            this.FileSaveAs.Size = new System.Drawing.Size(186, 22);
+            this.FileSaveAs.Text = "Save As";
+            this.FileSaveAs.Click += new System.EventHandler(this.FileSaveAs_Click);
             // 
             // FileExit
             // 
             this.FileExit.Name = "FileExit";
-            this.FileExit.Size = new System.Drawing.Size(180, 22);
+            this.FileExit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
+            this.FileExit.Size = new System.Drawing.Size(186, 22);
             this.FileExit.Text = "Exit";
             this.FileExit.Click += new System.EventHandler(this.FileExit_Click);
             // 
@@ -197,6 +214,31 @@ namespace Paint
             this.DrawToolPanel.Size = new System.Drawing.Size(999, 84);
             this.DrawToolPanel.TabIndex = 1;
             // 
+            // EditToolStrip
+            // 
+            this.EditToolStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.EditUndo,
+            this.EditRedo});
+            this.EditToolStrip.Name = "EditToolStrip";
+            this.EditToolStrip.Size = new System.Drawing.Size(39, 20);
+            this.EditToolStrip.Text = "Edit";
+            // 
+            // EditUndo
+            // 
+            this.EditUndo.Name = "EditUndo";
+            this.EditUndo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+            this.EditUndo.Size = new System.Drawing.Size(180, 22);
+            this.EditUndo.Text = "Undo";
+            this.EditUndo.Click += new System.EventHandler(this.EditUndo_Click);
+            // 
+            // EditRedo
+            // 
+            this.EditRedo.Name = "EditRedo";
+            this.EditRedo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+            this.EditRedo.Size = new System.Drawing.Size(180, 22);
+            this.EditRedo.Text = "Redo";
+            this.EditRedo.Click += new System.EventHandler(this.EditRedo_Click);
+            // 
             // drawPanel
             // 
             this.drawPanel.Location = new System.Drawing.Point(3, 3);
@@ -222,7 +264,7 @@ namespace Paint
             this.MainMenuStrip = this.menuStrip;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MyPaint";
-            this.Text = "Form1";
+            this.Text = "MyPaint";
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.statusStrip.ResumeLayout(false);
@@ -240,11 +282,11 @@ namespace Paint
 
         private System.Windows.Forms.ColorDialog colorDialog1;
         private MenuStrip menuStrip;
-        private ToolStripMenuItem fileToolStripMenuItem;
+        private ToolStripMenuItem FileToolStrip;
         private ToolStripMenuItem FileNew;
         private ToolStripMenuItem FileOpen;
         private ToolStripMenuItem FileSave;
-        private ToolStripMenuItem FileExit;
+        private ToolStripMenuItem FileSaveAs;
         private OpenFileDialog openFileDialog;
         private SaveFileDialog saveFileDialog;
         private StatusStrip statusStrip;
@@ -257,6 +299,10 @@ namespace Paint
         private TableLayoutPanel DrawToolPanel;
         private ColorPanel colorPanel;
         private DrawPanel drawPanel;
+        private ToolStripMenuItem FileExit;
+        private ToolStripMenuItem EditToolStrip;
+        private ToolStripMenuItem EditUndo;
+        private ToolStripMenuItem EditRedo;
     }
 }
 
