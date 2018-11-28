@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,16 +32,18 @@ namespace Paint
 
         int _dragHandle = 0;
         string _drawType;
-
-
-        //ResizeStage: 
-        // Stage 0: vẽ như bt
-        // Stage 1: đang resize
-        // Stage 2: resize xong
-        int _ResizeStage = 0;
-        bool _isDrawing;
+        
+        bool _isDrawable;
         bool _isShiftPress;
-
+        
+        enum ResizeStage
+        {
+            Idle = 0,
+            Active = 1,
+            Done
+        };
+        ResizeStage _resizeStage;
+        
         public Color DrawColor { set => _drawColor = value; }
         public string DrawType { set => _drawType = value; }
         public bool isShiftPress { set => _isShiftPress = value; }
@@ -69,11 +72,12 @@ namespace Paint
             if (e.Button == MouseButtons.Left)
             {
                 // Nếu đang resize thì lấy thông tin tại điểm đặt chuột
-                if (_ResizeStage == 1)
+                if (_resizeStage == ResizeStage.Active)
                 {
                     bool isDragPointClicked = false;
-                    _isDrawing = false;
-                    for (int i = 1; i < 9; i++)
+                    _isDrawable = false;
+
+                    for (int i = 1; i <= 8; i++)
                     {
                         //Check xem vị trí đặt chuột có trùng với dragPoint nào không
                         // Nếu có thì isDragPointClicked = true và break
@@ -85,74 +89,63 @@ namespace Paint
                             isDragPointClicked = true;
                             break;
                         }
-
                     }
+
                     // Check xem có dragPoint nào được click hay không
                     // Nếu không thì kết thúc resize và vẽ hình mới vào Image
-                    if (isDragPointClicked == false)
+                    if (!isDragPointClicked)
                     {
-                        _ResizeStage = 2;
+                        _resizeStage = ResizeStage.Done;
                         _g = Graphics.FromImage(Image);
                         switch (_drawType)
                         {
                             case "Rectangle":
-                                {
-                                    _g.DrawRectangle(_pen, areaRect);
-                                    break;
-                                }
+                                _g.DrawRectangle(_pen, areaRect);
+                                break;
+
                             case "Ellipse":
-                                {
-                                    _g.DrawEllipse(_pen, areaRect);
-                                    break;
-                                }
+                                _g.DrawEllipse(_pen, areaRect);
+                                break;
+                                
                             case "Triangle":
-                                {
-                                    DrawTriangle();
-                                    break;
-                                }
+                                DrawTriangle();
+                                break;
+                                
                             case "Ziczac":
-                                {
-                                    DrawArrow();
-                                    break;
-                                }
+                                DrawArrow();
+                                break;
                         }
-                        Refresh();
+                        this.Invalidate();
                     }
                 }
-                if (_ResizeStage != 1)
-                {
-                    UndoList.Push(new Bitmap(Image));
-                    RedoList.Clear();
 
+                if (_resizeStage == 0)
+                {
                     switch (_drawType)
                     {
                         //Tô màu (Bucket)
                         case "Bucket":
-                            {
-                                ptMouseDown = e.Location;
-                                FloodFill(ptMouseDown, _drawColor);
-                                break;
-                            }
+                            ptMouseDown = e.Location;
+                            FloodFill(ptMouseDown, _drawColor);
+                            break;
+
 
                         //Xóa (Erase - note: nhớ chỉnh lại màu backcolor)
                         case "Erase":
-                            {
-                                _brush = new SolidBrush(Color.White);
-                                break;
-                            }
+                            _brush = new SolidBrush(Color.White);
+                            break;
 
                         //Vẽ pen, line, rectangle, circle
                         default:
-                            {
-                                _pen = new Pen(_drawColor);
-                                break;
-                            }
+                            _pen = new Pen(_drawColor);
+                            break;
                     }
 
-                    _isDrawing = true;
+                    _isDrawable = true;
                     ptCurrent = ptMouseDown = e.Location;
+                    UndoList.Push(new Bitmap(Image));
+                    RedoList.Clear();
                 }
-
             }
         }
         #endregion
@@ -162,111 +155,92 @@ namespace Paint
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (_isDrawing)
+            if (_isDrawable)
             {
                 ptCurrent = e.Location;
                 switch (_drawType)
                 {
                     case "Pen":
-                        {
-                            DrawPen();
-                            ptMouseDown = ptCurrent;
-                            break;
-                        }
+                        DrawPen();
+                        ptMouseDown = ptCurrent;
+                        break;
 
                     case "Erase":
-                        {
-                            DrawErase();
-                            ptMouseDown = ptCurrent;
-                            break;
-                        }
-
+                        DrawErase();
+                        ptMouseDown = ptCurrent;
+                        break;
+                        
                     default:
-                        {
-                            Refresh();
-                            break;
-                        }
+                        Refresh();
+                        break;
                 }
             }
-            // nếu _ResizeStage = 1 thì check vị trí _dragHandle và chỉnh sửa theo mouseMove
-            if (_ResizeStage == 1)
+            // nếu _resizeStage = 1 thì check vị trí _dragHandle và chỉnh sửa theo mouseMove
+            // Những điểm khác tương tự ( từ 1 - 8)
+            /* Các drag Point trên hình chữ nhật như sau:
+                1--4--6
+                2-----7
+                3--5--8
+            */
+
+            if (_resizeStage == ResizeStage.Active)
             {
-
-                // Những điểm khác tương tự ( từ 1 - 8)
-                /* Các drag Point trên hình chữ nhật như sau:
-                    1--4--6
-                    2-----7
-                    3--5--8
-                */
-                if (_dragHandle > 0)
+                switch (_dragHandle)
                 {
-                    switch (_dragHandle)
-                    {
-                        case 1:
-                            {
-                                int diffX = dragPoint.X - e.Location.X;
-                                int diffY = dragPoint.Y - e.Location.Y;
-                                if (oldRect.Width + diffX >= 9 && oldRect.Height + diffY >= 9)
-                                    areaRect = new Rectangle(oldRect.Left - diffX, oldRect.Top - diffY, oldRect.Width + diffX, oldRect.Height + diffY);
-                                break;
-                            }
+                    case 1:
+                        int diffX = dragPoint.X - e.Location.X;
+                        int diffY = dragPoint.Y - e.Location.Y;
+                        if (oldRect.Width + diffX > 0 && oldRect.Height + diffY > 0)
+                            areaRect = new Rectangle(oldRect.Left - diffX, oldRect.Top - diffY, oldRect.Width + diffX, oldRect.Height + diffY);
+                        break;
 
-                        case 2:
-                            {
-                                int diff = dragPoint.X - e.Location.X;
-                                if (oldRect.Width + diff >= 9)
-                                    areaRect = new Rectangle(oldRect.Left - diff, oldRect.Top, oldRect.Width + diff, oldRect.Height);
-                                break;
-                            }
-                        case 3:
-                            {
-                                int diffX = dragPoint.X - e.Location.X;
-                                int diffY = dragPoint.Y - e.Location.Y;
-                                if (oldRect.Width + diffX >= 9 && oldRect.Height - diffY >= 9)
-                                    areaRect = new Rectangle(oldRect.Left - diffX, oldRect.Top, oldRect.Width + diffX, oldRect.Height - diffY);
-                                break;
-                            }
-                        case 4:
-                            {
-                                int diff = dragPoint.Y - e.Location.Y;
-                                if (oldRect.Height + diff >= 9)
-                                    areaRect = new Rectangle(oldRect.Left, oldRect.Top - diff, oldRect.Width, oldRect.Height + diff);
-                                break;
-                            }
-                        case 5:
-                            {
-                                int diff = dragPoint.Y - e.Location.Y;
-                                if (oldRect.Height - diff >= 9)
-                                    areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width, oldRect.Height - diff);
-                                break;
-                            }
-                        case 6:
-                            {
-                                int diffX = dragPoint.X - e.Location.X;
-                                int diffY = dragPoint.Y - e.Location.Y;
-                                if (oldRect.Width - diffX >= 9 && oldRect.Height + diffY >= 9)
-                                    areaRect = new Rectangle(oldRect.Left, oldRect.Top - diffY, oldRect.Width - diffX, oldRect.Height + diffY);
-                                break;
-                            }
-                        case 7:
-                            {
-                                int diff = dragPoint.X - e.Location.X;
-                                if (oldRect.Width - diff >= 9)
-                                    areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diff, oldRect.Height);
-                                break;
-                            }
-                        case 8:
-                            {
-                                int diffX = dragPoint.X - e.Location.X;
-                                int diffY = dragPoint.Y - e.Location.Y;
-                                if (oldRect.Width - diffX >= 9 && oldRect.Height - diffY >= 9)
-                                    areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diffX, oldRect.Height - diffY);
-                                break;
-                            }
+                    case 2:
+                        int diff = dragPoint.X - e.Location.X;
+                        if (oldRect.Width + diff > 0)
+                            areaRect = new Rectangle(oldRect.Left - diff, oldRect.Top, oldRect.Width + diff, oldRect.Height);
+                        break;
 
-                    }
-                    this.Invalidate();
+                    case 3:
+                        diffX = dragPoint.X - e.Location.X;
+                        diffY = dragPoint.Y - e.Location.Y;
+                        if (oldRect.Width + diffX > 0 && oldRect.Height - diffY > 0)
+                            areaRect = new Rectangle(oldRect.Left - diffX, oldRect.Top, oldRect.Width + diffX, oldRect.Height - diffY);
+                        break;
+
+                    case 4:
+                        diff = dragPoint.Y - e.Location.Y;
+                        if (oldRect.Height + diff > 0)
+                            areaRect = new Rectangle(oldRect.Left, oldRect.Top - diff, oldRect.Width, oldRect.Height + diff);
+                        break;
+
+                    case 5:
+                        diff = dragPoint.Y - e.Location.Y;
+                        if (oldRect.Height - diff > 0)
+                            areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width, oldRect.Height - diff);
+                        break;
+
+                    case 6:
+                        diffX = dragPoint.X - e.Location.X;
+                        diffY = dragPoint.Y - e.Location.Y;
+                        if (oldRect.Width - diffX > 0 && oldRect.Height + diffY > 0)
+                            areaRect = new Rectangle(oldRect.Left, oldRect.Top - diffY, oldRect.Width - diffX, oldRect.Height + diffY);
+                        break;
+
+                    case 7:
+                        diff = dragPoint.X - e.Location.X;
+                        if (oldRect.Width - diff > 0)
+                            areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diff, oldRect.Height);
+                        break;
+
+                    case 8:
+                        diffX = dragPoint.X - e.Location.X;
+                        diffY = dragPoint.Y - e.Location.Y;
+                        if (oldRect.Width - diffX > 0 && oldRect.Height - diffY > 0)
+                            areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diffX, oldRect.Height - diffY);
+                        break;
+
                 }
+                this.Invalidate();
             }
         }
         #endregion
@@ -276,7 +250,7 @@ namespace Paint
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            if (_isDrawing)
+            if (_isDrawable)
             {
                 _g = e.Graphics;
                 switch (_drawType)
@@ -291,43 +265,37 @@ namespace Paint
 
             }
 
-            if (_ResizeStage == 1)
+            if (_resizeStage == ResizeStage.Active)
             {
                 _g = e.Graphics;
-                Pen pen = new Pen(Color.LightBlue);
-                pen.Width = 1;
-                pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+
                 //Vẽ lại hình cần resize và khung hình chữ nhật chứa các drag point
                 switch (_drawType)
                 {
                     case "Rectangle":
-                        {
-                            _g.DrawRectangle(_pen, areaRect);
-                            _g.DrawRectangle(pen, areaRect);
-                            break;
-                        }
+                        _g.DrawRectangle(_pen, areaRect);
+                        DrawDragRectangle();
+                        break;
+
                     case "Ellipse":
-                        {
-                            _g.DrawEllipse(_pen, areaRect);
-                            _g.DrawRectangle(pen, areaRect);
-                            break;
-                        }
+                        _g.DrawEllipse(_pen, areaRect);
+                        DrawDragRectangle();
+                        break;
+
                     case "Triangle":
-                        {
-                            DrawTriangle();
-                            _g.DrawRectangle(pen, areaRect);
-                            break;
-                        }
+                        DrawTriangle();
+                        DrawDragRectangle();
+                        break;
+
                     case "Ziczac":
-                        {
-                            DrawArrow();
-                            _g.DrawRectangle(pen, areaRect);
-                            break;
-                        }
+                        DrawArrow();
+                        DrawDragRectangle();
+                        break;
+
                 }
 
-                //set lại 9 điểm drag point dựa trên hình mới
-                for (int i = 1; i < 9; i++)
+                //set lại 8 điểm drag point dựa trên hình mới
+                for (int i = 1; i <= 8; i++)
                 {
                     _g.DrawRectangle(new Pen(Color.Black), GetHandleRect(i));
                 }
@@ -342,94 +310,82 @@ namespace Paint
             base.OnMouseUp(e);
 
             _g = CreateGraphics();
-            Pen pen = new Pen(Color.LightBlue);
-            pen.Width = 1;
-            pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-            if (_ResizeStage == 0)
+
+            if (_resizeStage == ResizeStage.Idle)
             {
                 switch (_drawType)
                 {
                     case "Rectangle":
+                        if (areaRect.Width > 1 && areaRect.Height > 1)
                         {
-                            // Check xem hình chữ nhật vẽ có lớn hơn 1x1 px không
-                            if (areaRect.Width > 1 && areaRect.Height > 1)
-                            {
-                                //Vẽ hình chữ nhật và hình chữ nhật chứa drag point
-                                DrawRectangle();
-                                _g.DrawRectangle(pen, areaRect);
-                                _ResizeStage = 1;
-                                for (int i = 1; i < 9; i++)
-                                {
-                                    _g.DrawRectangle(new Pen(_drawColor), GetHandleRect(i));
+                            DrawRectangle();
+                            DrawDragRectangle();
+                        }
+                        break;
 
-                                }
-                            }
-                            break;
-                        }
                     case "Ellipse":
+                        if (areaRect.Width > 1 && areaRect.Height > 1)
                         {
-                            if (areaRect.Width > 1 && areaRect.Height > 1)
-                            {
-                                //Vẽ hình tròn và hình chữ nhật chứa drag point 
-                                DrawEllipse();
-                                _g.DrawRectangle(pen, areaRect);
-                                _ResizeStage = 1;
-                                for (int i = 1; i < 9; i++)
-                                {
-                                    _g.DrawRectangle(new Pen(Color.Black), GetHandleRect(i));
-                                }
-                            }
-                            break;
+                            DrawEllipse();
+                            DrawDragRectangle();
                         }
+                        break;
+
                     case "Triangle":
+                        if (areaRect.Width > 1 && areaRect.Height > 1)
                         {
-                            if(areaRect.Width > 1 && areaRect.Height > 1)
-                            {
-                                //Vẽ hình tam giác và hình chữ nhật chứa drag point
-                                DrawTriangle();
-                                _g.DrawRectangle(pen, areaRect);
-                                _ResizeStage = 1;
-                                for (int i = 1; i < 9; i++)
-                                {
-                                    _g.DrawRectangle(new Pen(Color.Black), GetHandleRect(i));
-                                }
-                            }
-                            break;
+                            DrawTriangle();
+                            DrawDragRectangle();
                         }
+                        break;
+
                     case "Ziczac":
+                        if (areaRect.Width > 1 && areaRect.Height > 1)
                         {
-                            if (areaRect.Width > 1 && areaRect.Height > 1)
-                            {
-                                //Vẽ hình mũi tên và hình chữ nhật chứa drag point
-                                DrawArrow();
-                                _g.DrawRectangle(pen, areaRect);
-                                _ResizeStage = 1;
-                                for (int i = 1; i < 9; i++)
-                                {
-                                    _g.DrawRectangle(new Pen(Color.Black), GetHandleRect(i));
-                                }
-                            }
-                            break;
+                            DrawArrow();
+                            DrawDragRectangle();
                         }
+                        break;
+
                     case "Line":
-                        {
-                            _g = Graphics.FromImage(Image);
-                            DrawLine(); break;
-                        }
-                    case "Text": { DrawTextBox(); break; }
+                        _g = Graphics.FromImage(Image);
+                        DrawLine();
+                        break;
+
+                    case "Text":
+                        DrawTextBox();
+                        break;
                 }
 
-                _isDrawing = false;
+                _isDrawable = false;
                 RedoList.Push(new Bitmap(Image));
             }
-            if (_ResizeStage == 2)
+
+            if (_resizeStage == ResizeStage.Done)
             {
-                _ResizeStage = 0;
-                _isDrawing = false;
+                _resizeStage = ResizeStage.Idle;
+                _isDrawable = false;
             }
-            if (_ResizeStage == 1)
+
+            if (_resizeStage == ResizeStage.Active)
             {
                 _dragHandle = 0;
+            }
+        }
+        #endregion
+
+        #region Drag Rectagle
+        private void DrawDragRectangle()
+        {
+            Pen _dragBorderPen = new Pen(Color.LightBlue);
+            _dragBorderPen.DashStyle = DashStyle.Dash;
+
+            _g.DrawRectangle(new Pen(Color.LightBlue), areaRect);
+            _resizeStage = ResizeStage.Active;
+
+            for (int i = 1; i <= 8; i++)
+            {
+                _g.DrawRectangle(new Pen(Color.Black), GetHandleRect(i));
             }
         }
         #endregion
@@ -495,27 +451,27 @@ namespace Paint
         #endregion
 
         #region Triangle
-        void DrawTriangle ()
+        void DrawTriangle()
         {
-            
+
             if (!_isShiftPress)
             {
                 Point[] points = shapeFormer.FormTriangle(areaRect);
                 _g.DrawLine(_pen, points[0], points[1]);
                 _g.DrawLine(_pen, points[0], points[2]);
                 _g.DrawLine(_pen, points[1], points[2]);
-                if (_ResizeStage == 0)
+                if (_resizeStage == 0)
                 {
                     areaRect = shapeFormer.FormRectangle(ptMouseDown, ptCurrent);
                 }
             }
             if (_isShiftPress)
-            {                 
+            {
                 Point[] points = shapeFormer.FormTriangle(areaRect);
                 _g.DrawLine(_pen, points[0], points[1]);
                 _g.DrawLine(_pen, points[0], points[2]);
                 _g.DrawLine(_pen, points[1], points[2]);
-                if(_ResizeStage == 0)
+                if (_resizeStage == 0)
                     areaRect = shapeFormer.FormSquare(ptMouseDown, ptCurrent);
             }
         }
@@ -534,7 +490,7 @@ namespace Paint
                 _g.DrawLine(_pen, points[4], points[6]);
                 _g.DrawLine(_pen, points[3], points[5]);
                 _g.DrawLine(_pen, points[5], points[6]);
-                if (_ResizeStage == 0)
+                if (_resizeStage == 0)
                 {
                     areaRect = shapeFormer.FormRectangle(ptMouseDown, ptCurrent);
                 }
@@ -549,7 +505,7 @@ namespace Paint
                 _g.DrawLine(_pen, points[4], points[6]);
                 _g.DrawLine(_pen, points[3], points[5]);
                 _g.DrawLine(_pen, points[5], points[6]);
-                if (_ResizeStage == 0)
+                if (_resizeStage == 0)
                     areaRect = shapeFormer.FormSquare(ptMouseDown, ptCurrent);
             }
         }
