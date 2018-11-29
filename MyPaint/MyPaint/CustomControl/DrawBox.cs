@@ -39,12 +39,28 @@ namespace Paint
         {
             Idle,
             Active,
+            Draw,
             Done
         };
         ResizeStage _resizeStage;
         
         public Color DrawColor { set => _drawColor = value; }
-        public string DrawType { set => _drawType = value; }
+        public string DrawType { set
+            {
+                if (_resizeStage == ResizeStage.Active)
+                {
+                    string _oldType = _drawType;
+                    string _newType = value;
+                    if (_oldType != _newType)
+                    {
+                        _resizeStage = ResizeStage.Draw;
+                        Refresh();
+                    }
+                }
+                _drawType = value;
+
+            }
+        }
         public bool isShiftPress { set => _isShiftPress = value; }
 
         #region Constructor
@@ -94,26 +110,7 @@ namespace Paint
                     // Nếu không thì kết thúc resize và vẽ hình mới vào Image
                     if (!isDragPointClicked)
                     {
-                        _resizeStage = ResizeStage.Done;
-                        _g = Graphics.FromImage(Image);
-                        switch (_drawType)
-                        {
-                            case "Rectangle":
-                                DrawRectangle();
-                                break;
-
-                            case "Ellipse":
-                                DrawEllipse();  
-                                break;
-                                
-                            case "Triangle":
-                                DrawTriangle();
-                                break;
-                                
-                            case "Ziczac":
-                                DrawArrow();
-                                break;
-                        }
+                        _resizeStage = ResizeStage.Draw;
                         this.Invalidate();
                     }
                 }
@@ -285,6 +282,10 @@ namespace Paint
                 }
                 DrawDragRectangle();
             }
+            if (_resizeStage == ResizeStage.Draw)
+            {
+                DrawAfterResize();
+            }
         }
         #endregion
 
@@ -346,13 +347,16 @@ namespace Paint
                         break;
                 }
                 _isDrawable = false;
-                RedoList.Push(new Bitmap(Image));
+                if(_resizeStage != ResizeStage.Active)
+                    RedoList.Push(new Bitmap(Image));
             }
 
             if (_resizeStage == ResizeStage.Done)
             {
                 _resizeStage = ResizeStage.Idle;
                 _isDrawable = false;
+                Refresh();
+                
             }
 
             if (_resizeStage == ResizeStage.Active)
@@ -657,6 +661,31 @@ namespace Paint
             Point p = GetHandlePoint(value);
             p.Offset(-2, -2);
             return new Rectangle(p, new Size(5, 5));
+        }
+
+        void DrawAfterResize()
+        {
+            _g = Graphics.FromImage(Image);
+            switch (_drawType)
+            {
+                case "Rectangle":
+                    DrawRectangle();
+                    break;
+
+                case "Ellipse":
+                    DrawEllipse();
+                    break;
+
+                case "Triangle":
+                    DrawTriangle();
+                    break;
+
+                case "Ziczac":
+                    DrawArrow();
+                    break;
+            }
+            _resizeStage = ResizeStage.Done;
+            RedoList.Push(new Bitmap(Image));
         }
         #endregion
     }
