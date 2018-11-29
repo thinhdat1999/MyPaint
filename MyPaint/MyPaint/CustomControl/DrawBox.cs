@@ -140,10 +140,10 @@ namespace Paint
                     }
                     _isDrawable = true;
                     ptMouseMove = ptMouseDown = e.Location;
-                }
 
-                UndoList.Push(new Bitmap(Image));
-                RedoList.Clear();
+                    UndoList.Push(new Bitmap(Image));
+                    RedoList.Clear();
+                }
             }
         }
         #endregion
@@ -412,9 +412,10 @@ namespace Paint
 
                 if (_resizeStage == ResizeStage.Idle)
                 {
-                    areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
+                    areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
                 }
             }
+
             if (_isShiftPress)
             {
                 _g.DrawRectangle(_pen, areaRect);
