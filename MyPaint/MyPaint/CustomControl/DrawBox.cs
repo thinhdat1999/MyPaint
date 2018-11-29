@@ -91,9 +91,9 @@ namespace Paint
                     switch (_drawType)
                     {
                         //Tô màu (Bucket)
-                        case "Bucket":
+                        case "Bucket":                           
                             ptMouseDown = e.Location;
-                            FloodFill(ptMouseDown, _drawColor);
+                            _drawStatus = DrawStatus.Drawing;
                             break;
 
                         //Xóa (Erase - note: nhớ chỉnh lại màu backcolor)
@@ -108,6 +108,8 @@ namespace Paint
                             _drawStatus = DrawStatus.Drawing;
                             break;
                     }
+                    UndoList.Push(new Bitmap(Image));
+                    RedoList.Clear();
                 }
 
                 if (_drawStatus == DrawStatus.Drawing)
@@ -305,12 +307,18 @@ namespace Paint
                 {
                     case "Pen":
                         _drawStatus = DrawStatus.Done;
+                        RedoList.Push(new Bitmap(Image));
                         break;
-
+                    case "Bucket":
+                        _drawStatus = DrawStatus.Done;
+                        FloodFill(ptMouseDown, _drawColor);
+                        RedoList.Push(new Bitmap(Image));
+                        break;
                     case "Line":
                         _drawStatus = DrawStatus.Done;
                         _g = Graphics.FromImage(Image);
                         DrawLine();
+                        RedoList.Push(new Bitmap(Image));
                         break;
 
                     case "Rectangle":
@@ -349,6 +357,7 @@ namespace Paint
                         DrawTextBox();
                         break;
                 }
+                
             }
 
             if (_drawStatus == DrawStatus.Resize)
@@ -528,6 +537,7 @@ namespace Paint
         //Thuật toán Flood Fill dùng stack - tìm Bitmap lớn nhất trùng màu tại điểm đã chọn và đổ màu mới
         void FloodFill(Point node, Color replaceColor)
         {
+            //UndoList.Push(new Bitmap(Image));
             Bitmap DrawBitmap = new Bitmap(Image);
             Color targetColor = DrawBitmap.GetPixel(node.X, node.Y);
 
@@ -562,6 +572,7 @@ namespace Paint
                 }
             }
             Image = (Image)DrawBitmap;
+
         }
         #endregion
 
