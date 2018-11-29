@@ -138,7 +138,6 @@ namespace Paint
                             _pen = new Pen(_drawColor);
                             break;
                     }
-
                     _isDrawable = true;
                     ptMouseMove = ptMouseDown = e.Location;
                 }
@@ -301,11 +300,17 @@ namespace Paint
             {
                 switch (_drawType)
                 {
+                    case "Line":
+                        _g = Graphics.FromImage(Image);
+                        DrawLine();
+                        break;
+
                     case "Rectangle":
                         if (areaRect.Width > 1 && areaRect.Height > 1)
                         {
                             DrawRectangle();
                             DrawDragRectangle();
+                            _resizeStage = ResizeStage.Active;
                         }
                         break;
 
@@ -314,6 +319,7 @@ namespace Paint
                         {
                             DrawEllipse();
                             DrawDragRectangle();
+                            _resizeStage = ResizeStage.Active;
                         }
                         break;
 
@@ -322,6 +328,7 @@ namespace Paint
                         {
                             DrawTriangle();
                             DrawDragRectangle();
+                            _resizeStage = ResizeStage.Active;
                         }
                         break;
 
@@ -330,20 +337,15 @@ namespace Paint
                         {
                             DrawArrow();
                             DrawDragRectangle();
+                            _resizeStage = ResizeStage.Active;
                         }
-                        break;
-
-                    case "Line":
-                        DrawLine();
                         break;
 
                     case "Text":
                         DrawTextBox();
                         break;
                 }
-
                 _isDrawable = false;
-                _resizeStage = ResizeStage.Active;
                 RedoList.Push(new Bitmap(Image));
             }
 
@@ -387,7 +389,6 @@ namespace Paint
         #region Line
         void DrawLine()
         {
-            _g = Graphics.FromImage(Image);
             _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
         }
         #endregion
@@ -431,14 +432,22 @@ namespace Paint
         {
             if (!_isShiftPress)
             {
-                _g.DrawEllipse(_pen, shapeTool.FormRectangle(ptMouseDown, ptMouseMove));
-                areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
+                _g.DrawEllipse(_pen, areaRect);
+
+                if (_resizeStage == ResizeStage.Idle)
+                {
+                    areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
+                }
             }
 
             if (_isShiftPress)
             {
-                _g.DrawEllipse(_pen, shapeTool.FormSquare(ptMouseDown, ptMouseMove));
-                areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
+                _g.DrawEllipse(_pen, areaRect);
+
+                if (_resizeStage == ResizeStage.Idle)
+                {
+                    areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
+                }
             }
         }
         #endregion
@@ -631,6 +640,15 @@ namespace Paint
             else if (value == 8)
                 result = new Point(areaRect.Right, areaRect.Bottom);
             return result;
+        }
+
+        private void InitializeComponent()
+        {
+            ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
+            this.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
+            this.ResumeLayout(false);
+
         }
 
         Rectangle GetHandleRect(int value)

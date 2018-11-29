@@ -43,6 +43,7 @@ namespace Paint
                 Math.Min(Math.Abs(ptCurrent.X - ptMouseDown.X), Math.Abs(ptMouseDown.Y - ptCurrent.Y)));
         }
 
+        // Tạo hình tam giác 
         public Point[] FormTriangle(Rectangle areaRect)
         {
             Point[] points = new Point[3];
