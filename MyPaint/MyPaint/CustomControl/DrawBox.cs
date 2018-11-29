@@ -99,14 +99,15 @@ namespace Paint
                         //Xóa (Erase - note: nhớ chỉnh lại màu backcolor)
                         case "Erase":
                             _brush = new SolidBrush(Color.White);
+                            _drawStatus = DrawStatus.Drawing;
                             break;
 
                         //Các hình còn lại
                         default:
                             _pen = new Pen(_drawColor);
+                            _drawStatus = DrawStatus.Drawing;
                             break;
                     }
-                    _drawStatus = DrawStatus.Drawing;
                 }
 
                 if (_drawStatus == DrawStatus.Drawing)
