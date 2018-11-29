@@ -37,8 +37,8 @@ namespace Paint
         
         enum ResizeStage
         {
-            Idle = 0,
-            Active = 1,
+            Idle,
+            Active,
             Done
         };
         ResizeStage _resizeStage;
@@ -99,11 +99,11 @@ namespace Paint
                         switch (_drawType)
                         {
                             case "Rectangle":
-                                _g.DrawRectangle(_pen, areaRect);
+                                DrawRectangle();
                                 break;
 
                             case "Ellipse":
-                                _g.DrawEllipse(_pen, areaRect);
+                                DrawEllipse();  
                                 break;
                                 
                             case "Triangle":
@@ -127,8 +127,7 @@ namespace Paint
                             ptMouseDown = e.Location;
                             FloodFill(ptMouseDown, _drawColor);
                             break;
-
-
+                            
                         //Xóa (Erase - note: nhớ chỉnh lại màu backcolor)
                         case "Erase":
                             _brush = new SolidBrush(Color.White);
@@ -249,9 +248,10 @@ namespace Paint
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+            _g = e.Graphics;
+
             if (_isDrawable)
             {
-                _g = e.Graphics;
                 switch (_drawType)
                 {
                     case "Rectangle": { DrawRectangle(); break; }
@@ -261,43 +261,30 @@ namespace Paint
                     case "Line": { DrawLine(); break; }
                     case "Text": { DrawRectangle(); break; }
                 }
-
             }
 
             if (_resizeStage == ResizeStage.Active)
             {
-                _g = e.Graphics;
-
                 //Vẽ lại hình cần resize và khung hình chữ nhật chứa các drag point
                 switch (_drawType)
                 {
                     case "Rectangle":
-                        _g.DrawRectangle(_pen, areaRect);
-                        DrawDragRectangle();
+                        DrawRectangle();
                         break;
 
                     case "Ellipse":
-                        _g.DrawEllipse(_pen, areaRect);
-                        DrawDragRectangle();
+                        DrawEllipse();
                         break;
 
                     case "Triangle":
                         DrawTriangle();
-                        DrawDragRectangle();
                         break;
 
                     case "Ziczac":
                         DrawArrow();
-                        DrawDragRectangle();
                         break;
-
                 }
-
-                //set lại 8 điểm drag point dựa trên hình mới
-                for (int i = 1; i <= 8; i++)
-                {
-                    _g.DrawRectangle(new Pen(Color.Black), GetHandleRect(i));
-                }
+                DrawDragRectangle();
             }
         }
         #endregion
@@ -347,7 +334,6 @@ namespace Paint
                         break;
 
                     case "Line":
-                        _g = Graphics.FromImage(Image);
                         DrawLine();
                         break;
 
@@ -357,6 +343,7 @@ namespace Paint
                 }
 
                 _isDrawable = false;
+                _resizeStage = ResizeStage.Active;
                 RedoList.Push(new Bitmap(Image));
             }
 
@@ -378,9 +365,7 @@ namespace Paint
         {
             Pen _dragBorderPen = new Pen(Color.LightBlue);
             _dragBorderPen.DashStyle = DashStyle.Dash;
-
             _g.DrawRectangle(new Pen(Color.LightBlue), areaRect);
-            _resizeStage = ResizeStage.Active;
 
             for (int i = 1; i <= 8; i++)
             {
@@ -402,6 +387,7 @@ namespace Paint
         #region Line
         void DrawLine()
         {
+            _g = Graphics.FromImage(Image);
             _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
         }
         #endregion
@@ -421,13 +407,21 @@ namespace Paint
         {
             if (!_isShiftPress)
             {
-                _g.DrawRectangle(_pen, shapeTool.FormRectangle(ptMouseDown, ptMouseMove));
-                areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
+                _g.DrawRectangle(_pen, areaRect);
+
+                if (_resizeStage == ResizeStage.Idle)
+                {
+                    areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
+                }
             }
             if (_isShiftPress)
             {
-                _g.DrawRectangle(_pen, shapeTool.FormSquare(ptMouseDown, ptMouseMove));
-                areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
+                _g.DrawRectangle(_pen, areaRect);
+
+                if (_resizeStage == ResizeStage.Idle)
+                {
+                    areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
+                }
             }
         }
         #endregion
@@ -459,7 +453,8 @@ namespace Paint
                 _g.DrawLine(_pen, points[0], points[1]);
                 _g.DrawLine(_pen, points[0], points[2]);
                 _g.DrawLine(_pen, points[1], points[2]);
-                if (_resizeStage == 0)
+
+                if (_resizeStage == ResizeStage.Idle)
                 {
                     areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
                 }
@@ -470,8 +465,11 @@ namespace Paint
                 _g.DrawLine(_pen, points[0], points[1]);
                 _g.DrawLine(_pen, points[0], points[2]);
                 _g.DrawLine(_pen, points[1], points[2]);
-                if (_resizeStage == 0)
+
+                if (_resizeStage == ResizeStage.Idle)
+                {
                     areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
+                }
             }
         }
         #endregion
@@ -489,7 +487,7 @@ namespace Paint
                 _g.DrawLine(_pen, points[4], points[6]);
                 _g.DrawLine(_pen, points[3], points[5]);
                 _g.DrawLine(_pen, points[5], points[6]);
-                if (_resizeStage == 0)
+                if (_resizeStage == ResizeStage.Idle)
                 {
                     areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
                 }
@@ -504,7 +502,7 @@ namespace Paint
                 _g.DrawLine(_pen, points[4], points[6]);
                 _g.DrawLine(_pen, points[3], points[5]);
                 _g.DrawLine(_pen, points[5], points[6]);
-                if (_resizeStage == 0)
+                if (_resizeStage == ResizeStage.Idle)
                     areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
             }
         }
