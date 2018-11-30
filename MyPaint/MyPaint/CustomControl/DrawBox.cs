@@ -60,6 +60,7 @@ namespace Paint
                 }
                 _drawType = value;
             }
+            get { return _drawType; }
         }
         public bool isShiftPress { set => _isShiftPress = value; }
 
@@ -87,13 +88,17 @@ namespace Paint
             if (e.Button == MouseButtons.Left)
             {
                 if (_drawStatus == DrawStatus.Idle)
-                {
+                {                  
+                    UndoList.Push(new Bitmap(Image));
+                    RedoList.Clear();                    
                     switch (_drawType)
                     {
                         //Tô màu (Bucket)
                         case "Bucket":                           
                             ptMouseDown = e.Location;
-                            _drawStatus = DrawStatus.Drawing;
+                            _drawStatus = DrawStatus.Done;
+                            FloodFill(ptMouseDown, _drawColor);
+                            RedoList.Push(new Bitmap(Image));                            
                             break;
 
                         //Xóa (Erase - note: nhớ chỉnh lại màu backcolor)
@@ -108,8 +113,7 @@ namespace Paint
                             _drawStatus = DrawStatus.Drawing;
                             break;
                     }
-                    UndoList.Push(new Bitmap(Image));
-                    RedoList.Clear();
+
                 }
 
                 if (_drawStatus == DrawStatus.Drawing)
@@ -173,7 +177,6 @@ namespace Paint
                         break;
                 }
             }
-
             if (_drawStatus == DrawStatus.Drawing)
             {
                 if (!_isShiftPress)
@@ -309,11 +312,6 @@ namespace Paint
                         _drawStatus = DrawStatus.Done;
                         RedoList.Push(new Bitmap(Image));
                         break;
-                    case "Bucket":
-                        _drawStatus = DrawStatus.Done;
-                        FloodFill(ptMouseDown, _drawColor);
-                        RedoList.Push(new Bitmap(Image));
-                        break;
                     case "Line":
                         _drawStatus = DrawStatus.Done;
                         _g = Graphics.FromImage(Image);
@@ -372,7 +370,7 @@ namespace Paint
             }
         }
         #endregion
-
+ 
         #region Drag Rectagle
         private void DrawDragRectangle()
         {
