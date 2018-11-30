@@ -91,7 +91,7 @@ namespace Paint
                     switch (_drawType)
                     {
                         //Tô màu (Bucket)
-                        case "Bucket":                           
+                        case "Bucket":
                             ptMouseDown = e.Location;
                             _drawStatus = DrawStatus.Drawing;
                             break;
@@ -254,6 +254,12 @@ namespace Paint
             base.OnPaint(e);
             _g = e.Graphics;
 
+
+            if (_drawStatus == DrawStatus.Idle)
+            {
+                areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
+            }
+
             if (_drawStatus == DrawStatus.Drawing)
             {
                 switch (_drawType)
@@ -309,11 +315,13 @@ namespace Paint
                         _drawStatus = DrawStatus.Done;
                         RedoList.Push(new Bitmap(Image));
                         break;
+
                     case "Bucket":
                         _drawStatus = DrawStatus.Done;
                         FloodFill(ptMouseDown, _drawColor);
                         RedoList.Push(new Bitmap(Image));
                         break;
+
                     case "Line":
                         _drawStatus = DrawStatus.Done;
                         _g = Graphics.FromImage(Image);
@@ -357,7 +365,7 @@ namespace Paint
                         DrawTextBox();
                         break;
                 }
-                
+
             }
 
             if (_drawStatus == DrawStatus.Resize)
@@ -419,117 +427,31 @@ namespace Paint
         #region Rectangle
         void DrawRectangle()
         {
-            if (!_isShiftPress)
-            {
-                _g.DrawRectangle(_pen, areaRect);
-
-                if (_drawStatus == DrawStatus.Idle)
-                {
-                    areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
-                }
-            }
-
-            if (_isShiftPress)
-            {
-                _g.DrawRectangle(_pen, areaRect);
-
-                if (_drawStatus == DrawStatus.Idle)
-                {
-                    areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
-                }
-            }
+            _g.DrawRectangle(_pen, areaRect);
         }
         #endregion
 
         #region Ellipse
         void DrawEllipse()
         {
-            if (!_isShiftPress)
-            {
-                _g.DrawEllipse(_pen, areaRect);
-
-                if (_drawStatus == DrawStatus.Idle)
-                {
-                    areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
-                }
-            }
-
-            if (_isShiftPress)
-            {
-                _g.DrawEllipse(_pen, areaRect);
-
-                if (_drawStatus == DrawStatus.Idle)
-                {
-                    areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
-                }
-            }
+            _g.DrawEllipse(_pen, areaRect);
         }
         #endregion
 
         #region Triangle
         void DrawTriangle()
         {
-
-            if (!_isShiftPress)
-            {
-                Point[] points = shapeTool.FormTriangle(areaRect);
-                _g.DrawLine(_pen, points[0], points[1]);
-                _g.DrawLine(_pen, points[0], points[2]);
-                _g.DrawLine(_pen, points[1], points[2]);
-
-                if (_drawStatus == DrawStatus.Idle)
-                {
-                    areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
-                }
-            }
-            if (_isShiftPress)
-            {
-                Point[] points = shapeTool.FormTriangle(areaRect);
-                _g.DrawLine(_pen, points[0], points[1]);
-                _g.DrawLine(_pen, points[0], points[2]);
-                _g.DrawLine(_pen, points[1], points[2]);
-
-                if (_drawStatus == DrawStatus.Idle)
-                {
-                    areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
-                }
-            }
+            Point[] points = shapeTool.FormTriangle(areaRect);
+            _g.DrawPolygon(_pen, points);    
         }
         #endregion
 
         #region Arrow
         void DrawArrow()
         {
-            if (!_isShiftPress)
-            {
-                Point[] points = shapeTool.FormArrow(areaRect);
-                _g.DrawLine(_pen, points[0], points[1]);
-                _g.DrawLine(_pen, points[0], points[2]);
-                _g.DrawLine(_pen, points[1], points[3]);
-                _g.DrawLine(_pen, points[2], points[4]);
-                _g.DrawLine(_pen, points[4], points[6]);
-                _g.DrawLine(_pen, points[3], points[5]);
-                _g.DrawLine(_pen, points[5], points[6]);
-                if (_drawStatus == DrawStatus.Idle)
-                {
-                    areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
-                }
-            }
-            if (_isShiftPress)
-            {
-                Point[] points = shapeTool.FormArrow(areaRect);
-                _g.DrawLine(_pen, points[0], points[1]);
-                _g.DrawLine(_pen, points[0], points[2]);
-                _g.DrawLine(_pen, points[1], points[3]);
-                _g.DrawLine(_pen, points[2], points[4]);
-                _g.DrawLine(_pen, points[4], points[6]);
-                _g.DrawLine(_pen, points[3], points[5]);
-                _g.DrawLine(_pen, points[5], points[6]);
-                if (_drawStatus == DrawStatus.Idle)
-                    areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
-            }
+            Point[] points = shapeTool.FormArrow(areaRect);
+            _g.DrawPolygon(_pen, points);
         }
-
 
         #endregion
 
@@ -572,7 +494,6 @@ namespace Paint
                 }
             }
             Image = (Image)DrawBitmap;
-
         }
         #endregion
 

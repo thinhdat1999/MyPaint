@@ -56,15 +56,15 @@ namespace Paint
         
         public Point[] FormArrow(Rectangle areaRect)
         {
-            Point[] points = new Point[7];
-            points[0] = new Point(areaRect.Right, areaRect.Top + (areaRect.Height / 2));
-            points[1] = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Top); 
-            points[2] = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Bottom);
-            points[3] = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Top + (areaRect.Height / 4));
-            points[4] = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Bottom - (areaRect.Height / 4));
-            points[5] = new Point(areaRect.Left, areaRect.Top + (areaRect.Height / 4));
-            points[6] = new Point(areaRect.Left, areaRect.Bottom - (areaRect.Height / 4));
-            return points;
+            Point p0 = new Point(areaRect.Right, areaRect.Top + (areaRect.Height / 2));
+            Point p1 = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Top);
+            Point p2 = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Top + (areaRect.Height / 4));
+            Point p3 = new Point(areaRect.Left, areaRect.Top + (areaRect.Height / 4));
+            Point p4 = new Point(areaRect.Left, areaRect.Bottom - (areaRect.Height / 4));
+            Point p5 = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Bottom - (areaRect.Height / 4));
+            Point p6 = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Bottom);
+            Point[] pts = { p0, p1, p2, p3, p4, p5, p6 };
+            return pts;
         }
     }
 }
