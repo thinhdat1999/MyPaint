@@ -60,6 +60,7 @@ namespace Paint
                 }
                 _drawType = value;
             }
+            get { return _drawType; }
         }
         public bool isShiftPress { set => _isShiftPress = value; }
 
@@ -87,13 +88,17 @@ namespace Paint
             if (e.Button == MouseButtons.Left)
             {
                 if (_drawStatus == DrawStatus.Idle)
-                {
+                {                  
+                    UndoList.Push(new Bitmap(Image));
+                    RedoList.Clear();                    
                     switch (_drawType)
                     {
                         //Tô màu (Bucket)
-                        case "Bucket":
+                        case "Bucket":                           
                             ptMouseDown = e.Location;
-                            _drawStatus = DrawStatus.Drawing;
+                            _drawStatus = DrawStatus.Done;
+                            FloodFill(ptMouseDown, _drawColor);
+                            RedoList.Push(new Bitmap(Image));                            
                             break;
 
                         //Xóa (Erase - note: nhớ chỉnh lại màu backcolor)
@@ -108,8 +113,7 @@ namespace Paint
                             _drawStatus = DrawStatus.Drawing;
                             break;
                     }
-                    UndoList.Push(new Bitmap(Image));
-                    RedoList.Clear();
+
                 }
 
                 if (_drawStatus == DrawStatus.Drawing)
@@ -173,7 +177,6 @@ namespace Paint
                         break;
                 }
             }
-
             if (_drawStatus == DrawStatus.Drawing)
             {
                 if (!_isShiftPress)
@@ -193,52 +196,52 @@ namespace Paint
                     case 1:
                         int diffX = dragPoint.X - e.Location.X;
                         int diffY = dragPoint.Y - e.Location.Y;
-                        if (oldRect.Width + diffX > 0 && oldRect.Height + diffY > 0)
+                        if (oldRect.Width + diffX > 8 && oldRect.Height + diffY > 8)
                             areaRect = new Rectangle(oldRect.Left - diffX, oldRect.Top - diffY, oldRect.Width + diffX, oldRect.Height + diffY);
                         break;
 
                     case 2:
                         int diff = dragPoint.X - e.Location.X;
-                        if (oldRect.Width + diff > 0)
+                        if (oldRect.Width + diff > 8)
                             areaRect = new Rectangle(oldRect.Left - diff, oldRect.Top, oldRect.Width + diff, oldRect.Height);
                         break;
 
                     case 3:
                         diffX = dragPoint.X - e.Location.X;
                         diffY = dragPoint.Y - e.Location.Y;
-                        if (oldRect.Width + diffX > 0 && oldRect.Height - diffY > 0)
+                        if (oldRect.Width + diffX > 8 && oldRect.Height - diffY > 8)
                             areaRect = new Rectangle(oldRect.Left - diffX, oldRect.Top, oldRect.Width + diffX, oldRect.Height - diffY);
                         break;
 
                     case 4:
                         diff = dragPoint.Y - e.Location.Y;
-                        if (oldRect.Height + diff > 0)
+                        if (oldRect.Height + diff > 8)
                             areaRect = new Rectangle(oldRect.Left, oldRect.Top - diff, oldRect.Width, oldRect.Height + diff);
                         break;
 
                     case 5:
                         diff = dragPoint.Y - e.Location.Y;
-                        if (oldRect.Height - diff > 0)
+                        if (oldRect.Height - diff > 8)
                             areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width, oldRect.Height - diff);
                         break;
 
                     case 6:
                         diffX = dragPoint.X - e.Location.X;
                         diffY = dragPoint.Y - e.Location.Y;
-                        if (oldRect.Width - diffX > 0 && oldRect.Height + diffY > 0)
+                        if (oldRect.Width - diffX > 8 && oldRect.Height + diffY > 8)
                             areaRect = new Rectangle(oldRect.Left, oldRect.Top - diffY, oldRect.Width - diffX, oldRect.Height + diffY);
                         break;
 
                     case 7:
                         diff = dragPoint.X - e.Location.X;
-                        if (oldRect.Width - diff > 0)
+                        if (oldRect.Width - diff > 8)
                             areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diff, oldRect.Height);
                         break;
 
                     case 8:
                         diffX = dragPoint.X - e.Location.X;
                         diffY = dragPoint.Y - e.Location.Y;
-                        if (oldRect.Width - diffX > 0 && oldRect.Height - diffY > 0)
+                        if (oldRect.Width - diffX > 8 && oldRect.Height - diffY > 8)
                             areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diffX, oldRect.Height - diffY);
                         break;
                 }
@@ -253,12 +256,6 @@ namespace Paint
         {
             base.OnPaint(e);
             _g = e.Graphics;
-
-
-            if (_drawStatus == DrawStatus.Idle)
-            {
-                areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
-            }
 
             if (_drawStatus == DrawStatus.Drawing)
             {
@@ -315,13 +312,6 @@ namespace Paint
                         _drawStatus = DrawStatus.Done;
                         RedoList.Push(new Bitmap(Image));
                         break;
-
-                    case "Bucket":
-                        _drawStatus = DrawStatus.Done;
-                        FloodFill(ptMouseDown, _drawColor);
-                        RedoList.Push(new Bitmap(Image));
-                        break;
-
                     case "Line":
                         _drawStatus = DrawStatus.Done;
                         _g = Graphics.FromImage(Image);
@@ -335,6 +325,7 @@ namespace Paint
                             DrawRectangle();
                             DrawDragRectangle();
                         }
+                        else _drawStatus = DrawStatus.Done;
                         break;
 
                     case "Ellipse":
@@ -343,6 +334,7 @@ namespace Paint
                             DrawEllipse();
                             DrawDragRectangle();
                         }
+                        else _drawStatus = DrawStatus.Done;
                         break;
 
                     case "Triangle":
@@ -351,6 +343,7 @@ namespace Paint
                             DrawTriangle();
                             DrawDragRectangle();
                         }
+                        else _drawStatus = DrawStatus.Done;
                         break;
 
                     case "Ziczac":
@@ -359,13 +352,14 @@ namespace Paint
                             DrawArrow();
                             DrawDragRectangle();
                         }
+                        else _drawStatus = DrawStatus.Done;
                         break;
 
                     case "Text":
                         DrawTextBox();
                         break;
                 }
-
+                
             }
 
             if (_drawStatus == DrawStatus.Resize)
@@ -380,7 +374,7 @@ namespace Paint
             }
         }
         #endregion
-
+ 
         #region Drag Rectagle
         private void DrawDragRectangle()
         {
@@ -427,31 +421,117 @@ namespace Paint
         #region Rectangle
         void DrawRectangle()
         {
-            _g.DrawRectangle(_pen, areaRect);
+            if (!_isShiftPress)
+            {
+                _g.DrawRectangle(_pen, areaRect);
+
+                if (_drawStatus == DrawStatus.Idle)
+                {
+                    areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
+                }
+            }
+
+            if (_isShiftPress)
+            {
+                _g.DrawRectangle(_pen, areaRect);
+
+                if (_drawStatus == DrawStatus.Idle)
+                {
+                    areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
+                }
+            }
         }
         #endregion
 
         #region Ellipse
         void DrawEllipse()
         {
-            _g.DrawEllipse(_pen, areaRect);
+            if (!_isShiftPress)
+            {
+                _g.DrawEllipse(_pen, areaRect);
+
+                if (_drawStatus == DrawStatus.Idle)
+                {
+                    areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
+                }
+            }
+
+            if (_isShiftPress)
+            {
+                _g.DrawEllipse(_pen, areaRect);
+
+                if (_drawStatus == DrawStatus.Idle)
+                {
+                    areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
+                }
+            }
         }
         #endregion
 
         #region Triangle
         void DrawTriangle()
         {
-            Point[] points = shapeTool.FormTriangle(areaRect);
-            _g.DrawPolygon(_pen, points);    
+
+            if (!_isShiftPress)
+            {
+                Point[] points = shapeTool.FormTriangle(areaRect);
+                _g.DrawLine(_pen, points[0], points[1]);
+                _g.DrawLine(_pen, points[0], points[2]);
+                _g.DrawLine(_pen, points[1], points[2]);
+
+                if (_drawStatus == DrawStatus.Idle)
+                {
+                    areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
+                }
+            }
+            if (_isShiftPress)
+            {
+                Point[] points = shapeTool.FormTriangle(areaRect);
+                _g.DrawLine(_pen, points[0], points[1]);
+                _g.DrawLine(_pen, points[0], points[2]);
+                _g.DrawLine(_pen, points[1], points[2]);
+
+                if (_drawStatus == DrawStatus.Idle)
+                {
+                    areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
+                }
+            }
         }
         #endregion
 
         #region Arrow
         void DrawArrow()
         {
-            Point[] points = shapeTool.FormArrow(areaRect);
-            _g.DrawPolygon(_pen, points);
+            if (!_isShiftPress)
+            {
+                Point[] points = shapeTool.FormArrow(areaRect);
+                _g.DrawLine(_pen, points[0], points[1]);
+                _g.DrawLine(_pen, points[0], points[2]);
+                _g.DrawLine(_pen, points[1], points[3]);
+                _g.DrawLine(_pen, points[2], points[4]);
+                _g.DrawLine(_pen, points[4], points[6]);
+                _g.DrawLine(_pen, points[3], points[5]);
+                _g.DrawLine(_pen, points[5], points[6]);
+                if (_drawStatus == DrawStatus.Idle)
+                {
+                    areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
+                }
+            }
+            if (_isShiftPress)
+            {
+                Point[] points = shapeTool.FormArrow(areaRect);
+                _g.DrawLine(_pen, points[0], points[1]);
+                _g.DrawLine(_pen, points[0], points[2]);
+                _g.DrawLine(_pen, points[1], points[3]);
+                _g.DrawLine(_pen, points[2], points[4]);
+                _g.DrawLine(_pen, points[4], points[6]);
+                _g.DrawLine(_pen, points[3], points[5]);
+                _g.DrawLine(_pen, points[5], points[6]);
+                if (_drawStatus == DrawStatus.Idle)
+                    areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
+            }
         }
+
 
         #endregion
 
@@ -494,6 +574,7 @@ namespace Paint
                 }
             }
             Image = (Image)DrawBitmap;
+
         }
         #endregion
 
