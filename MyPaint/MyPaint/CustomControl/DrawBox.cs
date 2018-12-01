@@ -196,52 +196,52 @@ namespace Paint
                     case 1:
                         int diffX = dragPoint.X - e.Location.X;
                         int diffY = dragPoint.Y - e.Location.Y;
-                        if (oldRect.Width + diffX > 0 && oldRect.Height + diffY > 0)
+                        if (oldRect.Width + diffX > 8 && oldRect.Height + diffY > 8)
                             areaRect = new Rectangle(oldRect.Left - diffX, oldRect.Top - diffY, oldRect.Width + diffX, oldRect.Height + diffY);
                         break;
 
                     case 2:
                         int diff = dragPoint.X - e.Location.X;
-                        if (oldRect.Width + diff > 0)
+                        if (oldRect.Width + diff > 8)
                             areaRect = new Rectangle(oldRect.Left - diff, oldRect.Top, oldRect.Width + diff, oldRect.Height);
                         break;
 
                     case 3:
                         diffX = dragPoint.X - e.Location.X;
                         diffY = dragPoint.Y - e.Location.Y;
-                        if (oldRect.Width + diffX > 0 && oldRect.Height - diffY > 0)
+                        if (oldRect.Width + diffX > 8 && oldRect.Height - diffY > 8)
                             areaRect = new Rectangle(oldRect.Left - diffX, oldRect.Top, oldRect.Width + diffX, oldRect.Height - diffY);
                         break;
 
                     case 4:
                         diff = dragPoint.Y - e.Location.Y;
-                        if (oldRect.Height + diff > 0)
+                        if (oldRect.Height + diff > 8)
                             areaRect = new Rectangle(oldRect.Left, oldRect.Top - diff, oldRect.Width, oldRect.Height + diff);
                         break;
 
                     case 5:
                         diff = dragPoint.Y - e.Location.Y;
-                        if (oldRect.Height - diff > 0)
+                        if (oldRect.Height - diff > 8)
                             areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width, oldRect.Height - diff);
                         break;
 
                     case 6:
                         diffX = dragPoint.X - e.Location.X;
                         diffY = dragPoint.Y - e.Location.Y;
-                        if (oldRect.Width - diffX > 0 && oldRect.Height + diffY > 0)
+                        if (oldRect.Width - diffX > 8 && oldRect.Height + diffY > 8)
                             areaRect = new Rectangle(oldRect.Left, oldRect.Top - diffY, oldRect.Width - diffX, oldRect.Height + diffY);
                         break;
 
                     case 7:
                         diff = dragPoint.X - e.Location.X;
-                        if (oldRect.Width - diff > 0)
+                        if (oldRect.Width - diff > 8)
                             areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diff, oldRect.Height);
                         break;
 
                     case 8:
                         diffX = dragPoint.X - e.Location.X;
                         diffY = dragPoint.Y - e.Location.Y;
-                        if (oldRect.Width - diffX > 0 && oldRect.Height - diffY > 0)
+                        if (oldRect.Width - diffX > 8 && oldRect.Height - diffY > 8)
                             areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diffX, oldRect.Height - diffY);
                         break;
                 }
@@ -325,6 +325,7 @@ namespace Paint
                             DrawRectangle();
                             DrawDragRectangle();
                         }
+                        else _drawStatus = DrawStatus.Done;
                         break;
 
                     case "Ellipse":
@@ -333,6 +334,7 @@ namespace Paint
                             DrawEllipse();
                             DrawDragRectangle();
                         }
+                        else _drawStatus = DrawStatus.Done;
                         break;
 
                     case "Triangle":
@@ -341,6 +343,7 @@ namespace Paint
                             DrawTriangle();
                             DrawDragRectangle();
                         }
+                        else _drawStatus = DrawStatus.Done;
                         break;
 
                     case "Ziczac":
@@ -349,6 +352,7 @@ namespace Paint
                             DrawArrow();
                             DrawDragRectangle();
                         }
+                        else _drawStatus = DrawStatus.Done;
                         break;
 
                     case "Text":
