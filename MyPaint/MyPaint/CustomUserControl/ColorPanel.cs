@@ -14,6 +14,7 @@ namespace Paint
     {
         public Color LeftColor { get => leftColorButton.BackColor; }
         public Color RightColor { get => rightColorButton.BackColor; }
+        public static bool isEnter;
 
         public ColorPanel()
         {
@@ -54,6 +55,16 @@ namespace Paint
                     rightColorButton.BackColor = colorButton.BackColor;
                 }
             }
+        }
+
+        private void colorButton_MouseEnter(object sender, EventArgs e)
+        {
+            isEnter = true;
+        }
+
+        private void colorButton_MouseLeave(object sender, EventArgs e)
+        {
+            isEnter = false;
         }
     }
 }

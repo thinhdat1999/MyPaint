@@ -38,9 +38,14 @@ namespace Paint
         #region Mouse Event
         private void _drawBox_MouseDown(object sender, MouseEventArgs e)
         {
-            _drawBox.DrawColor = colorPanel.LeftColor;
-            _drawBox.DrawType = drawPanel.DrawLabel;
             _isSaved = false;
+            _drawBox.DrawColor = colorPanel.LeftColor;
+
+            if (ShapePanel.FocusedButton != null)
+            {
+                _drawBox.DrawType = shapePanel.ShapeLabel;
+            }
+            else _drawBox.DrawType = toolPanel.ToolLabel;
         }
 
         private void _drawBox_MouseMove(object sender, MouseEventArgs e)
@@ -55,20 +60,12 @@ namespace Paint
         #endregion
 
         #region Keyboard Event
-        //Tạo sự kiện Undo, Redo khi nhấn các tổ hợp phím Ctrl + Z, Ctrl + Y, Shift
+        //Khi thả nút shift
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            if (e.Control && e.KeyCode == Keys.Z)
-            {
-            }
-            else if (e.Control && e.KeyCode == Keys.Y)
-            {
-                _drawBox.Redo();
-            }
-            else if (e.Shift) _drawBox.isShiftPress = true;
+            if (e.Shift) _drawBox.isShiftPress = true;
         }
 
-        //Khi thả nút shift
         protected override void OnKeyUp(KeyEventArgs e)
         {
             if (!e.Shift) _drawBox.isShiftPress = false;

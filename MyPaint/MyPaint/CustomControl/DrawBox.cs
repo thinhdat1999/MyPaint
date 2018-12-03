@@ -20,7 +20,7 @@ namespace Paint
         Brush _brush;
         Color _drawColor;
 
-        ShapeTool shapeTool;
+        ShapePaint shapeTool;
         PopupTextBox textBox;
 
         Point ptMouseDown, ptMouseMove;
@@ -44,24 +44,7 @@ namespace Paint
         DrawStatus _drawStatus;
 
         public Color DrawColor { set => _drawColor = value; }
-        public string DrawType
-        {
-            set
-            {
-                if (_drawStatus == DrawStatus.Resize)
-                {
-                    string _oldType = _drawType;
-                    string _newType = value;
-                    if (_oldType != _newType)
-                    {
-                        _drawStatus = DrawStatus.Done;
-                        Refresh();
-                    }
-                }
-                _drawType = value;
-            }
-            get { return _drawType; }
-        }
+        public string DrawType { set => _drawType = value; }
         public bool isShiftPress { set => _isShiftPress = value; }
 
         #region Constructor
@@ -74,7 +57,7 @@ namespace Paint
             UndoList = new Stack<Bitmap>();
             RedoList = new Stack<Bitmap>();
 
-            shapeTool = new ShapeTool();
+            shapeTool = new ShapePaint();
             Image = (Image)(new Bitmap(Width, Height));
 
         }
@@ -101,8 +84,8 @@ namespace Paint
                             RedoList.Push(new Bitmap(Image));
                             break;
 
-                        //Xóa (Erase - note: nhớ chỉnh lại màu backcolor)
-                        case "Erase":
+                        //Xóa (Eraser - note: nhớ chỉnh lại màu backcolor)
+                        case "Eraser":
                             _brush = new SolidBrush(Color.White);
                             _drawStatus = DrawStatus.Drawing;
                             break;
@@ -113,7 +96,6 @@ namespace Paint
                             _drawStatus = DrawStatus.Drawing;
                             break;
                     }
-
                 }
 
                 if (_drawStatus == DrawStatus.Drawing)
@@ -144,7 +126,10 @@ namespace Paint
                     // Nếu không thì kết thúc resize và vẽ hình mới vào Image
                     if (!isDragPointClicked)
                     {
-                        DrawAfterResize();
+                        _g = Graphics.FromImage(Image);
+                        _drawStatus = DrawStatus.Idle;
+                        shapeTool.DrawShape(_g, _pen, areaRect, _drawType);
+                        RedoList.Push(new Bitmap(Image));
                         this.Invalidate();
                     }
                 }
@@ -167,29 +152,23 @@ namespace Paint
                         ptMouseDown = ptMouseMove;
                         break;
 
-                    case "Erase":
-                        DrawErase();
+                    case "Eraser":
+                        DrawEraser();
                         ptMouseDown = ptMouseMove;
                         break;
 
                     default:
-                        Refresh();
+                        if (!_isShiftPress)
+                        {
+                            areaRect = shapeTool.CreateRectangle(ptMouseDown, ptMouseMove);
+                        }
+                        else areaRect = shapeTool.CreateSquare(ptMouseDown, ptMouseMove);
+                        this.Invalidate();
                         break;
                 }
             }
-            if (_drawStatus == DrawStatus.Drawing)
-            {
-                if (!_isShiftPress)
-                {
-                    areaRect = shapeTool.FormRectangle(ptMouseDown, ptMouseMove);
-                }
-                else
-                {
-                    areaRect = shapeTool.FormSquare(ptMouseDown, ptMouseMove);
-                }
-            }
 
-            if (_drawStatus == DrawStatus.Resize)
+            else if (_drawStatus == DrawStatus.Resize)
             {
                 switch (_dragHandle)
                 {
@@ -261,36 +240,17 @@ namespace Paint
             {
                 switch (_drawType)
                 {
-                    case "Rectangle": { DrawRectangle(); break; }
-                    case "Ellipse": { DrawEllipse(); break; }
-                    case "Triangle": { DrawTriangle(); break; }
-                    case "Ziczac": { DrawArrow(); break; }
-                    case "Line": { DrawLine(); break; }
-                    case "Text": { DrawRectangle(); break; }
+                    case "Text": { _g.DrawRectangle(_pen, areaRect); break; }
+
+                    default:
+                        shapeTool.DrawShape(_g, _pen, areaRect, _drawType);
+                        break;
                 }
             }
 
-            if (_drawStatus == DrawStatus.Resize)
+            else if (_drawStatus == DrawStatus.Resize)
             {
-                //Vẽ lại hình cần resize và khung hình chữ nhật chứa các drag point
-                switch (_drawType)
-                {
-                    case "Rectangle":
-                        DrawRectangle();
-                        break;
-
-                    case "Ellipse":
-                        DrawEllipse();
-                        break;
-
-                    case "Triangle":
-                        DrawTriangle();
-                        break;
-
-                    case "Ziczac":
-                        DrawArrow();
-                        break;
-                }
+                shapeTool.DrawShape(_g, _pen, areaRect, _drawType);
                 DrawDragRectangle();
             }
         }
@@ -309,9 +269,11 @@ namespace Paint
                 switch (_drawType)
                 {
                     case "Pen":
+                    case "Eraser":
                         _drawStatus = DrawStatus.Done;
                         RedoList.Push(new Bitmap(Image));
                         break;
+
                     case "Line":
                         _drawStatus = DrawStatus.Done;
                         _g = Graphics.FromImage(Image);
@@ -319,37 +281,10 @@ namespace Paint
                         RedoList.Push(new Bitmap(Image));
                         break;
 
-                    case "Rectangle":
+                    default:
                         if (areaRect.Width > 1 && areaRect.Height > 1)
                         {
-                            DrawRectangle();
-                            DrawDragRectangle();
-                        }
-                        else _drawStatus = DrawStatus.Done;
-                        break;
-
-                    case "Ellipse":
-                        if (areaRect.Width > 1 && areaRect.Height > 1)
-                        {
-                            DrawEllipse();
-                            DrawDragRectangle();
-                        }
-                        else _drawStatus = DrawStatus.Done;
-                        break;
-
-                    case "Triangle":
-                        if (areaRect.Width > 1 && areaRect.Height > 1)
-                        {
-                            DrawTriangle();
-                            DrawDragRectangle();
-                        }
-                        else _drawStatus = DrawStatus.Done;
-                        break;
-
-                    case "Ziczac":
-                        if (areaRect.Width > 1 && areaRect.Height > 1)
-                        {
-                            DrawArrow();
+                            shapeTool.DrawShape(_g, _pen, areaRect, _drawType);
                             DrawDragRectangle();
                         }
                         else _drawStatus = DrawStatus.Done;
@@ -359,10 +294,9 @@ namespace Paint
                         DrawTextBox();
                         break;
                 }
-
             }
 
-            if (_drawStatus == DrawStatus.Resize)
+            else if (_drawStatus == DrawStatus.Resize)
             {
                 _dragHandle = 0;
             }
@@ -408,43 +342,13 @@ namespace Paint
         }
         #endregion
 
-        #region Erase
-        void DrawErase()
+        #region Eraser
+        void DrawEraser()
         {
             _g = CreateGraphics();
             _g.FillRectangle(_brush, new Rectangle(ptMouseDown, new Size(5, 5)));
             _g = Graphics.FromImage(Image);
             _g.FillRectangle(_brush, new Rectangle(ptMouseDown, new Size(5, 5)));
-        }
-        #endregion
-
-        #region Rectangle
-        void DrawRectangle()
-        {
-            _g.DrawRectangle(_pen, areaRect);
-        }
-        #endregion
-
-        #region Ellipse
-        void DrawEllipse()
-        {
-            _g.DrawEllipse(_pen, areaRect);
-        }
-        #endregion
-
-        #region Triangle
-        void DrawTriangle()
-        {
-            Point[] points = shapeTool.FormTriangle(areaRect);
-            _g.DrawPolygon(_pen, points);
-        }
-        #endregion
-
-        #region Arrow
-        void DrawArrow()
-        {
-            Point[] points = shapeTool.FormArrow(areaRect);
-            _g.DrawPolygon(_pen, points);
         }
         #endregion
 
@@ -494,7 +398,7 @@ namespace Paint
         #region TextBox
         void DrawTextBox()
         {
-            Rectangle rect = !_isShiftPress ? shapeTool.FormRectangle(ptMouseDown, ptMouseMove) : shapeTool.FormSquare(ptMouseDown, ptMouseMove);
+            Rectangle rect = !_isShiftPress ? shapeTool.CreateRectangle(ptMouseDown, ptMouseMove) : shapeTool.CreateSquare(ptMouseDown, ptMouseMove);
             textBox = new PopupTextBox(rect.Size, rect.Location);
             textBox.Leave += DrawString_WhenLeave;
             textBox.KeyDown += DrawString_WhenPressEscape;
@@ -578,31 +482,6 @@ namespace Paint
             Point p = GetHandlePoint(value);
             p.Offset(-2, -2);
             return new Rectangle(p, new Size(5, 5));
-        }
-
-        void DrawAfterResize()
-        {
-            _g = Graphics.FromImage(Image);
-            switch (_drawType)
-            {
-                case "Rectangle":
-                    DrawRectangle();
-                    break;
-
-                case "Ellipse":
-                    DrawEllipse();
-                    break;
-
-                case "Triangle":
-                    DrawTriangle();
-                    break;
-
-                case "Ziczac":
-                    DrawArrow();
-                    break;
-            }
-            _drawStatus = DrawStatus.Idle;
-            RedoList.Push(new Bitmap(Image));
         }
         #endregion
     }
