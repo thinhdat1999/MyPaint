@@ -48,6 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomControl\DrawBoxPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CustomUserControl\ColorPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>

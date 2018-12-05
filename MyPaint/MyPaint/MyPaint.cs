@@ -16,6 +16,7 @@ namespace Paint
     public partial class MyPaint : Form
     {
         private DrawBox _drawBox;
+        private DrawBoxPanel _drawBoxPanel;
         private bool _isSaved;
         private string _filePath;
 
@@ -24,15 +25,18 @@ namespace Paint
             InitializeComponent();
             KeyPreview = true;
 
-            _drawBox = new DrawBox(DrawBoxPanel.Size);
+            _drawBoxPanel = new DrawBoxPanel(ToolsPanel.Size);
+            _drawBox = _drawBoxPanel.drawBox;
             _isSaved = false;
 
-            DrawBoxPanel.Controls.Add(_drawBox);
+            ToolsPanel.Controls.Add(_drawBoxPanel, 0, 1);
+            
             DrawBoxSize.Text = _drawBox.Size.Height + " x " + _drawBox.Size.Width + "px";
 
             _drawBox.MouseDown += _drawBox_MouseDown;
             _drawBox.MouseMove += _drawBox_MouseMove;
             _drawBox.MouseLeave += _drawBox_MouseLeave;
+            _drawBoxPanel.MouseDown += _drawBoxPanel_MouseDown;
         }
 
         #region Mouse Event
@@ -56,6 +60,11 @@ namespace Paint
         private void _drawBox_MouseLeave(object sender, EventArgs e)
         {
             MouseLocation.Text = null;
+        }
+
+        private void _drawBoxPanel_MouseDown(object sender, MouseEventArgs e)
+        {
+            _drawBoxPanel._BackColor = colorPanel.RightColor;
         }
         #endregion
 
