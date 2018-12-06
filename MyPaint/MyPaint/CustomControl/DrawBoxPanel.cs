@@ -74,8 +74,7 @@ namespace Paint
                     newSize = _drawBox.Size;
                     isResizing = true;               
                     //Lưu vào UndoList và clear RedoList
-                    //_drawBox.UndoList.Push(new Bitmap(_drawBox.Image));
-                    //_drawBox.RedoList.Clear();
+                    _drawBox.UndoListPush = _drawBox.Image;                   
                     break;
                 }
             }
@@ -155,7 +154,7 @@ namespace Paint
                     SolidBrush brush = new SolidBrush(_backColor);
                     g.FillRegion(brush, _newRegion);
                 }
-                //_drawBox.RedoList.Push(new Bitmap(_drawBox.Image));
+                _drawBox.RedoListPush = _drawBox.Image;
                 Refresh();
             }
 

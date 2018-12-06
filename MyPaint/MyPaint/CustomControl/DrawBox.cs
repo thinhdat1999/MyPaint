@@ -43,6 +43,15 @@ namespace Paint
         };
         DrawStatus _drawStatus;
 
+        public Image UndoListPush
+        {
+            set
+            {
+                UndoList.Push(new Bitmap(value));
+                RedoList.Clear();
+            }
+        }
+        public Image RedoListPush { set => RedoList.Push(new Bitmap(value)); }
         public Color DrawColor { set => _drawColor = value; }
         public string DrawType { set => _drawType = value; }
         public bool isShiftPress { set => _isShiftPress = value; }
@@ -435,10 +444,20 @@ namespace Paint
         //Thực hiện Undo, nếu DrawBox chưa trống thì chèn Bitmap hiện tại vào Redo để có thể hoàn tác
         public void Undo()
         {
+            // Nếu đang resize mà undo thì hoàn tất resize và lưu hình vào RedoList
+            if(_drawStatus == DrawStatus.Resize)
+            {
+                _drawStatus = DrawStatus.Idle;
+                _g = Graphics.FromImage(Image);
+                shapeTool.DrawShape(_g, _pen, areaRect, _drawType);
+                RedoList.Push(new Bitmap(Image));
+                Refresh();
+            }
             if (UndoList.Count > 0)
             {
                 RedoList.Push(UndoList.Peek());
                 Image = (Image)UndoList.Pop();
+                Size = Image.Size;
             }
         }
 
@@ -449,6 +468,7 @@ namespace Paint
             {
                 UndoList.Push(RedoList.Pop());
                 Image = (Image)RedoList.Peek();
+                Size = Image.Size;
             }
         }
         #endregion

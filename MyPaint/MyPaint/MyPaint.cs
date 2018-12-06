@@ -183,11 +183,13 @@ namespace Paint
         private void EditUndo_Click(object sender, EventArgs e)
         {
             _drawBox.Undo();
+            _drawBoxPanel.Refresh();
         }
 
         private void EditRedo_Click(object sender, EventArgs e)
         {
             _drawBox.Redo();
+            _drawBoxPanel.Refresh();
         }
         #endregion
     }
