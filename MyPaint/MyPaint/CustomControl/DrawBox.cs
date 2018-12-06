@@ -33,6 +33,7 @@ namespace Paint
         string _drawType;
 
         bool _isShiftPress;
+        bool _isOpenYet;
 
         enum DrawStatus
         {
@@ -42,7 +43,7 @@ namespace Paint
             Done
         };
         DrawStatus _drawStatus;
-
+        public bool IsOpen { set => _isOpenYet = value ; }
         public Color DrawColor { set => _drawColor = value; }
         public string DrawType { set => _drawType = value; }
         public bool isShiftPress { set => _isShiftPress = value; }
@@ -435,21 +436,31 @@ namespace Paint
         //Thực hiện Undo, nếu DrawBox chưa trống thì chèn Bitmap hiện tại vào Redo để có thể hoàn tác
         public void Undo()
         {
-            if (UndoList.Count > 0)
+            if (_isOpenYet == false)
             {
-                RedoList.Push(UndoList.Peek());
-                Image = (Image)UndoList.Pop();
+                if (UndoList.Count > 0)
+                {
+                    RedoList.Push(UndoList.Peek());
+                    Image = (Image)UndoList.Pop();
+                }
             }
+            else
+                UndoList.Clear();
         }
 
         //Thực hiện Redo, nếu DrawBox chưa trống thì chèn Bitmap hiện tại vào Redo để có thể hoàn tác
         public void Redo()
         {
-            if (RedoList.Count > 1)
+            if (_isOpenYet == false)
             {
-                UndoList.Push(RedoList.Pop());
-                Image = (Image)RedoList.Peek();
+                if (RedoList.Count > 1)
+                {
+                    UndoList.Push(RedoList.Pop());
+                    Image = (Image)RedoList.Peek();
+                }
             }
+            else
+                RedoList.Clear();
         }
         #endregion
 

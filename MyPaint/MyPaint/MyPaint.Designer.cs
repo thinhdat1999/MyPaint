@@ -40,11 +40,11 @@ namespace Paint
             this.ToolsPanel = new System.Windows.Forms.TableLayoutPanel();
             this.DrawBoxPanel = new System.Windows.Forms.Panel();
             this.DrawToolPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.ShapesLabel = new System.Windows.Forms.Label();
             this.ToolLabel = new System.Windows.Forms.Label();
             this.toolPanel = new Paint.ToolPanel();
             this.colorPanel = new Paint.ColorPanel();
             this.shapePanel = new Paint.ShapePanel();
-            this.ShapesLabel = new System.Windows.Forms.Label();
             this.FileToolStrip = new System.Windows.Forms.ToolStripMenuItem();
             this.FileNew = new System.Windows.Forms.ToolStripMenuItem();
             this.FileOpen = new System.Windows.Forms.ToolStripMenuItem();
@@ -150,6 +150,16 @@ namespace Paint
             this.DrawToolPanel.Size = new System.Drawing.Size(804, 94);
             this.DrawToolPanel.TabIndex = 1;
             // 
+            // ShapesLabel
+            // 
+            this.ShapesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.ShapesLabel.AutoSize = true;
+            this.ShapesLabel.Location = new System.Drawing.Point(186, 74);
+            this.ShapesLabel.Name = "ShapesLabel";
+            this.ShapesLabel.Size = new System.Drawing.Size(43, 20);
+            this.ShapesLabel.TabIndex = 6;
+            this.ShapesLabel.Text = "Shapes";
+            // 
             // ToolLabel
             // 
             this.ToolLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
@@ -162,6 +172,7 @@ namespace Paint
             // 
             // toolPanel
             // 
+            this.toolPanel.BackColor = System.Drawing.Color.Transparent;
             this.toolPanel.Location = new System.Drawing.Point(3, 3);
             this.toolPanel.Name = "toolPanel";
             this.toolPanel.Size = new System.Drawing.Size(103, 68);
@@ -184,16 +195,6 @@ namespace Paint
             this.shapePanel.Size = new System.Drawing.Size(192, 68);
             this.shapePanel.TabIndex = 5;
             // 
-            // ShapesLabel
-            // 
-            this.ShapesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.ShapesLabel.AutoSize = true;
-            this.ShapesLabel.Location = new System.Drawing.Point(186, 74);
-            this.ShapesLabel.Name = "ShapesLabel";
-            this.ShapesLabel.Size = new System.Drawing.Size(43, 20);
-            this.ShapesLabel.TabIndex = 6;
-            this.ShapesLabel.Text = "Shapes";
-            // 
             // FileToolStrip
             // 
             this.FileToolStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -212,7 +213,7 @@ namespace Paint
             this.FileNew.Image = ((System.Drawing.Image)(resources.GetObject("FileNew.Image")));
             this.FileNew.Name = "FileNew";
             this.FileNew.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.FileNew.Size = new System.Drawing.Size(190, 26);
+            this.FileNew.Size = new System.Drawing.Size(186, 22);
             this.FileNew.Text = "New        ";
             this.FileNew.Click += new System.EventHandler(this.FileNew_Click);
             // 
@@ -221,7 +222,7 @@ namespace Paint
             this.FileOpen.Image = ((System.Drawing.Image)(resources.GetObject("FileOpen.Image")));
             this.FileOpen.Name = "FileOpen";
             this.FileOpen.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.FileOpen.Size = new System.Drawing.Size(190, 26);
+            this.FileOpen.Size = new System.Drawing.Size(186, 22);
             this.FileOpen.Text = "Open";
             this.FileOpen.Click += new System.EventHandler(this.FileOpen_Click);
             // 
@@ -230,7 +231,7 @@ namespace Paint
             this.FileSave.Image = ((System.Drawing.Image)(resources.GetObject("FileSave.Image")));
             this.FileSave.Name = "FileSave";
             this.FileSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.FileSave.Size = new System.Drawing.Size(190, 26);
+            this.FileSave.Size = new System.Drawing.Size(186, 22);
             this.FileSave.Text = "Save";
             this.FileSave.Click += new System.EventHandler(this.FileSave_Click);
             // 
@@ -240,7 +241,7 @@ namespace Paint
             this.FileSaveAs.Name = "FileSaveAs";
             this.FileSaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-            this.FileSaveAs.Size = new System.Drawing.Size(190, 26);
+            this.FileSaveAs.Size = new System.Drawing.Size(186, 22);
             this.FileSaveAs.Text = "Save As";
             this.FileSaveAs.Click += new System.EventHandler(this.FileSaveAs_Click);
             // 
@@ -249,7 +250,7 @@ namespace Paint
             this.FileExit.Image = ((System.Drawing.Image)(resources.GetObject("FileExit.Image")));
             this.FileExit.Name = "FileExit";
             this.FileExit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
-            this.FileExit.Size = new System.Drawing.Size(190, 26);
+            this.FileExit.Size = new System.Drawing.Size(186, 22);
             this.FileExit.Text = "Exit";
             this.FileExit.Click += new System.EventHandler(this.FileExit_Click);
             // 
@@ -267,7 +268,7 @@ namespace Paint
             this.EditUndo.Image = ((System.Drawing.Image)(resources.GetObject("EditUndo.Image")));
             this.EditUndo.Name = "EditUndo";
             this.EditUndo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-            this.EditUndo.Size = new System.Drawing.Size(148, 26);
+            this.EditUndo.Size = new System.Drawing.Size(144, 22);
             this.EditUndo.Text = "Undo";
             this.EditUndo.Click += new System.EventHandler(this.EditUndo_Click);
             // 
@@ -276,7 +277,7 @@ namespace Paint
             this.EditRedo.Image = ((System.Drawing.Image)(resources.GetObject("EditRedo.Image")));
             this.EditRedo.Name = "EditRedo";
             this.EditRedo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-            this.EditRedo.Size = new System.Drawing.Size(148, 26);
+            this.EditRedo.Size = new System.Drawing.Size(144, 22);
             this.EditRedo.Text = "Redo";
             this.EditRedo.Click += new System.EventHandler(this.EditRedo_Click);
             // 
@@ -305,6 +306,7 @@ namespace Paint
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MyPaint";
             this.Text = "MyPaint";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MyPaint_FormClosed);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.ToolsPanel.ResumeLayout(false);
