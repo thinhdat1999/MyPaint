@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Paint
 {
-    public class ShapePaint
+    public static class ShapePaint
     {
         #region Rectangle
         //Tạo hình chữ nhật tại các tọa độ chuột
-        public Rectangle CreateRectangle(Point ptMouseDown, Point ptCurrent)
+        public static Rectangle CreateRectangle(Point ptMouseDown, Point ptCurrent)
         {
             return new Rectangle(
                 Math.Min(ptMouseDown.X, ptCurrent.X),
@@ -23,7 +23,7 @@ namespace Paint
 
         #region Square
         //Tạo hình vuông tại các tọa độ chuột
-        public Rectangle CreateSquare(Point ptMouseDown, Point ptCurrent)
+        public static Rectangle CreateSquare(Point ptMouseDown, Point ptCurrent)
         {
             if ((ptMouseDown.X - ptCurrent.X) > Math.Min(Math.Abs(ptCurrent.X - ptMouseDown.X), Math.Abs(ptMouseDown.Y - ptCurrent.Y)))
                 return new Rectangle(
@@ -48,7 +48,7 @@ namespace Paint
         #endregion
 
         #region Triangle
-        private Point[] TrianglePoints(Rectangle rect)
+        private static Point[] TrianglePoints(Rectangle rect)
         {
             Point p0 = new Point(rect.Left + (rect.Width / 2), rect.Top);
             Point p1 = new Point(rect.Left, rect.Bottom);
@@ -59,7 +59,7 @@ namespace Paint
         #endregion
 
         #region SqrTriangle
-        private Point[] SqrTrianglePoints(Rectangle rect)
+        private static Point[] SqrTrianglePoints(Rectangle rect)
         {
             Point p0 = new Point(rect.Right, rect.Top);
             Point p1 = new Point(rect.Left, rect.Bottom);
@@ -70,7 +70,7 @@ namespace Paint
         #endregion
 
         #region Arrows
-        private Point[] RightArrowPoints(Rectangle rect)
+        private static Point[] RightArrowPoints(Rectangle rect)
         {
             Point p0 = new Point(rect.Right, rect.Top + (rect.Height / 2));
             Point p1 = new Point(rect.Left + (rect.Width / 2), rect.Top);
@@ -83,7 +83,7 @@ namespace Paint
             return pts;
         }
 
-        private Point[] LeftArrowPoints(Rectangle rect)
+        private static Point[] LeftArrowPoints(Rectangle rect)
         {
             Point p0 = new Point(rect.Left, rect.Top + (rect.Height / 2));
             Point p1 = new Point(rect.Left + (rect.Width / 2), rect.Top);
@@ -96,7 +96,7 @@ namespace Paint
             return pts;
         }
 
-        private Point[] UpArrowPoints(Rectangle rect)
+        private static Point[] UpArrowPoints(Rectangle rect)
         {
             Point p0 = new Point(rect.Left + (rect.Width / 2), rect.Top);
             Point p1 = new Point(rect.Left, rect.Top + (rect.Height / 2));
@@ -109,7 +109,7 @@ namespace Paint
             return pts;
         }
 
-        private Point[] DownArrowPoint(Rectangle rect)
+        private static Point[] DownArrowPoint(Rectangle rect)
         {
             Point p0 = new Point(rect.Left + (rect.Width / 2), rect.Bottom);
             Point p1 = new Point(rect.Left, rect.Top + (rect.Height / 2));
@@ -124,7 +124,7 @@ namespace Paint
         #endregion
 
         #region Rhombus
-        private Point[] RhombusPoints(Rectangle rect)
+        private static Point[] RhombusPoints(Rectangle rect)
         {
             Point p0 = new Point(rect.Right, rect.Top + (rect.Height / 2));
             Point p1 = new Point(rect.Left + (rect.Width / 2), rect.Top);
@@ -136,7 +136,7 @@ namespace Paint
         #endregion
 
         #region Pentagon
-        private Point[] PentagonPoints(Rectangle rect)
+        private static Point[] PentagonPoints(Rectangle rect)
         {
             Point p0 = new Point(rect.Left + rect.Width / 2, rect.Top);
             Point p1 = new Point(rect.Left, rect.Top + (11 * rect.Height / 30));
@@ -149,7 +149,7 @@ namespace Paint
         #endregion
 
         #region Hexagon
-        private Point[] HexagonPoints(Rectangle rect)
+        private static Point[] HexagonPoints(Rectangle rect)
         {
             Point p0 = new Point(rect.Right, rect.Top + (rect.Height / 4));
             Point p1 = new Point(rect.Left + (rect.Width / 2), rect.Top);
@@ -163,7 +163,7 @@ namespace Paint
         #endregion
 
         #region Star
-        private Point[] StarPoints(Rectangle rect)
+        private static Point[] StarPoints(Rectangle rect)
         {
             Point p0 = new Point(rect.Left + rect.Width / 2, rect.Top);
             Point p1 = new Point(rect.Left + 3 * rect.Width / 8, rect.Top + rect.Height / 3);
@@ -181,16 +181,12 @@ namespace Paint
         #endregion
 
         #region DrawShape
-        public void DrawShape(Graphics g, Pen pen, Rectangle rect, string type)
+        public static void DrawShape(Graphics g, Pen pen, Rectangle rect, string type)
         {
             Point[] pts = null;
 
             switch (type)
             {
-                //todo: Line
-                case "Line":
-
-
                 case "Rectangle":
                     g.DrawRectangle(pen, rect);
                     return;

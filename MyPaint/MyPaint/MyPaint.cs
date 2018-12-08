@@ -43,7 +43,8 @@ namespace Paint
         private void _drawBox_MouseDown(object sender, MouseEventArgs e)
         {
             _isSaved = false;
-            _drawBox.DrawColor = colorPanel.LeftColor;
+            _drawBox.LeftColor = colorPanel.LeftColor;
+            _drawBox.RightColor = colorPanel.RightColor;
 
             if (ShapePanel.FocusedButton != null)
             {
@@ -64,20 +65,7 @@ namespace Paint
 
         private void _drawBoxPanel_MouseDown(object sender, MouseEventArgs e)
         {
-            _drawBoxPanel._BackColor = colorPanel.RightColor;
-        }
-        #endregion
-
-        #region Keyboard Event
-        //Khi thả nút shift
-        protected override void OnKeyDown(KeyEventArgs e)
-        {
-            if (e.Shift) _drawBox.isShiftPress = true;
-        }
-
-        protected override void OnKeyUp(KeyEventArgs e)
-        {
-            if (!e.Shift) _drawBox.isShiftPress = false;
+            _drawBoxPanel.BackColor = colorPanel.RightColor;
         }
         #endregion
 

@@ -17,14 +17,14 @@ namespace Paint
 
         Graphics _g;
         Pen _pen;
-        Brush _brush;
-        Color _drawColor;
 
-        ShapePaint shapeTool;
+        Color _leftColor;
+        Color _rightColor;
+
         PopupTextBox textBox;
 
-        Point ptMouseDown, ptMouseMove;
-        Point dragPoint;
+        Point ptMouseDown;
+        Point _dragPoint;
 
         Rectangle oldRect;
         Rectangle areaRect;
@@ -32,14 +32,12 @@ namespace Paint
         int _dragHandle = 0;
         string _drawType;
 
-        bool _isShiftPress;
-
         enum DrawStatus
         {
             Idle,
-            Drawing,
-            Resize,
-            Done
+            ToolDrawing,
+            ShapeDrawing,
+            Resize
         };
         DrawStatus _drawStatus;
 
@@ -51,10 +49,11 @@ namespace Paint
                 RedoList.Clear();
             }
         }
+
         public Image RedoListPush { set => RedoList.Push(new Bitmap(value)); }
-        public Color DrawColor { set => _drawColor = value; }
+        public Color LeftColor { set => _leftColor = value; }
+        public Color RightColor { set => _rightColor = value; }
         public string DrawType { set => _drawType = value; }
-        public bool isShiftPress { set => _isShiftPress = value; }
 
         #region Constructor
         //Constructor tạo DrawBox
@@ -62,13 +61,9 @@ namespace Paint
         {
             Size = size;
             BackColor = Color.White;
-
             UndoList = new Stack<Bitmap>();
             RedoList = new Stack<Bitmap>();
-
-            shapeTool = new ShapePaint();
             Image = (Image)(new Bitmap(Width, Height));
-
         }
         #endregion
 
@@ -77,70 +72,71 @@ namespace Paint
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
+            ptMouseDown = e.Location;
+
+            // Lấy màu theo chuột trái - phải
+            Color _drawColor = Color.Empty;
+
             if (e.Button == MouseButtons.Left)
             {
-                if (_drawStatus == DrawStatus.Idle)
+                _drawColor = _leftColor;
+            }
+
+            else if (e.Button == MouseButtons.Right)
+            {
+                _drawColor = _rightColor;
+            }
+
+            // Nếu trong trạng thái chờ thì chuẩn bị các thông số để vẽ
+            // Theo từng _drawType (chia ra các trạng thái của drawStatus)
+            if (_drawStatus == DrawStatus.Idle)
+            {
+                UndoList.Push(new Bitmap(Image));
+                RedoList.Clear();
+
+                switch (_drawType)
                 {
-                    UndoList.Push(new Bitmap(Image));
-                    RedoList.Clear();
-                    switch (_drawType)
-                    {
-                        //Tô màu (Bucket)
-                        case "Bucket":
-                            ptMouseDown = e.Location;
-                            _drawStatus = DrawStatus.Done;
-                            FloodFill(ptMouseDown, _drawColor);
-                            RedoList.Push(new Bitmap(Image));
-                            break;
-
-                        //Xóa (Eraser - note: nhớ chỉnh lại màu backcolor)
-                        case "Eraser":
-                            _brush = new SolidBrush(Color.White);
-                            _drawStatus = DrawStatus.Drawing;
-                            break;
-
-                        //Các hình còn lại
-                        default:
-                            _pen = new Pen(_drawColor);
-                            _drawStatus = DrawStatus.Drawing;
-                            break;
-                    }
-                }
-
-                if (_drawStatus == DrawStatus.Drawing)
-                {
-                    ptMouseMove = ptMouseDown = e.Location;
-                }
-
-                // Nếu đang resize thì lấy thông tin tại điểm đặt chuột
-                else if (_drawStatus == DrawStatus.Resize)
-                {
-                    bool isDragPointClicked = false;
-
-                    for (int i = 1; i <= 8; i++)
-                    {
-                        //Check xem vị trí đặt chuột có trùng với dragPoint nào không
-                        // Nếu có thì isDragPointClicked = true và break
-                        if (GetHandleRect(i).Contains(e.Location))
-                        {
-                            _dragHandle = i;
-                            oldRect = areaRect;
-                            dragPoint = GetHandlePoint(i);
-                            isDragPointClicked = true;
-                            break;
-                        }
-                    }
-
-                    // Check xem có dragPoint nào được click hay không
-                    // Nếu không thì kết thúc resize và vẽ hình mới vào Image
-                    if (!isDragPointClicked)
-                    {
-                        _g = Graphics.FromImage(Image);
-                        _drawStatus = DrawStatus.Idle;
-                        shapeTool.DrawShape(_g, _pen, areaRect, _drawType);
+                    case "Bucket":
+                        BucketFill(e.Location, _drawColor);
                         RedoList.Push(new Bitmap(Image));
-                        this.Invalidate();
-                    }
+                        break;
+
+                    case "Eraser":
+                        _pen = new Pen(_rightColor, 10);
+                        _drawStatus = DrawStatus.ToolDrawing;
+                        break;
+
+                    case "Brush":
+                        _pen = new Pen(_drawColor, 5);
+                        _drawStatus = DrawStatus.ToolDrawing;
+                        break;
+
+                    default:
+                        _pen = new Pen(_drawColor);
+                        _drawStatus = DrawStatus.ShapeDrawing;
+                        break;
+                }
+            }
+
+            // Nếu đang resize thì lấy thông tin tại điểm đặt chuột
+            else if (_drawStatus == DrawStatus.Resize)
+            {
+                int DragPointIndex = ResizePaint.GetDragHandle(e.Location, areaRect);
+
+                if (DragPointIndex > 0)
+                {
+                    _dragHandle = DragPointIndex;
+                    _dragPoint = e.Location;
+                    oldRect = areaRect;
+                }
+
+                else
+                {
+                    _drawStatus = DrawStatus.Idle;
+                    _g = Graphics.FromImage(Image);
+                    ShapePaint.DrawShape(_g, _pen, areaRect, _drawType);
+                    RedoList.Push(new Bitmap(Image));
+                    this.Invalidate();
                 }
             }
         }
@@ -151,30 +147,21 @@ namespace Paint
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (_drawStatus == DrawStatus.Drawing)
+
+            if (_drawStatus == DrawStatus.ToolDrawing)
             {
-                ptMouseMove = e.Location;
-                switch (_drawType)
+                DrawDrag(ptMouseDown, e.Location, _drawType);
+                ptMouseDown = e.Location;
+            }
+
+            else if (_drawStatus == DrawStatus.ShapeDrawing)
+            {
+                if (Control.ModifierKeys == Keys.Shift)
                 {
-                    case "Pen":
-                        DrawPen();
-                        ptMouseDown = ptMouseMove;
-                        break;
-
-                    case "Eraser":
-                        DrawEraser();
-                        ptMouseDown = ptMouseMove;
-                        break;
-
-                    default:
-                        if (!_isShiftPress)
-                        {
-                            areaRect = shapeTool.CreateRectangle(ptMouseDown, ptMouseMove);
-                        }
-                        else areaRect = shapeTool.CreateSquare(ptMouseDown, ptMouseMove);
-                        this.Invalidate();
-                        break;
+                    areaRect = ShapePaint.CreateSquare(ptMouseDown, e.Location);
                 }
+                else areaRect = ShapePaint.CreateRectangle(ptMouseDown, e.Location);
+                this.Invalidate();
             }
 
             else if (_drawStatus == DrawStatus.Resize)
@@ -182,53 +169,53 @@ namespace Paint
                 switch (_dragHandle)
                 {
                     case 1:
-                        int diffX = dragPoint.X - e.Location.X;
-                        int diffY = dragPoint.Y - e.Location.Y;
+                        int diffX = _dragPoint.X - e.Location.X;
+                        int diffY = _dragPoint.Y - e.Location.Y;
                         if (oldRect.Width + diffX > 8 && oldRect.Height + diffY > 8)
                             areaRect = new Rectangle(oldRect.Left - diffX, oldRect.Top - diffY, oldRect.Width + diffX, oldRect.Height + diffY);
                         break;
 
                     case 2:
-                        int diff = dragPoint.X - e.Location.X;
+                        int diff = _dragPoint.X - e.Location.X;
                         if (oldRect.Width + diff > 8)
                             areaRect = new Rectangle(oldRect.Left - diff, oldRect.Top, oldRect.Width + diff, oldRect.Height);
                         break;
 
                     case 3:
-                        diffX = dragPoint.X - e.Location.X;
-                        diffY = dragPoint.Y - e.Location.Y;
+                        diffX = _dragPoint.X - e.Location.X;
+                        diffY = _dragPoint.Y - e.Location.Y;
                         if (oldRect.Width + diffX > 8 && oldRect.Height - diffY > 8)
                             areaRect = new Rectangle(oldRect.Left - diffX, oldRect.Top, oldRect.Width + diffX, oldRect.Height - diffY);
                         break;
 
                     case 4:
-                        diff = dragPoint.Y - e.Location.Y;
+                        diff = _dragPoint.Y - e.Location.Y;
                         if (oldRect.Height + diff > 8)
                             areaRect = new Rectangle(oldRect.Left, oldRect.Top - diff, oldRect.Width, oldRect.Height + diff);
                         break;
 
                     case 5:
-                        diff = dragPoint.Y - e.Location.Y;
+                        diff = _dragPoint.Y - e.Location.Y;
                         if (oldRect.Height - diff > 8)
                             areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width, oldRect.Height - diff);
                         break;
 
                     case 6:
-                        diffX = dragPoint.X - e.Location.X;
-                        diffY = dragPoint.Y - e.Location.Y;
+                        diffX = _dragPoint.X - e.Location.X;
+                        diffY = _dragPoint.Y - e.Location.Y;
                         if (oldRect.Width - diffX > 8 && oldRect.Height + diffY > 8)
                             areaRect = new Rectangle(oldRect.Left, oldRect.Top - diffY, oldRect.Width - diffX, oldRect.Height + diffY);
                         break;
 
                     case 7:
-                        diff = dragPoint.X - e.Location.X;
+                        diff = _dragPoint.X - e.Location.X;
                         if (oldRect.Width - diff > 8)
                             areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diff, oldRect.Height);
                         break;
 
                     case 8:
-                        diffX = dragPoint.X - e.Location.X;
-                        diffY = dragPoint.Y - e.Location.Y;
+                        diffX = _dragPoint.X - e.Location.X;
+                        diffY = _dragPoint.Y - e.Location.Y;
                         if (oldRect.Width - diffX > 8 && oldRect.Height - diffY > 8)
                             areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diffX, oldRect.Height - diffY);
                         break;
@@ -243,24 +230,16 @@ namespace Paint
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            _g = e.Graphics;
-
-            if (_drawStatus == DrawStatus.Drawing)
+            
+            if (_drawStatus == DrawStatus.ShapeDrawing)
             {
-                switch (_drawType)
-                {
-                    case "Text": { _g.DrawRectangle(_pen, areaRect); break; }
-
-                    default:
-                        shapeTool.DrawShape(_g, _pen, areaRect, _drawType);
-                        break;
-                }
+                ShapePaint.DrawShape(e.Graphics, _pen, areaRect, _drawType);
             }
 
             else if (_drawStatus == DrawStatus.Resize)
             {
-                shapeTool.DrawShape(_g, _pen, areaRect, _drawType);
-                DrawDragRectangle();
+                ShapePaint.DrawShape(e.Graphics, _pen, areaRect, _drawType);
+                ResizePaint.DrawDragRectangle(e.Graphics, areaRect);
             }
         }
         #endregion
@@ -271,99 +250,64 @@ namespace Paint
         {
             base.OnMouseUp(e);
 
-            _g = CreateGraphics();
-
-            if (_drawStatus == DrawStatus.Drawing)
+            if (_drawStatus == DrawStatus.ToolDrawing)
             {
-                switch (_drawType)
+                _drawStatus = DrawStatus.Idle;
+                RedoList.Push(new Bitmap(Image));
+            }
+
+            else if (_drawStatus == DrawStatus.ShapeDrawing)
+            {
+                _g = CreateGraphics();
+                RedoList.Push(new Bitmap(Image));
+
+                if (areaRect.Width > 8 && areaRect.Height > 8 && ptMouseDown != e.Location)
                 {
-                    case "Pen":
-                    case "Eraser":
-                        _drawStatus = DrawStatus.Done;
-                        RedoList.Push(new Bitmap(Image));
-                        break;
-
-                    case "Line":
-                        _drawStatus = DrawStatus.Done;
-                        _g = Graphics.FromImage(Image);
-                        DrawLine();
-                        RedoList.Push(new Bitmap(Image));
-                        break;
-
-                    default:
-                        if (areaRect.Width > 1 && areaRect.Height > 1)
-                        {
-                            shapeTool.DrawShape(_g, _pen, areaRect, _drawType);
-                            DrawDragRectangle();
-                        }
-                        else _drawStatus = DrawStatus.Done;
-                        break;
-
-                    case "Text":
-                        DrawTextBox();
-                        break;
+                    ShapePaint.DrawShape(_g, _pen, areaRect, _drawType);
+                    ResizePaint.DrawDragRectangle(_g, areaRect);
+                    _drawStatus = DrawStatus.Resize;
                 }
+                else _drawStatus = DrawStatus.Idle;
             }
 
             else if (_drawStatus == DrawStatus.Resize)
             {
                 _dragHandle = 0;
             }
+        }
+        #endregion
 
-            if (_drawStatus == DrawStatus.Done)
+        #region DrawDrag
+        private void DrawDrag(Point ptMouseDown, Point ptMouseMove, string type)
+        {
+            switch (type)
             {
-                _drawStatus = DrawStatus.Idle;
-                Refresh();
+                case "Pen":
+                    _g = CreateGraphics();
+                    _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
+                    _g = Graphics.FromImage(Image);
+                    _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
+                    break;
+
+                case "Eraser":
+                    _g = CreateGraphics();
+                    _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
+                    _g = Graphics.FromImage(Image);
+                    _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
+                    break;
+
+                case "Brush":
+                    _g = CreateGraphics();
+                    _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
+                    _g = Graphics.FromImage(Image);
+                    _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
+                    break;
             }
-        }
-        #endregion
-
-        #region Drag Rectagle
-        private void DrawDragRectangle()
-        {
-            _drawStatus = DrawStatus.Resize;
-
-            Pen _dragBorderPen = new Pen(Color.LightBlue);
-            _dragBorderPen.DashStyle = DashStyle.Dash;
-            _g.DrawRectangle(_dragBorderPen, areaRect);
-
-            for (int i = 1; i <= 8; i++)
-            {
-                _g.DrawRectangle(new Pen(Color.Black), GetHandleRect(i));
-            }
-        }
-        #endregion
-
-        #region Pen
-        void DrawPen()
-        {
-            _g = CreateGraphics();
-            _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
-            _g = Graphics.FromImage(Image);
-            _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
-        }
-        #endregion
-
-        #region Line
-        void DrawLine()
-        {
-            _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
-        }
-        #endregion
-
-        #region Eraser
-        void DrawEraser()
-        {
-            _g = CreateGraphics();
-            _g.FillRectangle(_brush, new Rectangle(ptMouseDown, new Size(5, 5)));
-            _g = Graphics.FromImage(Image);
-            _g.FillRectangle(_brush, new Rectangle(ptMouseDown, new Size(5, 5)));
         }
         #endregion
 
         #region Bucket
-        //Thuật toán Flood Fill dùng stack - tìm Bitmap lớn nhất trùng màu tại điểm đã chọn và đổ màu mới
-        void FloodFill(Point node, Color replaceColor)
+        void BucketFill(Point node, Color replaceColor)
         {
             //UndoList.Push(new Bitmap(Image));
             Bitmap DrawBitmap = new Bitmap(Image);
@@ -400,26 +344,25 @@ namespace Paint
                 }
             }
             Image = (Image)DrawBitmap;
-
         }
         #endregion
 
         #region TextBox
-        void DrawTextBox()
-        {
-            Rectangle rect = !_isShiftPress ? shapeTool.CreateRectangle(ptMouseDown, ptMouseMove) : shapeTool.CreateSquare(ptMouseDown, ptMouseMove);
-            textBox = new PopupTextBox(rect.Size, rect.Location);
-            textBox.Leave += DrawString_WhenLeave;
-            textBox.KeyDown += DrawString_WhenPressEscape;
-            this.Controls.Add(textBox);
-        }
+        //void DrawTextBox()
+        //{
+        //    Rectangle rect = !_isShiftPress ? ShapePaint.CreateRectangle(ptMouseDown, ptMouseMove) : ShapePaint.CreateSquare(ptMouseDown, ptMouseMove);
+        //    textBox = new PopupTextBox(rect.Size, rect.Location);
+        //    textBox.Leave += DrawString_WhenLeave;
+        //    textBox.KeyDown += DrawString_WhenPressEscape;
+        //    this.Controls.Add(textBox);
+        //}
 
         //Chèn văn bản vào vùng DrawBox
         public void AddText(string txt, Point location)
         {
-            _brush = new SolidBrush(_drawColor);
-            _g.DrawString(txt, DefaultFont, _brush, location);
-            UndoList.Push(new Bitmap(Image));
+            //_brush = new SolidBrush(_drawColor);
+            //_g.DrawString(txt, DefaultFont, _brush, location);
+            //UndoList.Push(new Bitmap(Image));
         }
 
         void DrawString_WhenPressEscape(object sender, KeyEventArgs e)
@@ -445,14 +388,15 @@ namespace Paint
         public void Undo()
         {
             // Nếu đang resize mà undo thì hoàn tất resize và lưu hình vào RedoList
-            if(_drawStatus == DrawStatus.Resize)
+            if (_drawStatus == DrawStatus.Resize)
             {
                 _drawStatus = DrawStatus.Idle;
                 _g = Graphics.FromImage(Image);
-                shapeTool.DrawShape(_g, _pen, areaRect, _drawType);
+                ShapePaint.DrawShape(_g, _pen, areaRect, _drawType);
                 RedoList.Push(new Bitmap(Image));
-                Refresh();
+                this.Invalidate();
             }
+
             if (UndoList.Count > 0)
             {
                 RedoList.Push(UndoList.Peek());
@@ -470,38 +414,6 @@ namespace Paint
                 Image = (Image)RedoList.Peek();
                 Size = Image.Size;
             }
-        }
-        #endregion
-
-        #region Resize
-        Point GetHandlePoint(int value)
-        {
-            Point result = Point.Empty;
-
-            if (value == 1)
-                result = new Point(areaRect.Left, areaRect.Top);
-            else if (value == 2)
-                result = new Point(areaRect.Left, areaRect.Top + (areaRect.Height / 2));
-            else if (value == 3)
-                result = new Point(areaRect.Left, areaRect.Bottom);
-            else if (value == 4)
-                result = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Top);
-            else if (value == 5)
-                result = new Point(areaRect.Left + (areaRect.Width / 2), areaRect.Bottom);
-            else if (value == 6)
-                result = new Point(areaRect.Right, areaRect.Top);
-            else if (value == 7)
-                result = new Point(areaRect.Right, areaRect.Top + (areaRect.Height / 2));
-            else if (value == 8)
-                result = new Point(areaRect.Right, areaRect.Bottom);
-            return result;
-        }
-
-        Rectangle GetHandleRect(int value)
-        {
-            Point p = GetHandlePoint(value);
-            p.Offset(-2, -2);
-            return new Rectangle(p, new Size(5, 5));
         }
         #endregion
     }
