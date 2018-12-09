@@ -60,10 +60,10 @@ namespace Paint
         public DrawBox(Size size)
         {
             Size = size;
-            BackColor = Color.White;
             UndoList = new Stack<Bitmap>();
             RedoList = new Stack<Bitmap>();
             Image = (Image)(new Bitmap(Width, Height));
+            BucketFill(new Point(0, 0), Color.White);
         }
         #endregion
 
@@ -343,16 +343,16 @@ namespace Paint
                 {
                     DrawBitmap.SetPixel(floodNode.X, floodNode.Y, replaceColor);
 
-                    if (floodNode.X - 1 != 0)
+                    if (floodNode.X - 1 >= 0)
                         pixels.Push(new Point(floodNode.X - 1, floodNode.Y));
 
-                    if (floodNode.X + 1 != DrawBitmap.Width)
+                    if (floodNode.X + 1 < DrawBitmap.Width)
                         pixels.Push(new Point(floodNode.X + 1, floodNode.Y));
 
-                    if (floodNode.Y - 1 != 0)
+                    if (floodNode.Y - 1 >= 0)
                         pixels.Push(new Point(floodNode.X, floodNode.Y - 1));
 
-                    if (floodNode.Y + 1 != DrawBitmap.Height)
+                    if (floodNode.Y + 1 < DrawBitmap.Height)
                         pixels.Push(new Point(floodNode.X, floodNode.Y + 1));
                 }
             }
