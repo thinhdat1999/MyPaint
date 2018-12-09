@@ -65,7 +65,7 @@ namespace Paint
 
         private void _drawBoxPanel_MouseDown(object sender, MouseEventArgs e)
         {
-            _drawBoxPanel.BackColor = colorPanel.RightColor;
+            _drawBoxPanel._BackColor = colorPanel.RightColor;
         }
         #endregion
 

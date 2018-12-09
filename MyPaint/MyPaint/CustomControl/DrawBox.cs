@@ -96,6 +96,10 @@ namespace Paint
 
                 switch (_drawType)
                 {
+                    case "Pen":
+                        _pen = new Pen(_leftColor, 1);
+                        _drawStatus = DrawStatus.ToolDrawing;
+                        break;
                     case "Bucket":
                         BucketFill(e.Location, _drawColor);
                         RedoList.Push(new Bitmap(Image));
