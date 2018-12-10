@@ -18,6 +18,7 @@ namespace Paint
         private DrawBox _drawBox;
         private DrawBoxPanel _drawBoxPanel;
         private bool _isSaved;
+        private bool _isOpenYet;
         private string _filePath;
 
         public MyPaint()
@@ -28,6 +29,7 @@ namespace Paint
             _drawBoxPanel = new DrawBoxPanel(ToolsPanel.Size);
             _drawBox = _drawBoxPanel.drawBox;
             _isSaved = false;
+            _isOpenYet = false;
 
             ToolsPanel.Controls.Add(_drawBoxPanel, 0, 1);
             
@@ -88,6 +90,8 @@ namespace Paint
         // Save hình (kiểm tra trường hợp: đã có filePath và chưa có)
         private void SaveImage()
         {
+
+
             if (_filePath == null)
             {
                 SaveFileDialog saveDlg = new SaveFileDialog();
@@ -103,11 +107,15 @@ namespace Paint
 
             else
             {
+                if (System.IO.File.Exists(_filePath))
+                    System.IO.File.Delete(_filePath);
                 Bitmap _bmp = new Bitmap(_drawBox.Width, _drawBox.Height);
                 _drawBox.DrawToBitmap(_bmp, new Rectangle(0, 0, _drawBox.Width, _drawBox.Height));
                 _bmp.Save(_filePath);
                 _isSaved = true;
             }
+            _isOpenYet = false;
+            isOpen();
         }
 
         // Tạo File vẽ mới - tạo bitmap mới gắn vào vùng DrawBox
@@ -117,6 +125,8 @@ namespace Paint
             Bitmap bmp = new Bitmap(_drawBox.Width, _drawBox.Height);
             _drawBox.Image = (Image)bmp;
             _filePath = null;
+            _isOpenYet = true;
+            isOpen();
             _isSaved = false;
             this.Text = "MyPaint";
         }
@@ -131,12 +141,26 @@ namespace Paint
 
             if (openDlg.ShowDialog() == DialogResult.OK)
             {
-                var img = Image.FromFile(openDlg.FileName);
+
+                Byte[] bytes = File.ReadAllBytes(openDlg.FileName);
+                MemoryStream stream = new MemoryStream(bytes);
+                Image img = Image.FromStream(stream);
+
                 _drawBox.Image = img;
                 _isSaved = true;
+                _isOpenYet = true;
+                isOpen();
                 _filePath = openDlg.FileName;
                 this.Text = Path.GetFileName(openDlg.FileName) + " - MyPaint";
             }
+        }
+        //Hàm trả về bằng true khi Open ảnh mới 
+        protected bool isOpen()
+        {
+            if (_isOpenYet == true)
+                return _drawBox.IsOpen = true;
+            else
+                return _drawBox.IsOpen = false;
         }
 
         // Thoát Form - Hỏi lưu hình trước khi thoát

@@ -31,6 +31,7 @@ namespace Paint
 
         int _dragHandle = 0;
         string _drawType;
+        bool _isOpenYet;
 
         enum DrawStatus
         {
@@ -50,6 +51,7 @@ namespace Paint
             }
         }
 
+        public bool IsOpen { set => _isOpenYet = value; }
         public Image RedoListPush { set => RedoList.Push(new Bitmap(value)); }
         public Color LeftColor { set => _leftColor = value; }
         public Color RightColor { set => _rightColor = value; }
@@ -400,6 +402,7 @@ namespace Paint
         //Thực hiện Undo, nếu DrawBox chưa trống thì chèn Bitmap hiện tại vào Redo để có thể hoàn tác
         public void Undo()
         {
+            CheckOpen();
             // Nếu đang resize mà undo thì hoàn tất resize và lưu hình vào RedoList
             if (_drawStatus == DrawStatus.Resize)
             {
@@ -418,9 +421,19 @@ namespace Paint
             }
         }
 
+        public void CheckOpen()
+        {
+            if (_isOpenYet ==true)
+            {
+                UndoList.Clear();
+                RedoList.Clear();
+            }
+        }
+
         //Thực hiện Redo, nếu DrawBox chưa trống thì chèn Bitmap hiện tại vào Redo để có thể hoàn tác
         public void Redo()
         {
+            CheckOpen();
             if (RedoList.Count > 1)
             {
                 UndoList.Push(RedoList.Pop());
