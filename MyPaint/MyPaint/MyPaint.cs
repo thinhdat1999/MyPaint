@@ -102,6 +102,9 @@ namespace Paint
                     this.Text = Path.GetFileName(saveDlg.FileName) + " - MyPaint";
                     _filePath = saveDlg.FileName;
                     _isSaved = true;
+                    Bitmap _bmp = new Bitmap(_drawBox.Width, _drawBox.Height);
+                    _drawBox.DrawToBitmap(_bmp, new Rectangle(0, 0, _drawBox.Width, _drawBox.Height));
+                    _bmp.Save(_filePath);
                 }
             }
 
