@@ -41,6 +41,9 @@ namespace Paint
             this.DrawToolPanel = new System.Windows.Forms.TableLayoutPanel();
             this.ShapesLabel = new System.Windows.Forms.Label();
             this.ToolLabel = new System.Windows.Forms.Label();
+            this.toolPanel = new Paint.ToolPanel();
+            this.colorPanel = new Paint.ColorPanel();
+            this.shapePanel = new Paint.ShapePanel();
             this.FileToolStrip = new System.Windows.Forms.ToolStripMenuItem();
             this.FileNew = new System.Windows.Forms.ToolStripMenuItem();
             this.FileOpen = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,9 +54,6 @@ namespace Paint
             this.EditUndo = new System.Windows.Forms.ToolStripMenuItem();
             this.EditRedo = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
-            this.toolPanel = new Paint.ToolPanel();
-            this.colorPanel = new Paint.ColorPanel();
-            this.shapePanel = new Paint.ShapePanel();
             this.statusStrip.SuspendLayout();
             this.ToolsPanel.SuspendLayout();
             this.DrawToolPanel.SuspendLayout();
@@ -122,7 +122,7 @@ namespace Paint
             this.DrawToolPanel.ColumnCount = 3;
             this.DrawToolPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 109F));
             this.DrawToolPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 201F));
-            this.DrawToolPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 510F));
+            this.DrawToolPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 573F));
             this.DrawToolPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.DrawToolPanel.Controls.Add(this.ShapesLabel, 1, 1);
             this.DrawToolPanel.Controls.Add(this.ToolLabel, 0, 1);
@@ -157,6 +157,34 @@ namespace Paint
             this.ToolLabel.Size = new System.Drawing.Size(28, 20);
             this.ToolLabel.TabIndex = 4;
             this.ToolLabel.Text = "Tool";
+            // 
+            // toolPanel
+            // 
+            this.toolPanel.BackColor = System.Drawing.Color.Transparent;
+            this.toolPanel.Location = new System.Drawing.Point(4, 4);
+            this.toolPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.toolPanel.Name = "toolPanel";
+            this.toolPanel.Size = new System.Drawing.Size(101, 65);
+            this.toolPanel.TabIndex = 3;
+            // 
+            // colorPanel
+            // 
+            this.colorPanel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.colorPanel.Location = new System.Drawing.Point(314, 4);
+            this.colorPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.colorPanel.Name = "colorPanel";
+            this.DrawToolPanel.SetRowSpan(this.colorPanel, 2);
+            this.colorPanel.Size = new System.Drawing.Size(300, 85);
+            this.colorPanel.TabIndex = 0;
+            // 
+            // shapePanel
+            // 
+            this.shapePanel.BackColor = System.Drawing.Color.Transparent;
+            this.shapePanel.Location = new System.Drawing.Point(113, 4);
+            this.shapePanel.Margin = new System.Windows.Forms.Padding(4);
+            this.shapePanel.Name = "shapePanel";
+            this.shapePanel.Size = new System.Drawing.Size(192, 65);
+            this.shapePanel.TabIndex = 5;
             // 
             // FileToolStrip
             // 
@@ -257,34 +285,6 @@ namespace Paint
             this.menuStrip.TabIndex = 1;
             this.menuStrip.Text = "menuStrip1";
             // 
-            // toolPanel
-            // 
-            this.toolPanel.BackColor = System.Drawing.Color.Transparent;
-            this.toolPanel.Location = new System.Drawing.Point(4, 4);
-            this.toolPanel.Margin = new System.Windows.Forms.Padding(4);
-            this.toolPanel.Name = "toolPanel";
-            this.toolPanel.Size = new System.Drawing.Size(101, 65);
-            this.toolPanel.TabIndex = 3;
-            // 
-            // colorPanel
-            // 
-            this.colorPanel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.colorPanel.Location = new System.Drawing.Point(314, 4);
-            this.colorPanel.Margin = new System.Windows.Forms.Padding(4);
-            this.colorPanel.Name = "colorPanel";
-            this.DrawToolPanel.SetRowSpan(this.colorPanel, 2);
-            this.colorPanel.Size = new System.Drawing.Size(300, 85);
-            this.colorPanel.TabIndex = 0;
-            // 
-            // shapePanel
-            // 
-            this.shapePanel.BackColor = System.Drawing.Color.Transparent;
-            this.shapePanel.Location = new System.Drawing.Point(113, 4);
-            this.shapePanel.Margin = new System.Windows.Forms.Padding(4);
-            this.shapePanel.Name = "shapePanel";
-            this.shapePanel.Size = new System.Drawing.Size(192, 65);
-            this.shapePanel.TabIndex = 5;
-            // 
             // MyPaint
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -294,7 +294,7 @@ namespace Paint
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MyPaint";
             this.Text = "MyPaint";
             this.statusStrip.ResumeLayout(false);
