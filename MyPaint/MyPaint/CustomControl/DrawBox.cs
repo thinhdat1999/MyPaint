@@ -24,7 +24,6 @@ namespace Paint
         PopupTextBox textBox;
 
         Point ptMouseDown;
-        Point ptMouseMove;
         Point _dragPoint;
 
         Rectangle oldRect;
@@ -32,12 +31,12 @@ namespace Paint
 
         int _dragHandle = 0;
         string _drawType;
+        bool _isOpenYet;
 
         enum DrawStatus
         {
             Idle,
-            DragDrawing,
-            LineDrawing,
+            ToolDrawing,
             ShapeDrawing,
             Resize
         };
@@ -52,27 +51,21 @@ namespace Paint
             }
         }
 
+        public bool IsOpen { set => _isOpenYet = value; }
         public Image RedoListPush { set => RedoList.Push(new Bitmap(value)); }
         public Color LeftColor { set => _leftColor = value; }
         public Color RightColor { set => _rightColor = value; }
         public string DrawType { set => _drawType = value; }
 
         #region Constructor
+        //Constructor tạo DrawBox
         public DrawBox(Size size)
         {
             Size = size;
             UndoList = new Stack<Bitmap>();
             RedoList = new Stack<Bitmap>();
-            FillColor();
-        }
-
-        private void FillColor()
-        {
-            Bitmap bmp = new Bitmap(Width, Height);
-            for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++)
-                    bmp.SetPixel(x, y, Color.White);
-            Image = (Image)(bmp);
+            Image = (Image)(new Bitmap(Width, Height));
+            BucketFill(new Point(0, 0), Color.White);
         }
         #endregion
 
@@ -98,36 +91,37 @@ namespace Paint
 
             // Nếu trong trạng thái chờ thì chuẩn bị các thông số để vẽ
             // Theo từng _drawType (chia ra các trạng thái của drawStatus)
+            // Nếu _drawType thuộc ToolPanel(Pen, Bucket, Eraser) thì UndoList Push và RedoList Clear
+            // Nếu _drawType thuộc ShapePanel thì không set lại Undolist và Redolist
             if (_drawStatus == DrawStatus.Idle)
             {
-                UndoList.Push(new Bitmap(Image));
-                RedoList.Clear();
-
                 switch (_drawType)
                 {
+                    case "Pen":
+                        UndoList.Push(new Bitmap(Image));
+                        RedoList.Clear();
+                        _pen = new Pen(_leftColor, 1);
+                        _drawStatus = DrawStatus.ToolDrawing;
+                        break;
                     case "Bucket":
+                        UndoList.Push(new Bitmap(Image));
+                        RedoList.Clear();
                         BucketFill(e.Location, _drawColor);
                         RedoList.Push(new Bitmap(Image));
                         break;
 
                     case "Eraser":
+                        UndoList.Push(new Bitmap(Image));
+                        RedoList.Clear();
                         _pen = new Pen(_rightColor, 10);
-                        _drawStatus = DrawStatus.DragDrawing;
+                        _drawStatus = DrawStatus.ToolDrawing;
                         break;
 
                     case "Brush":
+                        UndoList.Push(new Bitmap(Image));
+                        RedoList.Clear();
                         _pen = new Pen(_drawColor, 5);
-                        _drawStatus = DrawStatus.DragDrawing;
-                        break;
-
-                    case "Pen":
-                        _pen = new Pen(_drawColor);
-                        _drawStatus = DrawStatus.DragDrawing;
-                        break;
-
-                    case "Line":
-                        _pen = new Pen(_drawColor);
-                        _drawStatus = DrawStatus.LineDrawing;
+                        _drawStatus = DrawStatus.ToolDrawing;
                         break;
 
                     default:
@@ -148,7 +142,7 @@ namespace Paint
                     _dragPoint = e.Location;
                     oldRect = areaRect;
                 }
-
+                // Nếu không có click vào drag point nào thì hoàn thành Resize và push vào RedoList
                 else
                 {
                     _drawStatus = DrawStatus.Idle;
@@ -167,30 +161,19 @@ namespace Paint
         {
             base.OnMouseMove(e);
 
-            if (_drawStatus == DrawStatus.DragDrawing)
+            if (_drawStatus == DrawStatus.ToolDrawing)
             {
                 DrawDrag(ptMouseDown, e.Location, _drawType);
                 ptMouseDown = e.Location;
             }
 
-            else if (_drawStatus == DrawStatus.LineDrawing)
-            {
-                ptMouseMove = e.Location;
-                this.Invalidate();
-            }
-
             else if (_drawStatus == DrawStatus.ShapeDrawing)
             {
-                switch (_drawType)
+                if (Control.ModifierKeys == Keys.Shift)
                 {
-                    default:
-                        if (Control.ModifierKeys == Keys.Shift)
-                        {
-                            areaRect = ShapePaint.CreateSquare(ptMouseDown, e.Location);
-                        }
-                        else areaRect = ShapePaint.CreateRectangle(ptMouseDown, e.Location);
-                        break;
+                    areaRect = ShapePaint.CreateSquare(ptMouseDown, e.Location);
                 }
+                else areaRect = ShapePaint.CreateRectangle(ptMouseDown, e.Location);
                 this.Invalidate();
             }
 
@@ -260,22 +243,16 @@ namespace Paint
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-
-            switch (_drawStatus)
+            
+            if (_drawStatus == DrawStatus.ShapeDrawing)
             {
-                case DrawStatus.LineDrawing:
-                    _g = e.Graphics;
-                    _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
-                    break;
+                ShapePaint.DrawShape(e.Graphics, _pen, areaRect, _drawType);
+            }
 
-                case DrawStatus.ShapeDrawing:
-                    ShapePaint.DrawShape(e.Graphics, _pen, areaRect, _drawType);
-                    break;
-
-                case DrawStatus.Resize:
-                    ShapePaint.DrawShape(e.Graphics, _pen, areaRect, _drawType);
-                    ResizePaint.DrawDragRectangle(e.Graphics, areaRect);
-                    break;
+            else if (_drawStatus == DrawStatus.Resize)
+            {
+                ShapePaint.DrawShape(e.Graphics, _pen, areaRect, _drawType);
+                ResizePaint.DrawDragRectangle(e.Graphics, areaRect);
             }
         }
         #endregion
@@ -286,36 +263,31 @@ namespace Paint
         {
             base.OnMouseUp(e);
 
-            switch (_drawStatus)
+            if (_drawStatus == DrawStatus.ToolDrawing)
             {
-                case DrawStatus.DragDrawing:
-                    RedoList.Push(new Bitmap(Image));
-                    _drawStatus = DrawStatus.Idle;
-                    break;
+                _drawStatus = DrawStatus.Idle;
+                RedoList.Push(new Bitmap(Image));
+            }
+            // Nếu là ShapeDrawing thì push Image vào UndoList và Clear RedoList nếu areaRect Width và Height > 1px
+            // Không push vào RedoList ở bước này nếu không sẽ làm mất hình cuối khi Redo
+            else if (_drawStatus == DrawStatus.ShapeDrawing)
+            {
+                _g = CreateGraphics();
 
-                case DrawStatus.LineDrawing:
-                    RedoList.Push(new Bitmap(Image));
-                    _g = Graphics.FromImage(Image);
-                    _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
-                    _drawStatus = DrawStatus.Idle;
-                    break;
+                if (areaRect.Width > 1 && areaRect.Height > 1 && ptMouseDown != e.Location)
+                {
+                    UndoList.Push(new Bitmap(Image));
+                    RedoList.Clear();
+                    ShapePaint.DrawShape(_g, _pen, areaRect, _drawType);
+                    ResizePaint.DrawDragRectangle(_g, areaRect);
+                    _drawStatus = DrawStatus.Resize;
+                }
+                else _drawStatus = DrawStatus.Idle;
+            }
 
-                case DrawStatus.ShapeDrawing:
-                    RedoList.Push(new Bitmap(Image));
-                    _g = CreateGraphics();
-
-                    if (areaRect.Width > 8 && areaRect.Height > 8 && ptMouseDown != e.Location)
-                    {
-                        ShapePaint.DrawShape(_g, _pen, areaRect, _drawType);
-                        ResizePaint.DrawDragRectangle(_g, areaRect);
-                        _drawStatus = DrawStatus.Resize;
-                    }
-                    else _drawStatus = DrawStatus.Idle;
-                    break;
-
-                case DrawStatus.Resize:
-                    _dragHandle = 0;
-                    break;
+            else if (_drawStatus == DrawStatus.Resize)
+            {
+                _dragHandle = 0;
             }
         }
         #endregion
@@ -326,7 +298,6 @@ namespace Paint
             switch (type)
             {
                 case "Pen":
-                case "Brush":
                     _g = CreateGraphics();
                     _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
                     _g = Graphics.FromImage(Image);
@@ -334,6 +305,13 @@ namespace Paint
                     break;
 
                 case "Eraser":
+                    _g = CreateGraphics();
+                    _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
+                    _g = Graphics.FromImage(Image);
+                    _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
+                    break;
+
+                case "Brush":
                     _g = CreateGraphics();
                     _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
                     _g = Graphics.FromImage(Image);
@@ -424,6 +402,7 @@ namespace Paint
         //Thực hiện Undo, nếu DrawBox chưa trống thì chèn Bitmap hiện tại vào Redo để có thể hoàn tác
         public void Undo()
         {
+            CheckOpen();
             // Nếu đang resize mà undo thì hoàn tất resize và lưu hình vào RedoList
             if (_drawStatus == DrawStatus.Resize)
             {
@@ -442,9 +421,19 @@ namespace Paint
             }
         }
 
+        public void CheckOpen()
+        {
+            if (_isOpenYet ==true)
+            {
+                UndoList.Clear();
+                RedoList.Clear();
+            }
+        }
+
         //Thực hiện Redo, nếu DrawBox chưa trống thì chèn Bitmap hiện tại vào Redo để có thể hoàn tác
         public void Redo()
         {
+            CheckOpen();
             if (RedoList.Count > 1)
             {
                 UndoList.Push(RedoList.Pop());
