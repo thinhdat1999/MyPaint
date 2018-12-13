@@ -33,28 +33,27 @@ namespace Paint
 
             ToolsPanel.Controls.Add(_drawBoxPanel);
 
-            DrawBoxSize.Text = ToolsPanel.Size.ToString();
-            
-            _drawBoxPanel.MouseMove += _drawBox_MouseMove;
-            _drawBoxPanel.MouseLeave += _drawBox_MouseLeave;
-            _drawBoxPanel.MouseDown += _drawBoxPanel_MouseDown;
+            DrawBoxSize.Text = _drawBox.Size.ToString();
+            _drawBox.MouseMove += _drawBox_MouseMove;
+            _drawBox.MouseLeave += _drawBox_MouseLeave;
+            _drawBox.SizeChanged += _drawBox_SizeChange;
+        }
+
+        private void _drawBox_SizeChange(object sender, EventArgs e)
+        {
+            DrawBoxSize.Text = _drawBox.Size.ToString();
         }
 
         #region Mouse Event
 
         private void _drawBox_MouseMove(object sender, MouseEventArgs e)
         {
-            MouseLocation.Text = "X: " + e.Location.X.ToString() + "px  Y: " + e.Location.Y.ToString() + "px";
+            MouseLocation.Text = e.Location.ToString();
         }
 
         private void _drawBox_MouseLeave(object sender, EventArgs e)
         {
             MouseLocation.Text = null;
-        }
-
-        private void _drawBoxPanel_MouseDown(object sender, MouseEventArgs e)
-        {
-            //_drawBoxPanel._BackColor = colorPanel.RightColor;
         }
         #endregion
 

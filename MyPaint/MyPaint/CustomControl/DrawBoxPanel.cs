@@ -22,7 +22,7 @@ namespace Paint
         };
         PanelStatus panelStatus;
 
-        public DrawBox DrawBox { get; internal set; }
+        public DrawBox DrawBox { get => _drawBox; }
 
         public DrawBoxPanel(Size size)
         {
