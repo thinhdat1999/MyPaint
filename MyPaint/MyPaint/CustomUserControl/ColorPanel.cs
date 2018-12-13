@@ -12,13 +12,19 @@ namespace Paint
 {
     public partial class ColorPanel : UserControl
     {
-        public Color LeftColor { get => leftColorButton.BackColor; }
-        public Color RightColor { get => rightColorButton.BackColor; }
-        public static bool isEnter;
+        private static Color _leftColor { get; set; }
+        private static Color _rightColor { get; set; }
+        private static bool _isEnter { get; set; }
+
+        public static Color LeftColor => _leftColor;
+        public static Color RightColor => _rightColor;
+        public static bool isEnter => _isEnter;
 
         public ColorPanel()
         {
             InitializeComponent();
+            _leftColor = leftColorButton.BackColor;
+            _rightColor = rightColorButton.BackColor;
         }
 
         //Nhấn chuột trái/phải vào ô màu sẽ đổi màu được chọn tương ứng
@@ -28,11 +34,12 @@ namespace Paint
 
             if (e.Button == MouseButtons.Left)
             {
-                leftColorButton.BackColor = colorButton.BackColor;
+                _leftColor = leftColorButton.BackColor = colorButton.BackColor;
             }
+
             else if (e.Button == MouseButtons.Right)
             {
-                rightColorButton.BackColor = colorButton.BackColor;
+                _rightColor = rightColorButton.BackColor = colorButton.BackColor;
             }
         }
 
@@ -50,6 +57,7 @@ namespace Paint
                 {
                     leftColorButton.BackColor = colorButton.BackColor;
                 }
+
                 else if (e.Button == MouseButtons.Right)
                 {
                     rightColorButton.BackColor = colorButton.BackColor;
@@ -57,14 +65,14 @@ namespace Paint
             }
         }
 
-        private void colorButton_MouseEnter(object sender, EventArgs e)
+        private void MouseEnter(object sender, EventArgs e)
         {
-            isEnter = true;
+            _isEnter = true;
         }
 
-        private void colorButton_MouseLeave(object sender, EventArgs e)
+        private void MouseLeave(object sender, EventArgs e)
         {
-            isEnter = false;
+            _isEnter = false;
         }
     }
 }

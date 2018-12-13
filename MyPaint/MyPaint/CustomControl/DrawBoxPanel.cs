@@ -11,135 +11,124 @@ namespace Paint
 {
     class DrawBoxPanel : Panel
     {
-        private DrawBox _drawBox;
-        private Color _backColor;
+        int dragHandleIndex;
+        Rectangle[] dragRects;
+        DrawBox _drawBox;
 
-        public DrawBox drawBox { get => _drawBox; }
-        public Color _BackColor { set => _backColor = value; }
+        enum PanelStatus
+        {
+            Idle,
+            Resize
+        };
+        PanelStatus panelStatus;
+
+        public DrawBox DrawBox { get; internal set; }
+
         public DrawBoxPanel(Size size)
         {
             AutoScroll = true;
             Size = size;
-            Dock = System.Windows.Forms.DockStyle.Fill;
-            _drawBox = new DrawBox(Size);
-            Controls.Add(_drawBox);
+            Dock = DockStyle.Fill;
+            Controls.Add(_drawBox = new DrawBox(Size));
         }
 
         #region Drawbox Resize
-        bool isResizing;
-        Point dragPoint;
-        int _dragHandle;
-        Size newSize;
-
-
-        Point GetDrawBoxHandlePoint(int value)
+        // Tạo DragRectangles để Resize tại 3 vị trí (dưới, phải và phải dưới)
+        void InitDragRectangles()
         {
-            Point result = Point.Empty;
+            Point p1 = new Point(_drawBox.Left + _drawBox.Width / 2, _drawBox.Bottom);
+            Point p2 = new Point(_drawBox.Right, _drawBox.Top + _drawBox.Height / 2);
+            Point p3 = new Point(_drawBox.Right, _drawBox.Bottom);
+            Point[] dragPoints = { p1, p2, p3 };
 
-            if (value == 1)
-                result = new Point(_drawBox.Left + _drawBox.Width / 2, _drawBox.Bottom);
-            else if (value == 2)
-                result = new Point(_drawBox.Right, _drawBox.Top + _drawBox.Height / 2);
-            else if (value == 3)
-                result = new Point(_drawBox.Right, _drawBox.Bottom);
-            return result;
-        }
-        Rectangle GetDrawBoxHandleRect(int value)
-        {
-            Point p = GetDrawBoxHandlePoint(value);
-            return new Rectangle(p, new Size(5, 5));
-        }
+            dragRects = new Rectangle[3];
 
-        //Vẽ 3 dragPoint 
-        void PaintDragPoint(Graphics _g)
-        {
-
-            Pen pen = new Pen(Color.Black);
-            Brush brush = new SolidBrush(Color.White);
-            for (int i = 1; i <= 3; i++)
+            for (int i = 0; i < 3; i++)
             {
-                _g.FillRectangle(brush, GetDrawBoxHandleRect(i));
-                _g.DrawRectangle(pen, GetDrawBoxHandleRect(i));
+                dragRects[i] = new Rectangle(dragPoints[i], new Size(5, 5));
             }
         }
+
+        // Vẽ các hình chữ nhật tại 3 góc
+        void DrawDragRects(Graphics _g)
+        {
+            InitDragRectangles();
+            _g.FillRectangles(new SolidBrush(Color.White), dragRects);
+            _g.DrawRectangles(new Pen(Color.Black), dragRects);
+        }
+
+        // Khi nhấn chuột, kiểm tra xem có dragRectangle nào được chọn hay không
+        // Nếu có tức là bắt đầu Resize _drawBox, láy điểm bắt đầu tại điểm đặt chuột
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            for (int i = 1; i <= 3; i++)
+
+            if (dragHandleIndex != 4)
             {
-                if (GetDrawBoxHandleRect(i).Contains(e.Location))
-                {
-                    _dragHandle = i;
-                    dragPoint = GetDrawBoxHandlePoint(i);
-                    newSize = _drawBox.Size;
-                    isResizing = true;               
-                    //Lưu vào UndoList và clear RedoList
-                    _drawBox.UndoListPush = _drawBox.Image;                   
-                    break;
-                }
+                panelStatus = PanelStatus.Resize;
             }
         }
+
+        // Khi di chuyển chuột, thay đổi con trỏ chuột khi vào vùng hình chữ nhật Resize
+        // Nếu đang kéo chuột để Resize thì cập nhật size mới
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            //Check xem có trỏ tới vị trí drag point không và đổi icon của con trỏ tuỳ theo drag point
-            int MousePos = 0;
-            for (int i = 1; i <= 3; i++)
-            {
-                if (GetDrawBoxHandleRect(i).Contains(e.Location))
-                {
-                    MousePos = i;
-                }
-            }
-            switch (MousePos)
-            {
-                case 1:
-                    Cursor = Cursors.SizeNS;
-                    break;
-                case 2:
-                    Cursor = Cursors.SizeWE;
-                    break;
-                case 3:
-                    Cursor = Cursors.SizeNWSE;
-                    break;
-                default:
-                    Cursor = Cursors.Default;
-                    break;
-            }
+            base.OnMouseMove(e);
 
-            if (isResizing)
+            if (panelStatus == PanelStatus.Idle)
             {
-                switch (_dragHandle)
+                dragHandleIndex = dragRects.TakeWhile(rect => !rect.Contains(e.Location)).Count() + 1;
+
+                switch (dragHandleIndex)
                 {
                     case 1:
-                        int diff = dragPoint.Y - e.Location.Y;
-                        if (_drawBox.Height - diff > 1)
-                            newSize = new Size(_drawBox.Width, _drawBox.Height - diff);
+                        Cursor = Cursors.SizeNS;
                         break;
 
                     case 2:
-                        diff = dragPoint.X - e.Location.X;
-                        if (_drawBox.Width - diff > 1)
-                            newSize = new Size(_drawBox.Width - diff, _drawBox.Height);
+                        Cursor = Cursors.SizeWE;
                         break;
 
                     case 3:
-                        int diffX = dragPoint.X - e.Location.X;
-                        int diffY = dragPoint.Y - e.Location.Y;
-                        if (_drawBox.Width - diffX > 1 && _drawBox.Height - diffY > 1)
-                            newSize = new Size(_drawBox.Width - diffX, _drawBox.Height - diffY);
+                        Cursor = Cursors.SizeNWSE;
+                        break;
+
+                    case 4:
+                        Cursor = Cursors.Default;
                         break;
                 }
-                Refresh();
             }
         }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            DrawDragRects(e.Graphics);
+        }
+
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (isResizing)
+            if (panelStatus == PanelStatus.Resize)
             {
-                isResizing = false;
-                _drawBox.Size = newSize;
+                panelStatus = PanelStatus.Idle;
+
+                switch (dragHandleIndex)
+                {
+                    case 1:
+                        _drawBox.Size = new Size(_drawBox.Width, e.Location.Y);
+                        break;
+
+                    case 2:
+                        _drawBox.Size = new Size(e.Location.X, _drawBox.Height);
+                        break;
+
+                    case 3:
+                        _drawBox.Size = new Size(e.Location.X, e.Location.Y);
+                        break;
+                }
+                
                 Image _oldImage = _drawBox.Image;
                 _drawBox.Image = (Image)new Bitmap(_drawBox.Width, _drawBox.Height);
+
                 Graphics g = Graphics.FromImage(_drawBox.Image);
                 g.DrawImage(_oldImage, 0, 0);
 
@@ -151,32 +140,12 @@ namespace Paint
                     Region _oldRegion = new Region(_oldSize);
                     Region _newRegion = new Region(_newSize);
                     _newRegion.Exclude(_oldRegion);
-                    SolidBrush brush = new SolidBrush(_backColor);
+                    SolidBrush brush = new SolidBrush(ColorPanel.RightColor);
                     g.FillRegion(brush, _newRegion);
                 }
-                _drawBox.RedoListPush = _drawBox.Image;
-                Refresh();
-            }
-
-        }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            //Vẽ các drag point khi redraw Panel
-            Graphics _g = e.Graphics;
-            PaintDragPoint(_g);
-
-            // Vẽ hình chữ nhật nét đứt thể hiện kích cỡ mới của DrawBox khi đang resize
-            if (isResizing)
-            {
-                Pen _dragBorderPen = new Pen(Color.Black);
-                _dragBorderPen.DashStyle = DashStyle.Dot;
-                _g.DrawRectangle(_dragBorderPen, new Rectangle(_drawBox.Location, newSize));
+                this.Invalidate();
             }
         }
-
         #endregion
-
-
     }
 }

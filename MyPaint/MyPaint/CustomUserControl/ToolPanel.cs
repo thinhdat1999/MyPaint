@@ -12,10 +12,10 @@ namespace Paint
 {
     public partial class ToolPanel : UserControl
     {
-        string _toolLabel;
-        public static Button FocusedButton;
+        private static string _toolLabel { get; set; }
+        public static string ToolLabel => _toolLabel;
 
-        public string ToolLabel { get => _toolLabel; }
+        Button CurButton;
 
         public ToolPanel()
         {
@@ -29,28 +29,24 @@ namespace Paint
         {
             Button SelectedButton = sender as Button;
 
-            if (ShapePanel.FocusedButton != null)
+            if (CurButton != null)
             {
-                ShapePanel.FocusedButton.BackColor = SystemColors.InactiveBorder;
-                ShapePanel.FocusedButton = null;
+                CurButton.BackColor = SystemColors.InactiveBorder;
+                CurButton = SelectedButton;
             }
             
             SelectedButton.BackColor = SystemColors.ActiveBorder;
             _toolLabel = (string) SelectedButton.Tag;
-
-            FocusedButton = SelectedButton;
         }
 
         // Khi rời Button (nếu không chọn Button đổi màu) thì hủy Button vừa rời
 
         private void ToolButton_Leave(object sender, EventArgs e)
         {
-            Button LeftButton = sender as Button;
-
-            if (FocusedButton != null && !ColorPanel.isEnter)
+            if (!ColorPanel.isEnter)
             {
-                FocusedButton.BackColor = SystemColors.InactiveBorder;
-                FocusedButton = null;
+                Button LeftButton = sender as Button;
+                LeftButton.BackColor = SystemColors.InactiveBorder;
                 _toolLabel = null;
             }
         }

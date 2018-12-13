@@ -10,27 +10,6 @@ namespace Paint
 {
     class ResizePaint
     {
-        public static void DrawDragRectangle(Graphics g, Rectangle rect)
-        {
-            Pen _pen = new Pen(Color.LightBlue);
-            _pen.DashStyle = DashStyle.Dash;
-            g.DrawRectangle(_pen, rect);
-
-            Rectangle[] rects = DragRects(rect);
-
-            foreach (Rectangle r in rects)
-            {
-                g.DrawRectangle(new Pen(Color.Black), r);
-            }
-        }
-
-        public static int GetDragHandle(Point ptMouseDown, Rectangle rect)
-        {
-            Rectangle[] rects = DragRects(rect);
-            int index = rects.TakeWhile(r => !r.Contains(ptMouseDown)).Count() + 1;
-            return index < 9 ? index : -1;
-        }
-
         static Point[] DragPoints(Rectangle rect)
         {
             Point p1 = new Point(rect.Left, rect.Top);
@@ -52,10 +31,26 @@ namespace Paint
 
             for (int i = 0; i < 8; i++)
             {
-                pts[i].Offset(-2,-2);
+                pts[i].Offset(-2, -2);
                 rects[i] = new Rectangle(pts[i], new Size(5, 5));
             }
             return rects;
+        }
+
+        public static void DrawDragRectangle(Graphics g, Rectangle rect)
+        {
+            Pen pen = new Pen(Color.LightBlue);
+            Rectangle[] dragRects = DragRects(rect);
+            pen.DashStyle = DashStyle.Dash;
+            g.DrawRectangle(pen, rect);
+            g.DrawRectangles(new Pen(Color.Black), dragRects);
+        }
+
+        public static int GetDragHandle(Point ptMouseDown, Rectangle rect)
+        {
+            Rectangle[] rects = DragRects(rect);
+            int index = rects.TakeWhile(r => !r.Contains(ptMouseDown)).Count() + 1;
+            return index < 9 ? index : -1;
         }
     }
 }

@@ -12,10 +12,10 @@ namespace Paint
 {
     public partial class ShapePanel : UserControl
     {
-        string _shapeLabel;
-        public static Button FocusedButton;
+        private static string _shapeLabel { get; set; }
+        public static string ShapeLabel => _shapeLabel;
 
-        public string ShapeLabel { get => _shapeLabel; }
+        Button CurButton;
 
         public ShapePanel()
         {
@@ -28,29 +28,24 @@ namespace Paint
         private void ShapeButton_MouseDown(object sender, MouseEventArgs e)
         {
             Button SelectedButton = sender as Button;
-
-            if (ToolPanel.FocusedButton != null)
+            if (CurButton != null)
             {
-                ToolPanel.FocusedButton.BackColor = SystemColors.InactiveBorder;
-                ToolPanel.FocusedButton = null;
+                CurButton.BackColor = SystemColors.InactiveBorder;
+                CurButton = SelectedButton;
             }
 
             SelectedButton.BackColor = SystemColors.ActiveBorder;
             _shapeLabel = (string) SelectedButton.Tag;
-
-            FocusedButton = SelectedButton;
         }
 
         // Khi rời Button (nếu không chọn Button đổi màu) thì hủy Button vừa rời
 
         private void ShapeButton_Leave(object sender, EventArgs e)
         {
-            Button LeftButton = sender as Button;
-
-            if (FocusedButton != null && !ColorPanel.isEnter)
+            if (!ColorPanel.isEnter)
             {
+                Button LeftButton = sender as Button;
                 LeftButton.BackColor = SystemColors.InactiveBorder;
-                FocusedButton = null;
                 _shapeLabel = null;
             }
         }

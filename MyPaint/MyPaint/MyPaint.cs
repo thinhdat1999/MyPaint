@@ -15,8 +15,8 @@ namespace Paint
 {
     public partial class MyPaint : Form
     {
-        private DrawBox _drawBox;
         private DrawBoxPanel _drawBoxPanel;
+        private DrawBox _drawBox;
         private bool _isSaved;
         private bool _isOpenYet;
         private string _filePath;
@@ -27,33 +27,20 @@ namespace Paint
             KeyPreview = true;
 
             _drawBoxPanel = new DrawBoxPanel(ToolsPanel.Size);
-            _drawBox = _drawBoxPanel.drawBox;
+            _drawBox = _drawBoxPanel.DrawBox;
             _isSaved = false;
             _isOpenYet = false;
 
-            ToolsPanel.Controls.Add(_drawBoxPanel, 0, 1);
-            
-            DrawBoxSize.Text = _drawBox.Size.Height + " x " + _drawBox.Size.Width + "px";
+            ToolsPanel.Controls.Add(_drawBoxPanel);
 
-            _drawBox.MouseDown += _drawBox_MouseDown;
-            _drawBox.MouseMove += _drawBox_MouseMove;
-            _drawBox.MouseLeave += _drawBox_MouseLeave;
+            DrawBoxSize.Text = ToolsPanel.Size.ToString();
+            
+            _drawBoxPanel.MouseMove += _drawBox_MouseMove;
+            _drawBoxPanel.MouseLeave += _drawBox_MouseLeave;
             _drawBoxPanel.MouseDown += _drawBoxPanel_MouseDown;
         }
 
         #region Mouse Event
-        private void _drawBox_MouseDown(object sender, MouseEventArgs e)
-        {
-            _isSaved = false;
-            _drawBox.LeftColor = colorPanel.LeftColor;
-            _drawBox.RightColor = colorPanel.RightColor;
-
-            if (ShapePanel.FocusedButton != null)
-            {
-                _drawBox.DrawType = shapePanel.ShapeLabel;
-            }
-            else _drawBox.DrawType = toolPanel.ToolLabel;
-        }
 
         private void _drawBox_MouseMove(object sender, MouseEventArgs e)
         {
@@ -67,7 +54,7 @@ namespace Paint
 
         private void _drawBoxPanel_MouseDown(object sender, MouseEventArgs e)
         {
-            _drawBoxPanel._BackColor = colorPanel.RightColor;
+            //_drawBoxPanel._BackColor = colorPanel.RightColor;
         }
         #endregion
 
