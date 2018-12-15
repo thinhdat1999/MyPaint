@@ -368,6 +368,7 @@ namespace Paint
         //Thực hiện Undo, nếu DrawBox chưa trống thì chèn Bitmap hiện tại vào Redo để có thể hoàn tác
         public void Undo()
         {
+            _isOpenYet = false;
             CheckOpen();
             // Nếu đang resize mà undo thì hoàn tất resize và lưu hình vào RedoList
             if (_drawStatus == DrawStatus.Resize)
@@ -393,6 +394,7 @@ namespace Paint
             {
                 UndoList.Clear();
                 RedoList.Clear();
+                _isOpenYet = false;
             }
         }
 

@@ -134,11 +134,10 @@ namespace Paint
                 Byte[] bytes = File.ReadAllBytes(openDlg.FileName);
                 MemoryStream stream = new MemoryStream(bytes);
                 Image img = Image.FromStream(stream);
-
                 _drawBox.Image = img;
                 _isSaved = true;
                 _isOpenYet = true;
-                isOpen();
+                _drawBox.CheckOpen();
                 _filePath = openDlg.FileName;
                 this.Text = Path.GetFileName(openDlg.FileName) + " - MyPaint";
             }
