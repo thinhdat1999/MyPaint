@@ -50,7 +50,65 @@ namespace Paint
         {
             Rectangle[] rects = DragRects(rect);
             int index = rects.TakeWhile(r => !r.Contains(ptMouseDown)).Count() + 1;
-            return index < 9 ? index : -1;
+            return index;
+        }
+
+        public static void UpdateAreaRect(ref Rectangle areaRect, Rectangle oldRect, Point ptMouseDown, Point ptMouseMove, int dragHandle)
+        {
+            switch (dragHandle)
+            {
+                case 1:
+                    int diffX = ptMouseDown.X - ptMouseMove.X;
+                    int diffY = ptMouseDown.Y - ptMouseMove.Y;
+                    if (oldRect.Width + diffX > 8 && oldRect.Height + diffY > 8)
+                        areaRect = new Rectangle(oldRect.Left - diffX, oldRect.Top - diffY, oldRect.Width + diffX, oldRect.Height + diffY);
+                    break;
+
+                case 2:
+                    int diff = ptMouseDown.X - ptMouseMove.X;
+                    if (oldRect.Width + diff > 8)
+                        areaRect = new Rectangle(oldRect.Left - diff, oldRect.Top, oldRect.Width + diff, oldRect.Height);
+                        break;
+
+                case 3:
+                    diffX = ptMouseDown.X - ptMouseMove.X;
+                    diffY = ptMouseDown.Y - ptMouseMove.Y;
+                    if (oldRect.Width + diffX > 8 && oldRect.Height - diffY > 8)
+                        areaRect = new Rectangle(oldRect.Left - diffX, oldRect.Top, oldRect.Width + diffX, oldRect.Height - diffY);
+                    break;
+
+                case 4:
+                    diff = ptMouseDown.Y - ptMouseMove.Y;
+                    if (oldRect.Height + diff > 8)
+                        areaRect = new Rectangle(oldRect.Left, oldRect.Top - diff, oldRect.Width, oldRect.Height + diff);
+                    break;
+
+                case 5:
+                    diff = ptMouseDown.Y - ptMouseMove.Y;
+                    if (oldRect.Height - diff > 8)
+                        areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width, oldRect.Height - diff);
+                    break;
+
+                case 6:
+                    diffX = ptMouseDown.X - ptMouseMove.X;
+                    diffY = ptMouseDown.Y - ptMouseMove.Y;
+                    if (oldRect.Width - diffX > 8 && oldRect.Height + diffY > 8)
+                        areaRect = new Rectangle(oldRect.Left, oldRect.Top - diffY, oldRect.Width - diffX, oldRect.Height + diffY);
+                    break;
+
+                case 7:
+                    diff = ptMouseDown.X - ptMouseMove.X;
+                    if (oldRect.Width - diff > 8)
+                        areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diff, oldRect.Height);
+                    break;
+
+                case 8:
+                    diffX = ptMouseDown.X - ptMouseMove.X;
+                    diffY = ptMouseDown.Y - ptMouseMove.Y;
+                    if (oldRect.Width - diffX > 8 && oldRect.Height - diffY > 8)
+                        areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diffX, oldRect.Height - diffY);
+                    break;
+            }
         }
     }
 }

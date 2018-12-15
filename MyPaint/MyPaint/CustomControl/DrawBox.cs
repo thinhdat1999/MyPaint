@@ -24,7 +24,6 @@ namespace Paint
 
         Point ptMouseDown;
         Point ptMouseMove;
-        Point _dragPoint;
 
         Rectangle oldRect;
         Rectangle areaRect;
@@ -101,7 +100,7 @@ namespace Paint
                     case "Bucket":
                         UndoList.Push(new Bitmap(Image));
                         RedoList.Clear();
-                        FloodFill(new Bitmap(Image), ptMouseDown, _drawColor);
+                        FloodFill(ptMouseDown, _drawColor);
                         RedoList.Push(new Bitmap(Image));
                         break;
 
@@ -133,14 +132,10 @@ namespace Paint
                 }
             }
 
-            // Nếu đang resize thì lấy thông tin tại điểm đặt chuột
             else if (_drawStatus == DrawStatus.Resize)
             {
-                _dragHandle = ResizePaint.GetDragHandle(e.Location, areaRect);
-
-                if (_dragHandle > 0)
+                if ((_dragHandle = ResizePaint.GetDragHandle(e.Location, areaRect)) != 9)
                 {
-                    _dragPoint = e.Location;
                     oldRect = areaRect;
                 }
 
@@ -186,61 +181,11 @@ namespace Paint
 
             else if (_drawStatus == DrawStatus.Resize)
             {
-                switch (_dragHandle)
+                if (oldRect != Rectangle.Empty)
                 {
-                    case 1:
-                        int diffX = _dragPoint.X - e.Location.X;
-                        int diffY = _dragPoint.Y - e.Location.Y;
-                        if (oldRect.Width + diffX > 8 && oldRect.Height + diffY > 8)
-                            areaRect = new Rectangle(oldRect.Left - diffX, oldRect.Top - diffY, oldRect.Width + diffX, oldRect.Height + diffY);
-                        break;
-
-                    case 2:
-                        int diff = _dragPoint.X - e.Location.X;
-                        if (oldRect.Width + diff > 8)
-                            areaRect = new Rectangle(oldRect.Left - diff, oldRect.Top, oldRect.Width + diff, oldRect.Height);
-                        break;
-
-                    case 3:
-                        diffX = _dragPoint.X - e.Location.X;
-                        diffY = _dragPoint.Y - e.Location.Y;
-                        if (oldRect.Width + diffX > 8 && oldRect.Height - diffY > 8)
-                            areaRect = new Rectangle(oldRect.Left - diffX, oldRect.Top, oldRect.Width + diffX, oldRect.Height - diffY);
-                        break;
-
-                    case 4:
-                        diff = _dragPoint.Y - e.Location.Y;
-                        if (oldRect.Height + diff > 8)
-                            areaRect = new Rectangle(oldRect.Left, oldRect.Top - diff, oldRect.Width, oldRect.Height + diff);
-                        break;
-
-                    case 5:
-                        diff = _dragPoint.Y - e.Location.Y;
-                        if (oldRect.Height - diff > 8)
-                            areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width, oldRect.Height - diff);
-                        break;
-
-                    case 6:
-                        diffX = _dragPoint.X - e.Location.X;
-                        diffY = _dragPoint.Y - e.Location.Y;
-                        if (oldRect.Width - diffX > 8 && oldRect.Height + diffY > 8)
-                            areaRect = new Rectangle(oldRect.Left, oldRect.Top - diffY, oldRect.Width - diffX, oldRect.Height + diffY);
-                        break;
-
-                    case 7:
-                        diff = _dragPoint.X - e.Location.X;
-                        if (oldRect.Width - diff > 8)
-                            areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diff, oldRect.Height);
-                        break;
-
-                    case 8:
-                        diffX = _dragPoint.X - e.Location.X;
-                        diffY = _dragPoint.Y - e.Location.Y;
-                        if (oldRect.Width - diffX > 8 && oldRect.Height - diffY > 8)
-                            areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diffX, oldRect.Height - diffY);
-                        break;
+                    ResizePaint.UpdateAreaRect(ref areaRect, oldRect, ptMouseDown, e.Location, _dragHandle);
+                    this.Invalidate();
                 }
-                this.Invalidate();
             }
         }
         #endregion
@@ -256,7 +201,7 @@ namespace Paint
                 e.Graphics.DrawLine(_pen, ptMouseDown, ptMouseMove);
             }
 
-            if (_drawStatus == DrawStatus.ShapeDrawing)
+            else if (_drawStatus == DrawStatus.ShapeDrawing)
             {
                 ShapePaint.DrawShape(e.Graphics, _pen, areaRect, _drawType);
             }
@@ -308,7 +253,7 @@ namespace Paint
 
             else if (_drawStatus == DrawStatus.Resize)
             {
-                _dragHandle = 0;
+                oldRect = Rectangle.Empty;
             }
         }
         #endregion
@@ -343,7 +288,7 @@ namespace Paint
         #endregion
 
         #region Bucket
-        void BucketFill(Point node, Color replaceColor)
+        void FloodFill(Point node, Color replaceColor)
         {
             //UndoList.Push(new Bitmap(Image));
             Bitmap DrawBitmap = new Bitmap(Image);
@@ -380,7 +325,6 @@ namespace Paint
                 }
             }
             Image = (Image)DrawBitmap;
-
         }
         #endregion
 
