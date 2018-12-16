@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -12,6 +13,7 @@ using System.Windows.Forms;
 
 namespace Paint
 {
+    [ToolboxItem(true)]
     class DrawBox : PictureBox
     {
         Stack<Bitmap> UndoList;
@@ -42,16 +44,14 @@ namespace Paint
         };
         DrawStatus _drawStatus;
         public bool IsOpen { set => _isOpenYet = value; }
-        public Image RedoListPush { set => RedoList.Push(new Bitmap(value)); }
-        public string DrawType { set => _drawType = value; }
 
         #region Constructor
         //Constructor tạo DrawBox
-        public DrawBox(Size _size)
+        public DrawBox()
         {
-            Size = _size;
             UndoList = new Stack<Bitmap>();
             RedoList = new Stack<Bitmap>();
+            Size = new Size(700, 300);
             Image = (Image)(new Bitmap(Width, Height));
 
             Region region = new Region(new Rectangle(0, 0, Width, Height));
@@ -59,7 +59,7 @@ namespace Paint
             _g.FillRegion(new SolidBrush(Color.White), region);
         }
         #endregion
-
+        
         #region Mouse Down
         //Khởi tạo các thuộc tính khi nhấn chuột trái vào vùng DrawBox
         protected override void OnMouseDown(MouseEventArgs e)
@@ -88,39 +88,32 @@ namespace Paint
                     _drawColor = ColorPanel.RightColor;
                 }
 
+                UndoList.Push(new Bitmap(Image));
+                RedoList.Clear();
+
                 switch (_drawType)
                 {
                     case "Pen":
-                        UndoList.Push(new Bitmap(Image));
-                        RedoList.Clear();
                         _pen = new Pen(_drawColor, 1);
                         _drawStatus = DrawStatus.ToolDrawing;
                         break;
 
                     case "Bucket":
-                        UndoList.Push(new Bitmap(Image));
-                        RedoList.Clear();
                         FloodFill(ptMouseDown, _drawColor);
                         RedoList.Push(new Bitmap(Image));
                         break;
 
                     case "Eraser":
-                        UndoList.Push(new Bitmap(Image));
-                        RedoList.Clear();
                         _pen = new Pen(ColorPanel.RightColor, 10);
                         _drawStatus = DrawStatus.ToolDrawing;
                         break;
 
                     case "Brush":
-                        UndoList.Push(new Bitmap(Image));
-                        RedoList.Clear();
                         _pen = new Pen(_drawColor, 5);
                         _drawStatus = DrawStatus.ToolDrawing;
                         break;
 
                     case "Line":
-                        UndoList.Push(new Bitmap(Image));
-                        RedoList.Clear();
                         _pen = new Pen(_drawColor);
                         _drawStatus = DrawStatus.LineDrawing;
                         break;
@@ -219,6 +212,8 @@ namespace Paint
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+
+            ptMouseDown = Point.Empty;
 
             if (_drawStatus == DrawStatus.LineDrawing)
             {
@@ -408,6 +403,16 @@ namespace Paint
                 Image = (Image)RedoList.Peek();
                 Size = Image.Size;
             }
+        }
+
+        public void PushUndo(Image image)
+        {
+            UndoList.Push(new Bitmap(image));
+        }
+
+        public void PushRedo(Image image)
+        {
+            RedoList.Push(new Bitmap(image));
         }
         #endregion
     }

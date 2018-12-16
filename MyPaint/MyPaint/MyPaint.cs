@@ -15,7 +15,6 @@ namespace Paint
 {
     public partial class MyPaint : Form
     {
-        private DrawBoxPanel _drawBoxPanel;
         private DrawBox _drawBox;
         private bool _isSaved;
         private bool _isOpenYet;
@@ -25,26 +24,23 @@ namespace Paint
         {
             InitializeComponent();
             KeyPreview = true;
-
-            _drawBoxPanel = new DrawBoxPanel(ToolsPanel.Size);
-            _drawBox = _drawBoxPanel.DrawBox;
+            
+            _drawBox = DrawBoxPanel.DrawBox;
             _isSaved = false;
             _isOpenYet = false;
-
-            ToolsPanel.Controls.Add(_drawBoxPanel);
-
-            DrawBoxSize.Text = _drawBox.Size.ToString();
+            
             _drawBox.MouseMove += _drawBox_MouseMove;
             _drawBox.MouseLeave += _drawBox_MouseLeave;
             _drawBox.SizeChanged += _drawBox_SizeChange;
+
+            DrawBoxSize.Text = _drawBox.Size.ToString();
         }
 
+        #region DrawBox Event
         private void _drawBox_SizeChange(object sender, EventArgs e)
         {
             DrawBoxSize.Text = _drawBox.Size.ToString();
         }
-
-        #region Mouse Event
 
         private void _drawBox_MouseMove(object sender, MouseEventArgs e)
         {
@@ -76,8 +72,6 @@ namespace Paint
         // Save hình (kiểm tra trường hợp: đã có filePath và chưa có)
         private void SaveImage()
         {
-
-
             if (_filePath == null)
             {
                 SaveFileDialog saveDlg = new SaveFileDialog();
@@ -183,13 +177,13 @@ namespace Paint
         private void EditUndo_Click(object sender, EventArgs e)
         {
             _drawBox.Undo();
-            _drawBoxPanel.Refresh();
+            DrawBoxPanel.Invalidate();
         }
 
         private void EditRedo_Click(object sender, EventArgs e)
         {
             _drawBox.Redo();
-            _drawBoxPanel.Refresh();
+            DrawBoxPanel.Invalidate();
         }
         #endregion
     }
