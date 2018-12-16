@@ -12,10 +12,10 @@ namespace Paint
 {
     public partial class ToolPanel : UserControl
     {
-        private static string _toolLabel { get; set; }
-        public static string ToolLabel => _toolLabel;
-
+        string _toolLabel;
         Button CurButton;
+
+        public string ToolLabel => _toolLabel;
 
         public ToolPanel()
         {

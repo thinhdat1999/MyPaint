@@ -12,10 +12,10 @@ namespace Paint
 {
     public partial class ShapePanel : UserControl
     {
-        private static string _shapeLabel { get; set; }
-        public static string ShapeLabel => _shapeLabel;
-
+        string _shapeLabel;
         Button CurButton;
+
+        public string ShapeLabel => _shapeLabel;
 
         public ShapePanel()
         {

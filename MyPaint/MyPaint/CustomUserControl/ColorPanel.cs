@@ -12,19 +12,15 @@ namespace Paint
 {
     public partial class ColorPanel : UserControl
     {
-        private static Color _leftColor { get; set; }
-        private static Color _rightColor { get; set; }
+        public Color LeftColor => leftColorButton.BackColor;
+        public Color RightColor => rightColorButton.BackColor;
         private static bool _isEnter { get; set; }
 
-        public static Color LeftColor => _leftColor;
-        public static Color RightColor => _rightColor;
         public static bool isEnter => _isEnter;
 
         public ColorPanel()
         {
             InitializeComponent();
-            _leftColor = leftColorButton.BackColor;
-            _rightColor = rightColorButton.BackColor;
         }
 
         //Nhấn chuột trái/phải vào ô màu sẽ đổi màu được chọn tương ứng
@@ -34,12 +30,12 @@ namespace Paint
 
             if (e.Button == MouseButtons.Left)
             {
-                _leftColor = leftColorButton.BackColor = colorButton.BackColor;
+                leftColorButton.BackColor = colorButton.BackColor;
             }
 
             else if (e.Button == MouseButtons.Right)
             {
-                _rightColor = rightColorButton.BackColor = colorButton.BackColor;
+                rightColorButton.BackColor = colorButton.BackColor;
             }
         }
 

@@ -15,39 +15,59 @@ namespace Paint
 {
     public partial class MyPaint : Form
     {
-        private DrawBox _drawBox;
+        private DrawBox drawBox;
         private bool _isSaved;
         private bool _isOpenYet;
         private string _filePath;
+
+        public static Color LeftColor;
+        public static Color RightColor;
+        public static string DrawType;
+        public static string DrawStyle;
+        public static int PenWidth;
 
         public MyPaint()
         {
             InitializeComponent();
             KeyPreview = true;
-            
-            _drawBox = DrawBoxPanel.DrawBox;
+
+            drawBox = DrawBoxPanel.DrawBox;
             _isSaved = false;
             _isOpenYet = false;
-            
-            _drawBox.MouseMove += _drawBox_MouseMove;
-            _drawBox.MouseLeave += _drawBox_MouseLeave;
-            _drawBox.SizeChanged += _drawBox_SizeChange;
 
-            DrawBoxSize.Text = _drawBox.Size.ToString();
+            drawBox.MouseDown += DrawBox_UpdateDrawing;
+            drawBox.MouseMove += DrawBox_MouseMove;
+            drawBox.MouseLeave += DrawBox_MouseLeave;
+            drawBox.SizeChanged += DrawBox_SizeChange;
+            
+            DrawBoxSize.Text = drawBox.Size.ToString();
+            StyleComboBox.SelectedIndex = 0;
         }
 
         #region DrawBox Event
-        private void _drawBox_SizeChange(object sender, EventArgs e)
+        private void DrawBox_UpdateDrawing(object sender, MouseEventArgs e)
         {
-            DrawBoxSize.Text = _drawBox.Size.ToString();
+            LeftColor = colorPanel.LeftColor;
+            RightColor = colorPanel.RightColor;
+            DrawStyle = StyleComboBox.Text;
+
+            if (shapePanel.ShapeLabel != null)
+                DrawType = shapePanel.ShapeLabel;
+            else DrawType = toolPanel.ToolLabel;
+        }
+        
+        private void DrawBox_SizeChange(object sender, EventArgs e)
+        {
+            RightColor = colorPanel.RightColor;
+            DrawBoxSize.Text = drawBox.Size.ToString();
         }
 
-        private void _drawBox_MouseMove(object sender, MouseEventArgs e)
+        private void DrawBox_MouseMove(object sender, MouseEventArgs e)
         {
             MouseLocation.Text = e.Location.ToString();
         }
 
-        private void _drawBox_MouseLeave(object sender, EventArgs e)
+        private void DrawBox_MouseLeave(object sender, EventArgs e)
         {
             MouseLocation.Text = null;
         }
@@ -82,8 +102,8 @@ namespace Paint
                     this.Text = Path.GetFileName(saveDlg.FileName) + " - MyPaint";
                     _filePath = saveDlg.FileName;
                     _isSaved = true;
-                    Bitmap _bmp = new Bitmap(_drawBox.Width, _drawBox.Height);
-                    _drawBox.DrawToBitmap(_bmp, new Rectangle(0, 0, _drawBox.Width, _drawBox.Height));
+                    Bitmap _bmp = new Bitmap(drawBox.Width, drawBox.Height);
+                    drawBox.DrawToBitmap(_bmp, new Rectangle(0, 0, drawBox.Width, drawBox.Height));
                     _bmp.Save(_filePath);
                 }
             }
@@ -92,8 +112,8 @@ namespace Paint
             {
                 if (System.IO.File.Exists(_filePath))
                     System.IO.File.Delete(_filePath);
-                Bitmap _bmp = new Bitmap(_drawBox.Width, _drawBox.Height);
-                _drawBox.DrawToBitmap(_bmp, new Rectangle(0, 0, _drawBox.Width, _drawBox.Height));
+                Bitmap _bmp = new Bitmap(drawBox.Width, drawBox.Height);
+                drawBox.DrawToBitmap(_bmp, new Rectangle(0, 0, drawBox.Width, drawBox.Height));
                 _bmp.Save(_filePath);
                 _isSaved = true;
             }
@@ -105,8 +125,8 @@ namespace Paint
         private void FileNew_Click(object sender, EventArgs e)
         {
             AskForSave();
-            Bitmap bmp = new Bitmap(_drawBox.Width, _drawBox.Height);
-            _drawBox.Image = (Image)bmp;
+            Bitmap bmp = new Bitmap(drawBox.Width, drawBox.Height);
+            drawBox.Image = (Image)bmp;
             _filePath = null;
             _isOpenYet = true;
             isOpen();
@@ -128,10 +148,10 @@ namespace Paint
                 Byte[] bytes = File.ReadAllBytes(openDlg.FileName);
                 MemoryStream stream = new MemoryStream(bytes);
                 Image img = Image.FromStream(stream);
-                _drawBox.Image = img;
+                drawBox.Image = img;
                 _isSaved = true;
                 _isOpenYet = true;
-                _drawBox.CheckOpen();
+                drawBox.CheckOpen();
                 _filePath = openDlg.FileName;
                 this.Text = Path.GetFileName(openDlg.FileName) + " - MyPaint";
             }
@@ -140,9 +160,9 @@ namespace Paint
         protected bool isOpen()
         {
             if (_isOpenYet == true)
-                return _drawBox.IsOpen = true;
+                return drawBox.IsOpen = true;
             else
-                return _drawBox.IsOpen = false;
+                return drawBox.IsOpen = false;
         }
 
         // Thoát Form - Hỏi lưu hình trước khi thoát
@@ -176,13 +196,13 @@ namespace Paint
         #region Edit MenuStrip
         private void EditUndo_Click(object sender, EventArgs e)
         {
-            _drawBox.Undo();
+            drawBox.Undo();
             DrawBoxPanel.Invalidate();
         }
 
         private void EditRedo_Click(object sender, EventArgs e)
         {
-            _drawBox.Redo();
+            drawBox.Redo();
             DrawBoxPanel.Invalidate();
         }
         #endregion

@@ -21,6 +21,7 @@ namespace Paint
 
         Graphics _g;
         Pen _pen;
+        Color _drawColor;
 
         PopupTextBox textBox;
 
@@ -31,7 +32,6 @@ namespace Paint
         Rectangle areaRect;
 
         int _dragHandle = 0;
-        string _drawType;
         bool _isOpenYet;
 
         enum DrawStatus
@@ -59,7 +59,7 @@ namespace Paint
             _g.FillRegion(new SolidBrush(Color.White), region);
         }
         #endregion
-        
+
         #region Mouse Down
         //Khởi tạo các thuộc tính khi nhấn chuột trái vào vùng DrawBox
         protected override void OnMouseDown(MouseEventArgs e)
@@ -70,59 +70,19 @@ namespace Paint
 
             if (_drawStatus == DrawStatus.Idle)
             {
-                Color _drawColor = Color.Empty;
-
-                if (ShapePanel.ShapeLabel != null)
-                {
-                    _drawType = ShapePanel.ShapeLabel;
-                }
-                else _drawType = ToolPanel.ToolLabel;
-
                 if (e.Button == MouseButtons.Left)
                 {
-                    _drawColor = ColorPanel.LeftColor;
+                    _drawColor = MyPaint.LeftColor;
                 }
 
                 else if (e.Button == MouseButtons.Right)
                 {
-                    _drawColor = ColorPanel.RightColor;
+                    _drawColor = MyPaint.RightColor;
                 }
 
+                SetGraphics();
                 UndoList.Push(new Bitmap(Image));
                 RedoList.Clear();
-
-                switch (_drawType)
-                {
-                    case "Pen":
-                        _pen = new Pen(_drawColor, 1);
-                        _drawStatus = DrawStatus.ToolDrawing;
-                        break;
-
-                    case "Bucket":
-                        FloodFill(ptMouseDown, _drawColor);
-                        RedoList.Push(new Bitmap(Image));
-                        break;
-
-                    case "Eraser":
-                        _pen = new Pen(ColorPanel.RightColor, 10);
-                        _drawStatus = DrawStatus.ToolDrawing;
-                        break;
-
-                    case "Brush":
-                        _pen = new Pen(_drawColor, 5);
-                        _drawStatus = DrawStatus.ToolDrawing;
-                        break;
-
-                    case "Line":
-                        _pen = new Pen(_drawColor);
-                        _drawStatus = DrawStatus.LineDrawing;
-                        break;
-
-                    default:
-                        _pen = new Pen(_drawColor);
-                        _drawStatus = DrawStatus.ShapeDrawing;
-                        break;
-                }
             }
 
             else if (_drawStatus == DrawStatus.Resize)
@@ -136,12 +96,77 @@ namespace Paint
                 {
                     _drawStatus = DrawStatus.Idle;
                     _g = Graphics.FromImage(Image);
-                    ShapePaint.DrawShape(_g, _pen, areaRect, _drawType);
+                    ShapePaint.DrawShape(_g, _pen, areaRect, MyPaint.DrawType);
                     RedoList.Push(new Bitmap(Image));
                     this.Invalidate();
                 }
             }
         }
+
+        private DashStyle PenStyle()
+        {
+            switch (MyPaint.DrawStyle)
+            {
+                case "Solid":
+                    return DashStyle.Solid;
+
+                case "Dash":
+                    return DashStyle.Dash;
+
+                case "Dot":
+                    return DashStyle.Dot;
+
+                case "Dash Dot":
+                    return DashStyle.DashDot;
+
+                case "Dash Dot Dot":
+                    return DashStyle.DashDotDot;
+
+                default:
+                    return DashStyle.Solid;
+            }
+        }
+
+        private void SetGraphics()
+        {
+            switch (MyPaint.DrawType)
+            {
+                case "Pen":
+                    _pen = new Pen(_drawColor, 1);
+                    _pen.DashStyle = PenStyle();
+                    _drawStatus = DrawStatus.ToolDrawing;
+                    break;
+
+                case "Bucket":
+                    FloodFill(ptMouseDown, _drawColor);
+                    RedoList.Push(new Bitmap(Image));
+                    break;
+
+                case "Eraser":
+                    _pen = new Pen(MyPaint.RightColor, 10);
+                    _drawStatus = DrawStatus.ToolDrawing;
+                    break;
+
+                case "Brush":
+                    _pen = new Pen(_drawColor, 5);
+                    _drawStatus = DrawStatus.ToolDrawing;
+                    break;
+
+                case "Line":
+                    _pen = new Pen(_drawColor);
+                    _pen.DashStyle = PenStyle();
+                    _drawStatus = DrawStatus.LineDrawing;
+                    break;
+
+                default:
+                    _pen = new Pen(_drawColor);
+                    _pen.DashStyle = PenStyle();
+                    _drawStatus = DrawStatus.ShapeDrawing;
+                    break;
+            }
+        }
+
+
         #endregion
 
         #region Mouse Move
@@ -158,7 +183,7 @@ namespace Paint
 
             else if (_drawStatus == DrawStatus.ToolDrawing)
             {
-                DrawDrag(ptMouseDown, e.Location, _drawType);
+                DrawDrag(ptMouseDown, e.Location, MyPaint.DrawType);
                 ptMouseDown = e.Location;
             }
 
@@ -196,12 +221,12 @@ namespace Paint
 
             else if (_drawStatus == DrawStatus.ShapeDrawing)
             {
-                ShapePaint.DrawShape(e.Graphics, _pen, areaRect, _drawType);
+                ShapePaint.DrawShape(e.Graphics, _pen, areaRect, MyPaint.DrawType);
             }
 
             else if (_drawStatus == DrawStatus.Resize)
             {
-                ShapePaint.DrawShape(e.Graphics, _pen, areaRect, _drawType);
+                ShapePaint.DrawShape(e.Graphics, _pen, areaRect, MyPaint.DrawType);
                 ResizePaint.DrawDragRectangle(e.Graphics, areaRect);
             }
         }
@@ -212,9 +237,6 @@ namespace Paint
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
-
-            ptMouseDown = Point.Empty;
-
             if (_drawStatus == DrawStatus.LineDrawing)
             {
                 _g = Graphics.FromImage(Image);
@@ -239,7 +261,7 @@ namespace Paint
                 {
                     UndoList.Push(new Bitmap(Image));
                     RedoList.Clear();
-                    ShapePaint.DrawShape(_g, _pen, areaRect, _drawType);
+                    ShapePaint.DrawShape(_g, _pen, areaRect, MyPaint.DrawType);
                     ResizePaint.DrawDragRectangle(_g, areaRect);
                     _drawStatus = DrawStatus.Resize;
                 }
@@ -370,7 +392,7 @@ namespace Paint
             {
                 _drawStatus = DrawStatus.Idle;
                 _g = Graphics.FromImage(Image);
-                ShapePaint.DrawShape(_g, _pen, areaRect, _drawType);
+                ShapePaint.DrawShape(_g, _pen, areaRect, MyPaint.DrawType);
                 RedoList.Push(new Bitmap(Image));
                 this.Invalidate();
             }

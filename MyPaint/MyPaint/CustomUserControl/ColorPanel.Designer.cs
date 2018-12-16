@@ -42,10 +42,11 @@
             // leftColorLabel
             // 
             this.leftColorLabel.AutoSize = true;
-            this.leftColorLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.leftColorLabel.Dock = System.Windows.Forms.DockStyle.Top;
             this.leftColorLabel.Location = new System.Drawing.Point(3, 60);
             this.leftColorLabel.Name = "leftColorLabel";
-            this.leftColorLabel.Size = new System.Drawing.Size(54, 20);
+            this.leftColorLabel.Padding = new System.Windows.Forms.Padding(3);
+            this.leftColorLabel.Size = new System.Drawing.Size(54, 19);
             this.leftColorLabel.TabIndex = 19;
             this.leftColorLabel.Text = "Color 1";
             this.leftColorLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -55,10 +56,11 @@
             // rightColorLabel
             // 
             this.rightColorLabel.AutoSize = true;
-            this.rightColorLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rightColorLabel.Dock = System.Windows.Forms.DockStyle.Top;
             this.rightColorLabel.Location = new System.Drawing.Point(63, 60);
             this.rightColorLabel.Name = "rightColorLabel";
-            this.rightColorLabel.Size = new System.Drawing.Size(54, 20);
+            this.rightColorLabel.Padding = new System.Windows.Forms.Padding(3);
+            this.rightColorLabel.Size = new System.Drawing.Size(54, 19);
             this.rightColorLabel.TabIndex = 16;
             this.rightColorLabel.Text = "Color 2";
             this.rightColorLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -303,10 +305,11 @@
             // 
             this.colorPanelLabel.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.colorPanelLabel, 6);
-            this.colorPanelLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.colorPanelLabel.Dock = System.Windows.Forms.DockStyle.Top;
             this.colorPanelLabel.Location = new System.Drawing.Point(123, 60);
             this.colorPanelLabel.Name = "colorPanelLabel";
-            this.colorPanelLabel.Size = new System.Drawing.Size(174, 20);
+            this.colorPanelLabel.Padding = new System.Windows.Forms.Padding(3);
+            this.colorPanelLabel.Size = new System.Drawing.Size(174, 19);
             this.colorPanelLabel.TabIndex = 17;
             this.colorPanelLabel.Text = "Colors (double-click to edit)";
             this.colorPanelLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

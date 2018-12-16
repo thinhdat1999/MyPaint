@@ -152,7 +152,7 @@ namespace Paint
                         Region _oldRegion = new Region(_oldSize);
                         Region _newRegion = new Region(_newSize);
                         _newRegion.Exclude(_oldRegion);
-                        SolidBrush brush = new SolidBrush(ColorPanel.RightColor);
+                        SolidBrush brush = new SolidBrush(MyPaint.RightColor);
                         g.FillRegion(brush, _newRegion);
                     }
                     _drawBox.PushRedo(_drawBox.Image);
