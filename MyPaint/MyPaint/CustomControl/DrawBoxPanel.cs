@@ -142,7 +142,7 @@ namespace Paint
                     _drawBox.Image = new Bitmap(_drawBox.Width, _drawBox.Height);
 
                     Graphics g = Graphics.FromImage(_drawBox.Image);
-                    g.DrawImage(_oldImage, new Rectangle(0, 0, _oldImage.Width, _oldImage.Height));
+                    g.DrawImage(_oldImage, 0, 0);
 
                     // Đổi màu nền của phần resize theo Right Color của Color Panel
                     if (_drawBox.Image.Width > _oldImage.Width || _drawBox.Image.Height > _oldImage.Height)

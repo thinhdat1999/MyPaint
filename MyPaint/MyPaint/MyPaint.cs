@@ -95,7 +95,8 @@ namespace Paint
             if (_filePath == null)
             {
                 SaveFileDialog saveDlg = new SaveFileDialog();
-                saveDlg.Filter = @"PNG (*.png)|*.png|Bitmap|*.bmp|JPEG|*.jpeg|JPG|*.jpg|Tiff Image|*.tiff|Wmf Image|*.wmf|All file|*.*";
+                saveDlg.Filter = @"Bitmap Image|*.bmp|JPEG Image|*.jpeg|Png Image|*.png|Tiff Image|*.tiff|Wmf Image|*.wmf";
+
                 if (saveDlg.ShowDialog() == DialogResult.OK)
                 {
                     this.Text = Path.GetFileName(saveDlg.FileName) + " - MyPaint";
@@ -138,8 +139,9 @@ namespace Paint
         {
             AskForSave();
 
-            var openDlg = new OpenFileDialog();            
-            openDlg.Filter = @"All file|*.*|Bitmap Image|*.bmp|JPEG Image|*.jpeg|JPG Image|*.jpg|Png Image|*.png|Tiff Image|*.tiff|Wmf Image|*.wmf";
+            var openDlg = new OpenFileDialog();
+            openDlg.Filter = @"Bitmap Image|*.bmp|JPEG Image|*.jpeg|JPG Image|*.jpg|Png Image|*.png|Tiff Image|*.tiff|Wmf Image|*.wmf|All file|*.";
+
             if (openDlg.ShowDialog() == DialogResult.OK)
             {
 
@@ -147,8 +149,6 @@ namespace Paint
                 MemoryStream stream = new MemoryStream(bytes);
                 Image img = Image.FromStream(stream);
                 drawBox.Image = img;
-                drawBox.Size = img.Size;
-                DrawBoxPanel.Refresh();
                 _isSaved = true;
                 _isOpenYet = true;
                 drawBox.CheckOpen();
@@ -182,7 +182,8 @@ namespace Paint
         private void FileSaveAs_Click(object sender, EventArgs e)
         {
             SaveFileDialog saveDlg = new SaveFileDialog();
-            saveDlg.Filter = @"PNG (*.png)|*.png|Bitmap|*.bmp|JPEG|*.jpeg|JPG|*.jpg|Tiff Image|*.tiff|Wmf Image|*.wmf|All file|*.*";
+            saveDlg.Filter = @"Bitmap Image|*.bmp|JPEG Image|*.jpeg|JPG Image|*.jpg|Png Image|*.png|Tiff Image|*.tiff|Wmf Image|*.wmf|All file|*.";
+
             if (saveDlg.ShowDialog() == DialogResult.OK)
             {
                 this.Text = Path.GetFileName(saveDlg.FileName) + " - MyPaint";
