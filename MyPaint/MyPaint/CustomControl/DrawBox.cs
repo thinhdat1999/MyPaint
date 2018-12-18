@@ -23,13 +23,15 @@ namespace Paint
         Pen _pen;
         Color _drawColor;
 
-        PopupTextBox textBox;
+        PopupTextBox textBoxPopUp;
+        string TextToDraw;
 
         Point ptMouseDown;
         Point ptMouseMove;
 
         Rectangle oldRect;
         Rectangle areaRect;
+        Rectangle textRect;
 
         int _dragHandle = 0;
         bool _isOpenYet;
@@ -38,6 +40,7 @@ namespace Paint
         {
             Idle,
             LineDrawing,
+            TextDrawing,
             ToolDrawing,
             ShapeDrawing,
             Resize
@@ -96,8 +99,22 @@ namespace Paint
                 {
                     _drawStatus = DrawStatus.Idle;
                     _g = Graphics.FromImage(Image);
-                    ShapePaint.DrawShape(_g, _pen, areaRect, MyPaint.DrawType);
-                    RedoList.Push(new Bitmap(Image));
+                    if(MyPaint.DrawType != "Text")
+                    {
+                        ShapePaint.DrawShape(_g, _pen, areaRect, MyPaint.DrawType);
+                        RedoList.Push(new Bitmap(Image));
+                    }
+                    else
+                    {
+                        if (TextToDraw != null)
+                        {
+                            AddText(TextToDraw, areaRect);
+                            textBoxPopUp.Dispose();
+                            RedoList.Push(new Bitmap(Image));
+                        }
+                        TextToDraw = "";
+
+                    }
                     this.Invalidate();
                 }
             }
@@ -158,6 +175,11 @@ namespace Paint
                     _drawStatus = DrawStatus.LineDrawing;
                     break;
 
+                case "Text":
+                    _pen = new Pen(_drawColor);               
+                    _drawStatus = DrawStatus.TextDrawing;
+                    break;
+
                 default:
                     _pen = new Pen(_drawColor);
                     _pen.DashStyle = PenStyle();
@@ -185,6 +207,12 @@ namespace Paint
             {
                 DrawDrag(ptMouseDown, e.Location, MyPaint.DrawType);
                 ptMouseDown = e.Location;
+            }
+
+            else if (_drawStatus == DrawStatus.TextDrawing)
+            {
+                areaRect = ShapePaint.CreateRectangle(ptMouseDown, e.Location);
+                this.Invalidate();
             }
 
             else if (_drawStatus == DrawStatus.ShapeDrawing)
@@ -219,6 +247,13 @@ namespace Paint
                 e.Graphics.DrawLine(_pen, ptMouseDown, ptMouseMove);
             }
 
+            else if (_drawStatus == DrawStatus.TextDrawing)
+            {
+                Pen pen = new Pen(Color.LightBlue);
+                pen.DashStyle = DashStyle.Dash;
+                ShapePaint.DrawShape(e.Graphics, pen, areaRect, "Rectangle");
+            }
+
             else if (_drawStatus == DrawStatus.ShapeDrawing)
             {
                 ShapePaint.DrawShape(e.Graphics, _pen, areaRect, MyPaint.DrawType);
@@ -226,7 +261,21 @@ namespace Paint
 
             else if (_drawStatus == DrawStatus.Resize)
             {
-                ShapePaint.DrawShape(e.Graphics, _pen, areaRect, MyPaint.DrawType);
+                if (MyPaint.DrawType != "Text")
+                {
+                    ShapePaint.DrawShape(e.Graphics, _pen, areaRect, MyPaint.DrawType);
+                }
+                else
+                {
+                    if(areaRect.Height < textRect.Height)
+                    {
+                        areaRect.Height = textRect.Height;
+                    }
+                    Pen pen = new Pen(Color.LightBlue);
+                    pen.DashStyle = DashStyle.Dash;
+                    ShapePaint.DrawShape(e.Graphics, pen, areaRect, "Rectangle");
+                }
+                
                 ResizePaint.DrawDragRectangle(e.Graphics, areaRect);
             }
         }
@@ -251,6 +300,12 @@ namespace Paint
                 RedoList.Push(new Bitmap(Image));
             }
 
+            else if (_drawStatus == DrawStatus.TextDrawing)
+            {
+                _drawStatus = DrawStatus.Resize;
+                DrawTextBox("");
+                Refresh();
+            }
             // Nếu là ShapeDrawing thì push Image vào UndoList và Clear RedoList nếu areaRect Width và Height > 1px
             // Không push vào RedoList ở bước này nếu không sẽ làm mất hình cuối khi Redo
             else if (_drawStatus == DrawStatus.ShapeDrawing)
@@ -271,6 +326,11 @@ namespace Paint
             else if (_drawStatus == DrawStatus.Resize)
             {
                 oldRect = Rectangle.Empty;
+                if (MyPaint.DrawType == "Text")
+                {
+                    textBoxPopUp.Dispose();
+                    DrawTextBox(TextToDraw);
+                }
             }
         }
         #endregion
@@ -345,22 +405,26 @@ namespace Paint
         }
         #endregion
 
+
         #region TextBox
-        //void DrawTextBox()
-        //{
-        //    Rectangle rect = !_isShiftPress ? ShapePaint.CreateRectangle(ptMouseDown, ptMouseMove) : ShapePaint.CreateSquare(ptMouseDown, ptMouseMove);
-        //    textBox = new PopupTextBox(rect.Size, rect.Location);
-        //    textBox.Leave += DrawString_WhenLeave;
-        //    textBox.KeyDown += DrawString_WhenPressEscape;
-        //    this.Controls.Add(textBox);
-        //}
+        void DrawTextBox(string curText)
+        {
+            Point location = this.PointToScreen(areaRect.Location);
+            textRect = areaRect;
+            textRect.Inflate(-1, -1);
+            textBoxPopUp = new PopupTextBox(curText, textRect, location,
+                                            () => { textRect.Size = textBoxPopUp.Size; this.Refresh(); },
+                                            () => TextToDraw = textBoxPopUp.TextToDraw);
+            textBoxPopUp.Show();
+            textBoxPopUp.KeyDown += DrawString_WhenPressEscape;
+        }
 
         //Chèn văn bản vào vùng DrawBox
-        public void AddText(string txt, Point location)
+        public void AddText(string txt, Rectangle layoutRectangle)
         {
-            //_brush = new SolidBrush(_drawColor);
-            //_g.DrawString(txt, DefaultFont, _brush, location);
-            //UndoList.Push(new Bitmap(Image));
+            SolidBrush _brush = new SolidBrush(Color.Black);
+            _g.DrawString(txt, DefaultFont, _brush, layoutRectangle);
+            this.Refresh();
         }
 
         void DrawString_WhenPressEscape(object sender, KeyEventArgs e)
@@ -368,16 +432,10 @@ namespace Paint
             PopupTextBox s = sender as PopupTextBox;
             if (e.KeyCode == Keys.Escape)
             {
-                AddText(s.Text, s.Location);
                 s.Dispose();
+                _drawStatus = DrawStatus.Idle;
+                this.Invalidate();
             }
-        }
-
-        void DrawString_WhenLeave(object sender, EventArgs e)
-        {
-            PopupTextBox s = sender as PopupTextBox;
-            AddText(s.Text, s.Location);
-            s.Dispose();
         }
         #endregion
 
