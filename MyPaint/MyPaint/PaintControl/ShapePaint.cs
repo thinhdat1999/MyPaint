@@ -183,59 +183,63 @@ namespace Paint
         #region DrawShape
         public static void DrawShape(Graphics g, Pen pen, Rectangle rect, string type)
         {
-            Point[] pts = null;
-
-            switch (type)
+            try
             {
-                case "Rectangle":
-                    g.DrawRectangle(pen, rect);
-                    return;
+                Point[] pts = null;
 
-                case "Ellipse":
-                    g.DrawEllipse(pen, rect);
-                    return;
+                switch (type)
+                {
+                    case "Rectangle":
+                        g.DrawRectangle(pen, rect);
+                        return;
 
-                case "Triangle":
-                    pts = TrianglePoints(rect);
-                    break;
+                    case "Ellipse":
+                        g.DrawEllipse(pen, rect);
+                        return;
 
-                case "SqrTriangle":
-                    pts = SqrTrianglePoints(rect);
-                    break;
+                    case "Triangle":
+                        pts = TrianglePoints(rect);
+                        break;
 
-                case "LeftArrow":
-                    pts = LeftArrowPoints(rect);
-                    break;
+                    case "SqrTriangle":
+                        pts = SqrTrianglePoints(rect);
+                        break;
 
-                case "RightArrow":
-                    pts = RightArrowPoints(rect);
-                    break;
+                    case "LeftArrow":
+                        pts = LeftArrowPoints(rect);
+                        break;
 
-                case "UpArrow":
-                    pts = UpArrowPoints(rect);
-                    break;
+                    case "RightArrow":
+                        pts = RightArrowPoints(rect);
+                        break;
 
-                case "DownArrow":
-                    pts = DownArrowPoint(rect);
-                    break;
+                    case "UpArrow":
+                        pts = UpArrowPoints(rect);
+                        break;
 
-                case "Rhombus":
-                    pts = RhombusPoints(rect);
-                    break;
+                    case "DownArrow":
+                        pts = DownArrowPoint(rect);
+                        break;
 
-                case "Pentagon":
-                    pts = PentagonPoints(rect);
-                    break;
+                    case "Rhombus":
+                        pts = RhombusPoints(rect);
+                        break;
 
-                case "Hexagon":
-                    pts = HexagonPoints(rect);
-                    break;
+                    case "Pentagon":
+                        pts = PentagonPoints(rect);
+                        break;
 
-                case "Star":
-                    pts = StarPoints(rect);
-                    break;
+                    case "Hexagon":
+                        pts = HexagonPoints(rect);
+                        break;
+
+                    case "Star":
+                        pts = StarPoints(rect);
+                        break;
+                }
+                g.DrawPolygon(pen, pts);
             }
-            g.DrawPolygon(pen, pts);
+            catch { }
         }
         #endregion
     }

@@ -12,11 +12,25 @@ namespace Paint
 {
     public partial class ColorPanel : UserControl
     {
-        public Color LeftColor => leftColorButton.BackColor;
-        public Color RightColor => rightColorButton.BackColor;
-        private static bool _isEnter { get; set; }
+        public Color LeftColor
+        {
+            get { return leftColorButton.BackColor; }
+            set
+            {
+                if (MyPaint.DrawType == "Picker")
+                    leftColorButton.BackColor = value;
+            }
+        }
 
-        public static bool isEnter => _isEnter;
+        public Color RightColor
+        {
+            get { return rightColorButton.BackColor; }
+            set
+            {
+                if (MyPaint.DrawType == "Picker")
+                    rightColorButton.BackColor = value;
+            }
+        }
 
         public ColorPanel()
         {
@@ -59,16 +73,6 @@ namespace Paint
                     rightColorButton.BackColor = colorButton.BackColor;
                 }
             }
-        }
-
-        private void MouseEnter(object sender, EventArgs e)
-        {
-            _isEnter = true;
-        }
-
-        private void MouseLeave(object sender, EventArgs e)
-        {
-            _isEnter = false;
         }
     }
 }

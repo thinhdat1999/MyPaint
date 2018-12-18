@@ -39,9 +39,10 @@ namespace Paint
             drawBox.MouseMove += DrawBox_MouseMove;
             drawBox.MouseLeave += DrawBox_MouseLeave;
             drawBox.SizeChanged += DrawBox_SizeChange;
-            
+
             DrawBoxSize.Text = drawBox.Size.ToString();
             StyleComboBox.SelectedIndex = 0;
+            DrawType = "Pen";
         }
 
         #region DrawBox Event
@@ -50,12 +51,20 @@ namespace Paint
             LeftColor = colorPanel.LeftColor;
             RightColor = colorPanel.RightColor;
             DrawStyle = StyleComboBox.Text;
+            PenWidth = (int)PenWidthBox.Value;
 
-            if (shapePanel.ShapeLabel != null)
-                DrawType = shapePanel.ShapeLabel;
-            else DrawType = toolPanel.ToolLabel;
+            if (DrawType == "Picker")
+            {
+                Bitmap bmp = new Bitmap(drawBox.Image);
+                Color color = bmp.GetPixel(e.Location.X, e.Location.Y);
+
+                if (e.Button == MouseButtons.Left)
+                    colorPanel.LeftColor = color;
+                else if (e.Button == MouseButtons.Right)
+                    colorPanel.RightColor = color;
+            }
         }
-        
+
         private void DrawBox_SizeChange(object sender, EventArgs e)
         {
             RightColor = colorPanel.RightColor;
@@ -124,8 +133,11 @@ namespace Paint
         private void FileNew_Click(object sender, EventArgs e)
         {
             AskForSave();
-            Bitmap bmp = new Bitmap(drawBox.Width, drawBox.Height);
-            drawBox.Image = (Image)bmp;
+            drawBox.Image = new Bitmap(drawBox.Width, drawBox.Height);
+            Region region = new Region(new Rectangle(0, 0, drawBox.Width, drawBox.Height));
+            Graphics _g = Graphics.FromImage(drawBox.Image);
+            _g.FillRegion(new SolidBrush(Color.White), region);
+
             _filePath = null;
             _isOpenYet = true;
             isOpen();
@@ -138,7 +150,7 @@ namespace Paint
         {
             AskForSave();
 
-            var openDlg = new OpenFileDialog();            
+            var openDlg = new OpenFileDialog();
             openDlg.Filter = @"All file|*.*|Bitmap Image|*.bmp|JPEG Image|*.jpeg|JPG Image|*.jpg|Png Image|*.png|Tiff Image|*.tiff|Wmf Image|*.wmf";
             if (openDlg.ShowDialog() == DialogResult.OK)
             {

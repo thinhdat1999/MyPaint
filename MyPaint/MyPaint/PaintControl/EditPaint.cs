@@ -5,10 +5,11 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Paint
 {
-    class ResizePaint
+    class EditPaint
     {
         static Point[] DragPoints(Rectangle rect)
         {
@@ -53,7 +54,7 @@ namespace Paint
             return index;
         }
 
-        public static void UpdateAreaRect(ref Rectangle areaRect, Rectangle oldRect, Point ptMouseDown, Point ptMouseMove, int dragHandle)
+        public static void UpdateResizeRect(ref Rectangle areaRect, Rectangle oldRect, Point ptMouseDown, Point ptMouseMove, int dragHandle)
         {
             switch (dragHandle)
             {
@@ -109,6 +110,13 @@ namespace Paint
                         areaRect = new Rectangle(oldRect.Left, oldRect.Top, oldRect.Width - diffX, oldRect.Height - diffY);
                     break;
             }
+        }
+
+        public static void UpdateMoveRect(ref Rectangle areaRect, Rectangle oldRect, Point ptMouseDown, Point ptMouseMove)
+        {
+            int diffX = ptMouseDown.X - ptMouseMove.X;
+            int diffY = ptMouseDown.Y - ptMouseMove.Y;
+            areaRect = new Rectangle(oldRect.Left - diffX, oldRect.Top - diffY, areaRect.Width, areaRect.Height);
         }
     }
 }

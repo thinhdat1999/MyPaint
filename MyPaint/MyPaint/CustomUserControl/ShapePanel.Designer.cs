@@ -31,8 +31,9 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShapePanel));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.button15 = new System.Windows.Forms.Button();
+            this.StarButton = new System.Windows.Forms.Button();
             this.ShapeIcons = new System.Windows.Forms.ImageList(this.components);
+            this.button15 = new System.Windows.Forms.Button();
             this.button14 = new System.Windows.Forms.Button();
             this.HexagonIcon = new System.Windows.Forms.Button();
             this.PentagonIcon = new System.Windows.Forms.Button();
@@ -46,7 +47,6 @@
             this.EllipseButton = new System.Windows.Forms.Button();
             this.RectangleButton = new System.Windows.Forms.Button();
             this.LineButton = new System.Windows.Forms.Button();
-            this.StarButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -84,16 +84,22 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(175, 105);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
-            // button15
+            // StarButton
             // 
-            this.button15.BackColor = System.Drawing.SystemColors.InactiveBorder;
-            this.button15.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button15.ImageList = this.ShapeIcons;
-            this.button15.Location = new System.Drawing.Point(143, 73);
-            this.button15.Name = "button15";
-            this.button15.Size = new System.Drawing.Size(29, 29);
-            this.button15.TabIndex = 14;
-            this.button15.UseVisualStyleBackColor = false;
+            this.StarButton.BackColor = System.Drawing.SystemColors.InactiveBorder;
+            this.StarButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.StarButton.ImageKey = "starIcon.png";
+            this.StarButton.ImageList = this.ShapeIcons;
+            this.StarButton.Location = new System.Drawing.Point(73, 73);
+            this.StarButton.Name = "StarButton";
+            this.StarButton.Size = new System.Drawing.Size(29, 29);
+            this.StarButton.TabIndex = 15;
+            this.StarButton.Tag = "Star";
+            this.StarButton.UseVisualStyleBackColor = false;
+            this.StarButton.Leave += new System.EventHandler(this.ShapeButton_Leave);
+            this.StarButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ShapeButton_MouseDown);
+            this.StarButton.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.StarButton.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // ShapeIcons
             // 
@@ -114,6 +120,19 @@
             this.ShapeIcons.Images.SetKeyName(12, "rightArrowIcon.png");
             this.ShapeIcons.Images.SetKeyName(13, "upArrowIcon.png");
             // 
+            // button15
+            // 
+            this.button15.BackColor = System.Drawing.SystemColors.InactiveBorder;
+            this.button15.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button15.ImageList = this.ShapeIcons;
+            this.button15.Location = new System.Drawing.Point(143, 73);
+            this.button15.Name = "button15";
+            this.button15.Size = new System.Drawing.Size(29, 29);
+            this.button15.TabIndex = 14;
+            this.button15.UseVisualStyleBackColor = false;
+            this.button15.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.button15.MouseLeave += new System.EventHandler(this.button_MouseLeave);
+            // 
             // button14
             // 
             this.button14.BackColor = System.Drawing.SystemColors.InactiveBorder;
@@ -124,6 +143,8 @@
             this.button14.Size = new System.Drawing.Size(29, 29);
             this.button14.TabIndex = 13;
             this.button14.UseVisualStyleBackColor = false;
+            this.button14.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.button14.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // HexagonIcon
             // 
@@ -139,6 +160,8 @@
             this.HexagonIcon.UseVisualStyleBackColor = false;
             this.HexagonIcon.Leave += new System.EventHandler(this.ShapeButton_Leave);
             this.HexagonIcon.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ShapeButton_MouseDown);
+            this.HexagonIcon.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.HexagonIcon.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // PentagonIcon
             // 
@@ -154,6 +177,8 @@
             this.PentagonIcon.UseVisualStyleBackColor = false;
             this.PentagonIcon.Leave += new System.EventHandler(this.ShapeButton_Leave);
             this.PentagonIcon.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ShapeButton_MouseDown);
+            this.PentagonIcon.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.PentagonIcon.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // RhombusButton
             // 
@@ -169,6 +194,8 @@
             this.RhombusButton.UseVisualStyleBackColor = false;
             this.RhombusButton.Leave += new System.EventHandler(this.ShapeButton_Leave);
             this.RhombusButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ShapeButton_MouseDown);
+            this.RhombusButton.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.RhombusButton.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // upArrowIcon
             // 
@@ -184,6 +211,8 @@
             this.upArrowIcon.UseVisualStyleBackColor = false;
             this.upArrowIcon.Leave += new System.EventHandler(this.ShapeButton_Leave);
             this.upArrowIcon.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ShapeButton_MouseDown);
+            this.upArrowIcon.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.upArrowIcon.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // downArrowIcon
             // 
@@ -199,6 +228,7 @@
             this.downArrowIcon.UseVisualStyleBackColor = false;
             this.downArrowIcon.Leave += new System.EventHandler(this.ShapeButton_Leave);
             this.downArrowIcon.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ShapeButton_MouseDown);
+            this.downArrowIcon.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // leftArrowIcon
             // 
@@ -214,6 +244,8 @@
             this.leftArrowIcon.UseVisualStyleBackColor = false;
             this.leftArrowIcon.Leave += new System.EventHandler(this.ShapeButton_Leave);
             this.leftArrowIcon.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ShapeButton_MouseDown);
+            this.leftArrowIcon.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.leftArrowIcon.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // rightArrowIcon
             // 
@@ -229,6 +261,8 @@
             this.rightArrowIcon.UseVisualStyleBackColor = false;
             this.rightArrowIcon.Leave += new System.EventHandler(this.ShapeButton_Leave);
             this.rightArrowIcon.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ShapeButton_MouseDown);
+            this.rightArrowIcon.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.rightArrowIcon.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // sqrTriangleButton
             // 
@@ -244,6 +278,8 @@
             this.sqrTriangleButton.UseVisualStyleBackColor = false;
             this.sqrTriangleButton.Leave += new System.EventHandler(this.ShapeButton_Leave);
             this.sqrTriangleButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ShapeButton_MouseDown);
+            this.sqrTriangleButton.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.sqrTriangleButton.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // TriangleButton
             // 
@@ -259,6 +295,8 @@
             this.TriangleButton.UseVisualStyleBackColor = false;
             this.TriangleButton.Leave += new System.EventHandler(this.ShapeButton_Leave);
             this.TriangleButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ShapeButton_MouseDown);
+            this.TriangleButton.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.TriangleButton.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // EllipseButton
             // 
@@ -274,6 +312,8 @@
             this.EllipseButton.UseVisualStyleBackColor = false;
             this.EllipseButton.Leave += new System.EventHandler(this.ShapeButton_Leave);
             this.EllipseButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ShapeButton_MouseDown);
+            this.EllipseButton.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.EllipseButton.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // RectangleButton
             // 
@@ -289,6 +329,8 @@
             this.RectangleButton.UseVisualStyleBackColor = false;
             this.RectangleButton.Leave += new System.EventHandler(this.ShapeButton_Leave);
             this.RectangleButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ShapeButton_MouseDown);
+            this.RectangleButton.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.RectangleButton.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // LineButton
             // 
@@ -304,21 +346,8 @@
             this.LineButton.UseVisualStyleBackColor = false;
             this.LineButton.Leave += new System.EventHandler(this.ShapeButton_Leave);
             this.LineButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ShapeButton_MouseDown);
-            // 
-            // StarButton
-            // 
-            this.StarButton.BackColor = System.Drawing.SystemColors.InactiveBorder;
-            this.StarButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.StarButton.ImageKey = "starIcon.png";
-            this.StarButton.ImageList = this.ShapeIcons;
-            this.StarButton.Location = new System.Drawing.Point(73, 73);
-            this.StarButton.Name = "StarButton";
-            this.StarButton.Size = new System.Drawing.Size(29, 29);
-            this.StarButton.TabIndex = 15;
-            this.StarButton.Tag = "Star";
-            this.StarButton.UseVisualStyleBackColor = false;
-            this.StarButton.Leave += new System.EventHandler(this.ShapeButton_Leave);
-            this.StarButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ShapeButton_MouseDown);
+            this.LineButton.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.LineButton.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // ShapePanel
             // 

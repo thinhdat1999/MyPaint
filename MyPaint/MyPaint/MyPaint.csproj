@@ -79,9 +79,9 @@
       <DependentUpon>MyPaint.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControl\PopupTextBox.cs">
-      <SubType>Component</SubType>
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PaintControl\ResizePaint.cs" />
+    <Compile Include="PaintControl\EditPaint.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PaintControl\ShapePaint.cs" />

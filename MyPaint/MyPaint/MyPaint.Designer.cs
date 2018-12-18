@@ -38,6 +38,16 @@ namespace Paint
             this.DrawBoxSizeLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.DrawBoxSize = new System.Windows.Forms.ToolStripStatusLabel();
             this.ToolsPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.DrawToolPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.toolPanel = new Paint.ToolPanel();
+            this.shapePanel = new Paint.ShapePanel();
+            this.colorPanel = new Paint.ColorPanel();
+            this.StyleComboBox = new System.Windows.Forms.ComboBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.ShapesLabel = new System.Windows.Forms.Label();
+            this.ToolLabel = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.PenWidthBox = new System.Windows.Forms.NumericUpDown();
             this.FileToolStrip = new System.Windows.Forms.ToolStripMenuItem();
             this.FileNew = new System.Windows.Forms.ToolStripMenuItem();
             this.FileOpen = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,21 +59,11 @@ namespace Paint
             this.EditRedo = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.DrawBoxPanel = new Paint.DrawBoxPanel();
-            this.DrawToolPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.toolPanel = new Paint.ToolPanel();
-            this.shapePanel = new Paint.ShapePanel();
-            this.colorPanel = new Paint.ColorPanel();
-            this.StyleComboBox = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.ShapesLabel = new System.Windows.Forms.Label();
-            this.ToolLabel = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.PenWidthBox = new System.Windows.Forms.NumericUpDown();
             this.statusStrip.SuspendLayout();
             this.ToolsPanel.SuspendLayout();
-            this.menuStrip.SuspendLayout();
             this.DrawToolPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PenWidthBox)).BeginInit();
+            this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -121,114 +121,6 @@ namespace Paint
             this.ToolsPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 118F));
             this.ToolsPanel.Size = new System.Drawing.Size(840, 99);
             this.ToolsPanel.TabIndex = 4;
-            // 
-            // FileToolStrip
-            // 
-            this.FileToolStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FileNew,
-            this.FileOpen,
-            this.FileSave,
-            this.FileSaveAs,
-            this.FileExit});
-            this.FileToolStrip.Name = "FileToolStrip";
-            this.FileToolStrip.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.FileToolStrip.Size = new System.Drawing.Size(37, 20);
-            this.FileToolStrip.Text = "File";
-            // 
-            // FileNew
-            // 
-            this.FileNew.Image = ((System.Drawing.Image)(resources.GetObject("FileNew.Image")));
-            this.FileNew.Name = "FileNew";
-            this.FileNew.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.FileNew.Size = new System.Drawing.Size(186, 22);
-            this.FileNew.Text = "New        ";
-            this.FileNew.Click += new System.EventHandler(this.FileNew_Click);
-            // 
-            // FileOpen
-            // 
-            this.FileOpen.Image = ((System.Drawing.Image)(resources.GetObject("FileOpen.Image")));
-            this.FileOpen.Name = "FileOpen";
-            this.FileOpen.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.FileOpen.Size = new System.Drawing.Size(186, 22);
-            this.FileOpen.Text = "Open";
-            this.FileOpen.Click += new System.EventHandler(this.FileOpen_Click);
-            // 
-            // FileSave
-            // 
-            this.FileSave.Image = ((System.Drawing.Image)(resources.GetObject("FileSave.Image")));
-            this.FileSave.Name = "FileSave";
-            this.FileSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.FileSave.Size = new System.Drawing.Size(186, 22);
-            this.FileSave.Text = "Save";
-            this.FileSave.Click += new System.EventHandler(this.FileSave_Click);
-            // 
-            // FileSaveAs
-            // 
-            this.FileSaveAs.Image = ((System.Drawing.Image)(resources.GetObject("FileSaveAs.Image")));
-            this.FileSaveAs.Name = "FileSaveAs";
-            this.FileSaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.S)));
-            this.FileSaveAs.Size = new System.Drawing.Size(186, 22);
-            this.FileSaveAs.Text = "Save As";
-            this.FileSaveAs.Click += new System.EventHandler(this.FileSaveAs_Click);
-            // 
-            // FileExit
-            // 
-            this.FileExit.Image = ((System.Drawing.Image)(resources.GetObject("FileExit.Image")));
-            this.FileExit.Name = "FileExit";
-            this.FileExit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
-            this.FileExit.Size = new System.Drawing.Size(186, 22);
-            this.FileExit.Text = "Exit";
-            this.FileExit.Click += new System.EventHandler(this.FileExit_Click);
-            // 
-            // EditToolStrip
-            // 
-            this.EditToolStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.EditUndo,
-            this.EditRedo});
-            this.EditToolStrip.Name = "EditToolStrip";
-            this.EditToolStrip.Size = new System.Drawing.Size(39, 20);
-            this.EditToolStrip.Text = "Edit";
-            // 
-            // EditUndo
-            // 
-            this.EditUndo.Image = ((System.Drawing.Image)(resources.GetObject("EditUndo.Image")));
-            this.EditUndo.Name = "EditUndo";
-            this.EditUndo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-            this.EditUndo.Size = new System.Drawing.Size(144, 22);
-            this.EditUndo.Text = "Undo";
-            this.EditUndo.Click += new System.EventHandler(this.EditUndo_Click);
-            // 
-            // EditRedo
-            // 
-            this.EditRedo.Image = ((System.Drawing.Image)(resources.GetObject("EditRedo.Image")));
-            this.EditRedo.Name = "EditRedo";
-            this.EditRedo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-            this.EditRedo.Size = new System.Drawing.Size(144, 22);
-            this.EditRedo.Text = "Redo";
-            this.EditRedo.Click += new System.EventHandler(this.EditRedo_Click);
-            // 
-            // menuStrip
-            // 
-            this.menuStrip.BackColor = System.Drawing.SystemColors.Control;
-            this.menuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FileToolStrip,
-            this.EditToolStrip});
-            this.menuStrip.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(840, 24);
-            this.menuStrip.TabIndex = 1;
-            this.menuStrip.Text = "menuStrip1";
-            // 
-            // DrawBoxPanel
-            // 
-            this.DrawBoxPanel.AutoScroll = true;
-            this.DrawBoxPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DrawBoxPanel.Location = new System.Drawing.Point(0, 123);
-            this.DrawBoxPanel.Name = "DrawBoxPanel";
-            this.DrawBoxPanel.Size = new System.Drawing.Size(840, 377);
-            this.DrawBoxPanel.TabIndex = 5;
             // 
             // DrawToolPanel
             // 
@@ -355,9 +247,127 @@ namespace Paint
             // 
             this.PenWidthBox.Location = new System.Drawing.Point(668, 42);
             this.PenWidthBox.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
+            this.PenWidthBox.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.PenWidthBox.Name = "PenWidthBox";
             this.PenWidthBox.Size = new System.Drawing.Size(98, 20);
             this.PenWidthBox.TabIndex = 10;
+            this.PenWidthBox.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // FileToolStrip
+            // 
+            this.FileToolStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.FileNew,
+            this.FileOpen,
+            this.FileSave,
+            this.FileSaveAs,
+            this.FileExit});
+            this.FileToolStrip.Name = "FileToolStrip";
+            this.FileToolStrip.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.FileToolStrip.Size = new System.Drawing.Size(37, 20);
+            this.FileToolStrip.Text = "File";
+            // 
+            // FileNew
+            // 
+            this.FileNew.Image = ((System.Drawing.Image)(resources.GetObject("FileNew.Image")));
+            this.FileNew.Name = "FileNew";
+            this.FileNew.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.FileNew.Size = new System.Drawing.Size(186, 22);
+            this.FileNew.Text = "New        ";
+            this.FileNew.Click += new System.EventHandler(this.FileNew_Click);
+            // 
+            // FileOpen
+            // 
+            this.FileOpen.Image = ((System.Drawing.Image)(resources.GetObject("FileOpen.Image")));
+            this.FileOpen.Name = "FileOpen";
+            this.FileOpen.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.FileOpen.Size = new System.Drawing.Size(186, 22);
+            this.FileOpen.Text = "Open";
+            this.FileOpen.Click += new System.EventHandler(this.FileOpen_Click);
+            // 
+            // FileSave
+            // 
+            this.FileSave.Image = ((System.Drawing.Image)(resources.GetObject("FileSave.Image")));
+            this.FileSave.Name = "FileSave";
+            this.FileSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.FileSave.Size = new System.Drawing.Size(186, 22);
+            this.FileSave.Text = "Save";
+            this.FileSave.Click += new System.EventHandler(this.FileSave_Click);
+            // 
+            // FileSaveAs
+            // 
+            this.FileSaveAs.Image = ((System.Drawing.Image)(resources.GetObject("FileSaveAs.Image")));
+            this.FileSaveAs.Name = "FileSaveAs";
+            this.FileSaveAs.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
+            this.FileSaveAs.Size = new System.Drawing.Size(186, 22);
+            this.FileSaveAs.Text = "Save As";
+            this.FileSaveAs.Click += new System.EventHandler(this.FileSaveAs_Click);
+            // 
+            // FileExit
+            // 
+            this.FileExit.Image = ((System.Drawing.Image)(resources.GetObject("FileExit.Image")));
+            this.FileExit.Name = "FileExit";
+            this.FileExit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
+            this.FileExit.Size = new System.Drawing.Size(186, 22);
+            this.FileExit.Text = "Exit";
+            this.FileExit.Click += new System.EventHandler(this.FileExit_Click);
+            // 
+            // EditToolStrip
+            // 
+            this.EditToolStrip.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.EditUndo,
+            this.EditRedo});
+            this.EditToolStrip.Name = "EditToolStrip";
+            this.EditToolStrip.Size = new System.Drawing.Size(39, 20);
+            this.EditToolStrip.Text = "Edit";
+            // 
+            // EditUndo
+            // 
+            this.EditUndo.Image = ((System.Drawing.Image)(resources.GetObject("EditUndo.Image")));
+            this.EditUndo.Name = "EditUndo";
+            this.EditUndo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+            this.EditUndo.Size = new System.Drawing.Size(144, 22);
+            this.EditUndo.Text = "Undo";
+            this.EditUndo.Click += new System.EventHandler(this.EditUndo_Click);
+            // 
+            // EditRedo
+            // 
+            this.EditRedo.Image = ((System.Drawing.Image)(resources.GetObject("EditRedo.Image")));
+            this.EditRedo.Name = "EditRedo";
+            this.EditRedo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+            this.EditRedo.Size = new System.Drawing.Size(144, 22);
+            this.EditRedo.Text = "Redo";
+            this.EditRedo.Click += new System.EventHandler(this.EditRedo_Click);
+            // 
+            // menuStrip
+            // 
+            this.menuStrip.BackColor = System.Drawing.SystemColors.Control;
+            this.menuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.FileToolStrip,
+            this.EditToolStrip});
+            this.menuStrip.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Size = new System.Drawing.Size(840, 24);
+            this.menuStrip.TabIndex = 1;
+            this.menuStrip.Text = "menuStrip1";
+            // 
+            // DrawBoxPanel
+            // 
+            this.DrawBoxPanel.AutoScroll = true;
+            this.DrawBoxPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DrawBoxPanel.Location = new System.Drawing.Point(0, 123);
+            this.DrawBoxPanel.Name = "DrawBoxPanel";
+            this.DrawBoxPanel.Size = new System.Drawing.Size(840, 377);
+            this.DrawBoxPanel.TabIndex = 5;
             // 
             // MyPaint
             // 
@@ -375,11 +385,11 @@ namespace Paint
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.ToolsPanel.ResumeLayout(false);
-            this.menuStrip.ResumeLayout(false);
-            this.menuStrip.PerformLayout();
             this.DrawToolPanel.ResumeLayout(false);
             this.DrawToolPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PenWidthBox)).EndInit();
+            this.menuStrip.ResumeLayout(false);
+            this.menuStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

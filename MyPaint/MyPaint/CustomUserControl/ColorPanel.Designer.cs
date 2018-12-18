@@ -50,8 +50,6 @@
             this.leftColorLabel.TabIndex = 19;
             this.leftColorLabel.Text = "Color 1";
             this.leftColorLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.leftColorLabel.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.leftColorLabel.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // rightColorLabel
             // 
@@ -64,8 +62,6 @@
             this.rightColorLabel.TabIndex = 16;
             this.rightColorLabel.Text = "Color 2";
             this.rightColorLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.rightColorLabel.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.rightColorLabel.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // rightColorButton
             // 
@@ -77,8 +73,6 @@
             this.rightColorButton.Size = new System.Drawing.Size(54, 54);
             this.rightColorButton.TabIndex = 1;
             this.rightColorButton.UseVisualStyleBackColor = false;
-            this.rightColorButton.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.rightColorButton.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // leftColorButton
             // 
@@ -91,8 +85,6 @@
             this.leftColorButton.Size = new System.Drawing.Size(54, 54);
             this.leftColorButton.TabIndex = 0;
             this.leftColorButton.UseVisualStyleBackColor = false;
-            this.leftColorButton.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.leftColorButton.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // tableLayoutPanel1
             // 
@@ -133,8 +125,6 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(300, 80);
             this.tableLayoutPanel1.TabIndex = 2;
-            this.tableLayoutPanel1.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.tableLayoutPanel1.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // colorButton12
             // 
@@ -148,8 +138,6 @@
             this.colorButton12.TabIndex = 42;
             this.colorButton12.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
             this.colorButton12.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
-            this.colorButton12.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.colorButton12.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // colorButton11
             // 
@@ -163,8 +151,6 @@
             this.colorButton11.TabIndex = 41;
             this.colorButton11.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
             this.colorButton11.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
-            this.colorButton11.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.colorButton11.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // colorButton10
             // 
@@ -178,8 +164,6 @@
             this.colorButton10.TabIndex = 40;
             this.colorButton10.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
             this.colorButton10.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
-            this.colorButton10.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.colorButton10.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // colorButton9
             // 
@@ -193,8 +177,6 @@
             this.colorButton9.TabIndex = 39;
             this.colorButton9.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
             this.colorButton9.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
-            this.colorButton9.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.colorButton9.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // colorButton8
             // 
@@ -208,8 +190,6 @@
             this.colorButton8.TabIndex = 38;
             this.colorButton8.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
             this.colorButton8.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
-            this.colorButton8.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.colorButton8.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // colorButton7
             // 
@@ -223,8 +203,6 @@
             this.colorButton7.TabIndex = 37;
             this.colorButton7.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
             this.colorButton7.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
-            this.colorButton7.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.colorButton7.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // colorButton6
             // 
@@ -238,8 +216,6 @@
             this.colorButton6.TabIndex = 36;
             this.colorButton6.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
             this.colorButton6.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
-            this.colorButton6.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.colorButton6.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // colorButton5
             // 
@@ -253,8 +229,6 @@
             this.colorButton5.TabIndex = 35;
             this.colorButton5.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
             this.colorButton5.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
-            this.colorButton5.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.colorButton5.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // colorButton4
             // 
@@ -268,8 +242,6 @@
             this.colorButton4.TabIndex = 34;
             this.colorButton4.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
             this.colorButton4.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
-            this.colorButton4.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.colorButton4.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // colorButton3
             // 
@@ -283,8 +255,6 @@
             this.colorButton3.TabIndex = 33;
             this.colorButton3.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
             this.colorButton3.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
-            this.colorButton3.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.colorButton3.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // colorButton2
             // 
@@ -298,8 +268,6 @@
             this.colorButton2.TabIndex = 32;
             this.colorButton2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
             this.colorButton2.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
-            this.colorButton2.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.colorButton2.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // colorPanelLabel
             // 
@@ -313,8 +281,6 @@
             this.colorPanelLabel.TabIndex = 17;
             this.colorPanelLabel.Text = "Colors (double-click to edit)";
             this.colorPanelLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.colorPanelLabel.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.colorPanelLabel.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // colorButton1
             // 
@@ -328,8 +294,6 @@
             this.colorButton1.TabIndex = 31;
             this.colorButton1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseClick);
             this.colorButton1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.colorButton_MouseDoubleClick);
-            this.colorButton1.MouseEnter += new System.EventHandler(this.MouseEnter);
-            this.colorButton1.MouseLeave += new System.EventHandler(this.MouseLeave);
             // 
             // ColorPanel
             // 

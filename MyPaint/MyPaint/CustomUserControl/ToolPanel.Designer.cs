@@ -76,6 +76,8 @@
             this.TextButton.UseVisualStyleBackColor = false;
             this.TextButton.Leave += new System.EventHandler(this.ToolButton_Leave);
             this.TextButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ToolButton_MouseDown);
+            this.TextButton.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.TextButton.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // ToolIcons
             // 
@@ -102,6 +104,8 @@
             this.PickerButton.UseVisualStyleBackColor = false;
             this.PickerButton.Leave += new System.EventHandler(this.ToolButton_Leave);
             this.PickerButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ToolButton_MouseDown);
+            this.PickerButton.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.PickerButton.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // BrushButton
             // 
@@ -117,6 +121,8 @@
             this.BrushButton.UseVisualStyleBackColor = false;
             this.BrushButton.Leave += new System.EventHandler(this.ToolButton_Leave);
             this.BrushButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ToolButton_MouseDown);
+            this.BrushButton.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.BrushButton.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // EraserButton
             // 
@@ -132,6 +138,8 @@
             this.EraserButton.UseVisualStyleBackColor = false;
             this.EraserButton.Leave += new System.EventHandler(this.ToolButton_Leave);
             this.EraserButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ToolButton_MouseDown);
+            this.EraserButton.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.EraserButton.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // BucketButton
             // 
@@ -147,6 +155,8 @@
             this.BucketButton.UseVisualStyleBackColor = false;
             this.BucketButton.Leave += new System.EventHandler(this.ToolButton_Leave);
             this.BucketButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ToolButton_MouseDown);
+            this.BucketButton.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.BucketButton.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // PenButton
             // 
@@ -162,6 +172,8 @@
             this.PenButton.UseVisualStyleBackColor = false;
             this.PenButton.Leave += new System.EventHandler(this.ToolButton_Leave);
             this.PenButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ToolButton_MouseDown);
+            this.PenButton.MouseEnter += new System.EventHandler(this.button_MouseEnter);
+            this.PenButton.MouseLeave += new System.EventHandler(this.button_MouseLeave);
             // 
             // ToolPanel
             // 

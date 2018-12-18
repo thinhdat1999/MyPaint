@@ -13,7 +13,8 @@ namespace Paint
     public partial class ShapePanel : UserControl
     {
         string _shapeLabel;
-        Button CurButton;
+        public static Button CurButton;
+        public static bool isEnter;
 
         public string ShapeLabel => _shapeLabel;
 
@@ -27,27 +28,42 @@ namespace Paint
 
         private void ShapeButton_MouseDown(object sender, MouseEventArgs e)
         {
-            Button SelectedButton = sender as Button;
             if (CurButton != null)
             {
                 CurButton.BackColor = SystemColors.InactiveBorder;
-                CurButton = SelectedButton;
             }
 
-            SelectedButton.BackColor = SystemColors.ActiveBorder;
-            _shapeLabel = (string) SelectedButton.Tag;
+            if (ToolPanel.CurButton != null)
+            {
+                ToolPanel.CurButton.BackColor = SystemColors.InactiveBorder;
+                ToolPanel.CurButton = null;
+            }
+
+            CurButton = sender as Button;
+            CurButton.BackColor = SystemColors.ActiveBorder;
+            MyPaint.DrawType = (string) CurButton.Tag;
         }
 
         // Khi rời Button (nếu không chọn Button đổi màu) thì hủy Button vừa rời
 
         private void ShapeButton_Leave(object sender, EventArgs e)
         {
-            if (!ColorPanel.isEnter)
+            if (ToolPanel.isEnter)
             {
                 Button LeftButton = sender as Button;
                 LeftButton.BackColor = SystemColors.InactiveBorder;
                 _shapeLabel = null;
             }
+        }
+
+        private void button_MouseEnter(object sender, EventArgs e)
+        {
+            isEnter = true;
+        }
+
+        private void button_MouseLeave(object sender, EventArgs e)
+        {
+            isEnter = false;
         }
     }
 }

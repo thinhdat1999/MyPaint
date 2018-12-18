@@ -62,10 +62,11 @@ namespace Paint
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            this.Controls.Add(textBox);
+            Controls.Add(textBox);
             textBox.Location = new Point(0, 0);
-            this.Size = textBox.Size;
-            this.Location = _point;
+            textBox.ForeColor = MyPaint.LeftColor;
+            Size = textBox.Size;
+            Location = _point;
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
