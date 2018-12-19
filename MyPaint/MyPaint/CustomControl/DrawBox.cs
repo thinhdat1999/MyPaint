@@ -16,8 +16,8 @@ namespace Paint
     [ToolboxItem(true)]
     class DrawBox : PictureBox
     {
-        Stack<Image> UndoList;
-        Stack<Image> RedoList;
+        Stack<Bitmap> UndoList;
+        Stack<Bitmap> RedoList;
 
         Graphics _g;
         Pen _pen;
@@ -55,8 +55,8 @@ namespace Paint
         //Constructor tạo DrawBox
         public DrawBox()
         {
-            UndoList = new Stack<Image>();
-            RedoList = new Stack<Image>();
+            UndoList = new Stack<Bitmap>();
+            RedoList = new Stack<Bitmap>();
             Size = new Size(700, 300);
             Image = new Bitmap(Width, Height);
 
@@ -71,8 +71,7 @@ namespace Paint
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-
-            ptMouseDown = e.Location;
+            ptMouseDown = ptMouseMove = e.Location;
 
             switch (_drawStatus)
             {
@@ -86,8 +85,7 @@ namespace Paint
                     {
                         _drawColor = MyPaint.RightColor;
                     }
-                    UndoList.Push(Image);
-                    RedoList.Clear();
+
                     SetGraphics();
                     break;
 
@@ -111,11 +109,21 @@ namespace Paint
 
                         if (MyPaint.DrawType == "Text")
                         {
-                            AddText(TextToDraw, areaRect);
+                            if (TextToDraw != null)
+                            {
+                                UndoList.Push(new Bitmap(Image));
+                                RedoList.Clear();
+                                AddText(TextToDraw, areaRect);
+                                RedoList.Push(new Bitmap(Image));
+                            }
                             textBoxPopUp.Dispose();
                         }
-                        else ShapePaint.DrawShape(_g, _pen, areaRect, MyPaint.DrawType);
-                        RedoList.Push(Image);
+                        else
+                        {
+                            ShapePaint.DrawShape(_g, _pen, areaRect, MyPaint.DrawType);
+                            RedoList.Push(new Bitmap(Image));
+                        }
+                        areaRect = Rectangle.Empty;
                         this.Invalidate();
                     }
                     break;
@@ -151,22 +159,30 @@ namespace Paint
             switch (MyPaint.DrawType)
             {
                 case "Pen":
+                    UndoList.Push(new Bitmap(Image));
+                    RedoList.Clear();
                     _pen = new Pen(_drawColor, MyPaint.PenWidth);
                     _pen.DashStyle = PenStyle();
                     _drawStatus = DrawStatus.ToolDrawing;
                     break;
 
                 case "Bucket":
+                    UndoList.Push(new Bitmap(Image));
+                    RedoList.Clear();
                     FloodFill(ptMouseDown, _drawColor);
-                    RedoList.Push(Image);
+                    RedoList.Push(new Bitmap(Image));
                     break;
 
                 case "Eraser":
+                    UndoList.Push(new Bitmap(Image));
+                    RedoList.Clear();
                     _pen = new Pen(MyPaint.RightColor, 10);
                     _drawStatus = DrawStatus.ToolDrawing;
                     break;
 
                 case "Brush":
+                    UndoList.Push(new Bitmap(Image));
+                    RedoList.Clear();
                     _pen = new Pen(_drawColor, 5);
                     _drawStatus = DrawStatus.ToolDrawing;
                     break;
@@ -315,26 +331,35 @@ namespace Paint
             {
                 case DrawStatus.LineDrawing:
                     _g = Graphics.FromImage(Image);
-                    _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
+                    if (ptMouseDown != ptMouseMove)
+                    {
+                        UndoList.Push(new Bitmap(Image));
+                        RedoList.Clear();
+                        _g.DrawLine(_pen, ptMouseDown, ptMouseMove);
+                        RedoList.Push(new Bitmap(Image));
+                    }
                     _drawStatus = DrawStatus.Idle;
-                    RedoList.Push(Image);
                     break;
 
                 case DrawStatus.ToolDrawing:
                     _drawStatus = DrawStatus.Idle;
-                    RedoList.Push(Image);
+                    RedoList.Push(new Bitmap(Image));
                     break;
 
-                case DrawStatus.TextDrawing:
-                    _drawStatus = DrawStatus.EditDrawing;
-                    DrawTextBox(null);
+                case DrawStatus.TextDrawing:          
+                    if (areaRect != Rectangle.Empty)
+                    {
+                        _drawStatus = DrawStatus.EditDrawing;
+                        DrawTextBox(null);
+                    }
+                    else _drawStatus = DrawStatus.Idle;
                     break;
 
                 case DrawStatus.ShapeDrawing:
                     _g = CreateGraphics();
                     if (areaRect.Width > 1 && areaRect.Height > 1 && ptMouseDown != e.Location)
                     {
-                        UndoList.Push(Image);
+                        UndoList.Push(new Bitmap(Image));
                         RedoList.Clear();
                         ShapePaint.DrawShape(_g, _pen, areaRect, MyPaint.DrawType);
                         EditPaint.DrawDragRectangle(_g, areaRect);
@@ -423,7 +448,6 @@ namespace Paint
         }
         #endregion
 
-
         #region TextBox
         void DrawTextBox(string curText)
         {
@@ -465,14 +489,14 @@ namespace Paint
                 _drawStatus = DrawStatus.Idle;
                 _g = Graphics.FromImage(Image);
                 ShapePaint.DrawShape(_g, _pen, areaRect, MyPaint.DrawType);
-                RedoList.Push(Image);
+                RedoList.Push(new Bitmap(Image));
                 this.Invalidate();
             }
 
             if (UndoList.Count > 0)
             {
                 RedoList.Push(UndoList.Peek());
-                Image = UndoList.Pop();
+                Image = (Image)UndoList.Pop();
                 Size = Image.Size;
                 this.Invalidate();
             }
@@ -494,19 +518,20 @@ namespace Paint
             if (RedoList.Count > 1)
             {
                 UndoList.Push(RedoList.Pop());
-                Image = RedoList.Peek();
+                Image = (Image)RedoList.Peek();
                 Size = Image.Size;
             }
         }
 
         public void PushUndo(Image image)
         {
-            UndoList.Push(image);
+            UndoList.Push(new Bitmap(image));
+            RedoList.Clear();
         }
 
         public void PushRedo(Image image)
         {
-            RedoList.Push(image);
+            RedoList.Push(new Bitmap(image));
         }
         #endregion
     }

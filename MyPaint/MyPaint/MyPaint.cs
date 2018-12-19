@@ -154,7 +154,7 @@ namespace Paint
             openDlg.Filter = @"All file|*.*|Bitmap Image|*.bmp|JPEG Image|*.jpeg|JPG Image|*.jpg|Png Image|*.png|Tiff Image|*.tiff|Wmf Image|*.wmf";
             if (openDlg.ShowDialog() == DialogResult.OK)
             {
-
+                //Mở file hình bằng memoryStream để tránh lỗi generic khi lưu do mở file
                 Byte[] bytes = File.ReadAllBytes(openDlg.FileName);
                 MemoryStream stream = new MemoryStream(bytes);
                 Image img = Image.FromStream(stream);
