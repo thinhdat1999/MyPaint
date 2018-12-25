@@ -16,8 +16,6 @@ namespace Paint
         public static Button CurButton;
         public static bool isEnter;
 
-        public string ToolLabel => _toolLabel;
-
         public ToolPanel()
         {
             InitializeComponent();
@@ -54,7 +52,6 @@ namespace Paint
             {
                 Button LeftButton = sender as Button;
                 LeftButton.BackColor = SystemColors.InactiveBorder;
-                _toolLabel = null;
             }
         }
 

@@ -175,9 +175,11 @@ namespace Paint
             // colorPanel
             // 
             this.colorPanel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.colorPanel.LeftColor = System.Drawing.Color.Black;
             this.colorPanel.Location = new System.Drawing.Point(313, 4);
             this.colorPanel.Margin = new System.Windows.Forms.Padding(4);
             this.colorPanel.Name = "colorPanel";
+            this.colorPanel.RightColor = System.Drawing.Color.White;
             this.DrawToolPanel.SetRowSpan(this.colorPanel, 3);
             this.colorPanel.Size = new System.Drawing.Size(299, 107);
             this.colorPanel.TabIndex = 0;
@@ -378,6 +380,7 @@ namespace Paint
             this.Controls.Add(this.ToolsPanel);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStrip);
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MyPaint";

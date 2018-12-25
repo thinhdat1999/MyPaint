@@ -15,9 +15,7 @@ namespace Paint
         string _shapeLabel;
         public static Button CurButton;
         public static bool isEnter;
-
-        public string ShapeLabel => _shapeLabel;
-
+        
         public ShapePanel()
         {
             InitializeComponent();
@@ -52,7 +50,6 @@ namespace Paint
             {
                 Button LeftButton = sender as Button;
                 LeftButton.BackColor = SystemColors.InactiveBorder;
-                _shapeLabel = null;
             }
         }
 

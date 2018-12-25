@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Paint
@@ -34,7 +27,6 @@ namespace Paint
         Rectangle textRect;
 
         int _dragHandle = 0;
-        bool _isOpenYet;
 
         enum DrawStatus
         {
@@ -48,8 +40,6 @@ namespace Paint
             MovingShape
         };
         DrawStatus _drawStatus;
-
-        public bool IsOpen { set => _isOpenYet = value; }
 
         #region Constructor
         //Constructor tạo DrawBox
@@ -482,43 +472,28 @@ namespace Paint
         #region Undo & Redo
         public void Undo()
         {
-            _isOpenYet = false;
-            CheckOpen();
             if (_drawStatus == DrawStatus.EditDrawing)
             {
                 _drawStatus = DrawStatus.Idle;
                 _g = Graphics.FromImage(Image);
                 ShapePaint.DrawShape(_g, _pen, areaRect, MyPaint.DrawType);
                 RedoList.Push(new Bitmap(Image));
-                this.Invalidate();
             }
 
             if (UndoList.Count > 0)
             {
                 RedoList.Push(UndoList.Peek());
-                Image = (Image)UndoList.Pop();
+                Image = UndoList.Pop();
                 Size = Image.Size;
-                this.Invalidate();
-            }
-        }
-
-        public void CheckOpen()
-        {
-            if (_isOpenYet == true)
-            {
-                UndoList.Clear();
-                RedoList.Clear();
-                _isOpenYet = false;
             }
         }
 
         public void Redo()
         {
-            CheckOpen();
             if (RedoList.Count > 1)
             {
                 UndoList.Push(RedoList.Pop());
-                Image = (Image)RedoList.Peek();
+                Image = RedoList.Peek();
                 Size = Image.Size;
             }
         }
@@ -526,12 +501,17 @@ namespace Paint
         public void PushUndo(Image image)
         {
             UndoList.Push(new Bitmap(image));
-            RedoList.Clear();
         }
 
         public void PushRedo(Image image)
         {
             RedoList.Push(new Bitmap(image));
+        }
+
+        public void ClearUndoRedo()
+        {
+            UndoList.Clear();
+            RedoList.Clear();
         }
         #endregion
     }
