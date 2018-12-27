@@ -28,6 +28,7 @@ namespace Paint
 
         int _dragHandle = 0;
 
+        // Các trạng thái vẽ hình trên DrawBox
         enum DrawStatus
         {
             Idle,
@@ -57,7 +58,7 @@ namespace Paint
         #endregion
 
         #region Mouse Down
-        //Khởi tạo các thuộc tính khi nhấn chuột trái vào vùng DrawBox
+        // Khởi tạo các thuộc tính khi nhấn chuột trái vào vùng DrawBox
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
@@ -65,6 +66,7 @@ namespace Paint
 
             switch (_drawStatus)
             {
+                // Trường hơp chưa vẽ: lấy màu vẽ
                 case DrawStatus.Idle:
                     if (e.Button == MouseButtons.Left)
                     {
@@ -78,6 +80,11 @@ namespace Paint
 
                     SetGraphics();
                     break;
+
+                // Đang chỉnh hình (Edit, Resize): căn cứ con trỏ chuột đang trỏ chuột:
+                // Trỏ chuột trên 8 ô Resize: chuyển sang trạng thái Resize hình
+                // Trỏ chuột trong hình: Chuyển sang trạng thái Move hình
+                // Trỏ chuột ngoài hình: Kết thúc và vẽ hình
 
                 case DrawStatus.EditDrawing:
                     if (_dragHandle != 9)
@@ -122,6 +129,8 @@ namespace Paint
 
         private DashStyle PenStyle()
         {
+            // Lấy kiểu vẽ dựa trên chuỗi thu được
+
             switch (MyPaint.DrawStyle)
             {
                 case "Solid":
@@ -146,13 +155,14 @@ namespace Paint
 
         private void SetGraphics()
         {
+            // Chuẩn bị các thông số cho từng loại Vẽ
+
             switch (MyPaint.DrawType)
             {
                 case "Pen":
                     UndoList.Push(new Bitmap(Image));
                     RedoList.Clear();
-                    _pen = new Pen(_drawColor, MyPaint.PenWidth);
-                    _pen.DashStyle = PenStyle();
+                    _pen = new Pen(_drawColor);
                     _drawStatus = DrawStatus.ToolDrawing;
                     break;
 
@@ -166,14 +176,14 @@ namespace Paint
                 case "Eraser":
                     UndoList.Push(new Bitmap(Image));
                     RedoList.Clear();
-                    _pen = new Pen(MyPaint.RightColor, 10);
+                    _pen = new Pen(MyPaint.RightColor, 10 + MyPaint.PenWidth);
                     _drawStatus = DrawStatus.ToolDrawing;
                     break;
 
                 case "Brush":
                     UndoList.Push(new Bitmap(Image));
                     RedoList.Clear();
-                    _pen = new Pen(_drawColor, 5);
+                    _pen = new Pen(_drawColor, 5 + MyPaint.PenWidth);
                     _drawStatus = DrawStatus.ToolDrawing;
                     break;
 
@@ -202,9 +212,12 @@ namespace Paint
         #endregion
 
         #region Mouse Move
-        //Khi di chuyển chuột (và đè chuột trái - tức đang vẽ) trên vùng DrawBox
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            // Khi di chuyển chuột (và đè chuột trái - tức đang vẽ) trên vùng DrawBox
+            // Với các trường hợp vẽ hình: liên tục cập nhật lại DrawBox để tạo độ mượt 
+            // (xét trường hợp có đè nút Shift tạo hình vuông) ở phần vẽ hình
+
             base.OnMouseMove(e);
 
             switch (_drawStatus)
@@ -250,6 +263,8 @@ namespace Paint
 
         private void UpdateCursor()
         {
+            // Cập nhật hình ảnh con trỏ khi Resize hình
+
             switch (_dragHandle)
             {
                 case 1:
@@ -278,6 +293,8 @@ namespace Paint
         #region OnPaint
         protected override void OnPaint(PaintEventArgs e)
         {
+            // Vẽ liên tục các hình tạm trên DrawBox nhằm tạo độ mượt
+
             base.OnPaint(e);
 
             switch (_drawStatus)
@@ -315,6 +332,8 @@ namespace Paint
         #region Mouse Up
         protected override void OnMouseUp(MouseEventArgs e)
         {
+            // Nhấc chuột lên: Hoàn thành vẽ với vẽ đường thẳng, các trường hợp còn lại chuyển sang Resize
+
             base.OnMouseUp(e);
 
             switch (_drawStatus)
@@ -374,6 +393,8 @@ namespace Paint
         #region DrawDrag
         private void DrawDrag(Point ptMouseDown, Point ptMouseMove, string type)
         {
+            // Một số dạng vẽ hình tự do (vẽ bút chì, tẩy, cọ)
+
             switch (type)
             {
                 case "Pen":
@@ -403,6 +424,8 @@ namespace Paint
         #region Bucket
         void FloodFill(Point node, Color replaceColor)
         {
+            // Áp dụng thuật toán FloodFill nhằm tô màu vùng chọn cùng màu lớn nhất
+
             Bitmap DrawBitmap = new Bitmap(Image);
             Color targetColor = DrawBitmap.GetPixel(node.X, node.Y);
 
@@ -441,6 +464,8 @@ namespace Paint
         #region TextBox
         void DrawTextBox(string curText)
         {
+            // Trường hợp thêm Text: chuẩn bị form Popup chứa RichtextBox để nhận vùng nhập Text
+
             Point location = PointToScreen(areaRect.Location);
             textRect = areaRect;
             textRect.Inflate(-1, -1);
@@ -453,6 +478,8 @@ namespace Paint
 
         public void AddText(string txt, Rectangle layoutRectangle)
         {
+            // Vẽ text lên màn hình (khi đã nhập xong)
+
             SolidBrush _brush = new SolidBrush(MyPaint.LeftColor);
             _g.DrawString(txt, DefaultFont, _brush, layoutRectangle);
             TextToDraw = null;

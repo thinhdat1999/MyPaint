@@ -12,7 +12,6 @@ namespace Paint
 {
     public partial class ToolPanel : UserControl
     {
-        string _toolLabel;
         public static Button CurButton;
         public static bool isEnter;
 

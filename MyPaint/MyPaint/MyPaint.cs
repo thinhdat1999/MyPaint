@@ -18,14 +18,16 @@ namespace Paint
         private DrawBox drawBox;
         private string FilePath;
 
-        public static Color LeftColor;
-        public static Color RightColor;
+        public static Color LeftColor { get; private set; }
+        public static Color RightColor { get; private set; }
         public static string DrawType;
-        public static string DrawStyle;
-        public static int PenWidth;
+        public static string DrawStyle { get; private set; }
+        public static int PenWidth { get; private set; }
 
         public MyPaint()
         {
+            // Khởi tạo các component cho form, đặt một số event cho DrawBox
+
             InitializeComponent();
 
             drawBox = DrawBoxPanel.DrawBox;
@@ -36,16 +38,20 @@ namespace Paint
 
             DrawBoxSize.Text = drawBox.Size.ToString();
             DrawType = "Pen";
-            StyleComboBox.SelectedIndex = 0;
+            cbStyle.SelectedIndex = 0;
         }
 
         #region DrawBox Event
         private void DrawBox_UpdateDrawing(object sender, MouseEventArgs e)
         {
+            // Nhấn chuột vào vùng DrawBox: cập nhật các thông số để vẽ hình
+            // Các thông số cập nhật: màu, kiểu vẽ, độ dày nét vẽ
+            // Riêng Picker thì cập nhật lại màu trong ColorPanel
+
             LeftColor = colorPanel.LeftColor;
             RightColor = colorPanel.RightColor;
-            DrawStyle = StyleComboBox.Text;
-            PenWidth = (int)PenWidthBox.Value;
+            DrawStyle = cbStyle.Text;
+            PenWidth = (int)nudWidth.Value;
 
             if (DrawType == "Picker")
             {
@@ -62,10 +68,14 @@ namespace Paint
 
         private void DrawBox_SizeChange(object sender, EventArgs e)
         {
+            // Resize DrawBox: cập nhật lại màu 2 và thông số Size tại Text
+
             RightColor = colorPanel.RightColor;
             DrawBoxSize.Text = drawBox.Size.ToString();
             DrawBoxPanel.Invalidate();
         }
+
+        // Cập nhật tọa độ chuột khi di chuột trên DrawBox
 
         private void DrawBox_MouseMove(object sender, MouseEventArgs e)
         {
@@ -80,9 +90,11 @@ namespace Paint
 
         #region File MenuStrip
 
-        // Tạo File vẽ mới - tạo bitmap mới gắn vào vùng DrawBox
         private void FileNew_Click(object sender, EventArgs e)
         {
+            // Tạo File vẽ mới - Hỏi Save File trước khi thực hiện
+            // Tạo DrawBox mới: tô màu nền trắng, xóa list Undo, Redo và FilePath
+
             var AskForSave = MessageBox.Show(@"Do you want to Save this Image?", @"Save", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
 
             if (AskForSave == DialogResult.Cancel)
@@ -114,7 +126,7 @@ namespace Paint
 
             else if (AskForSave == DialogResult.Yes)
                 FileSave_Click(null, null);
-        
+
             OpenFileDialog openDlg = new OpenFileDialog();
             openDlg.Filter = @"Image files (*.jpg, *.jpeg, *.wmf, *.tiff, *.png) | *.jpg; *.jpeg; *.wmf; *.tiff; *.png";
             if (openDlg.ShowDialog() == DialogResult.OK)
@@ -141,11 +153,10 @@ namespace Paint
 
             else if (AskForSave == DialogResult.Yes)
                 FileSave_Click(null, null);
-        
+
             this.Close();
         }
 
-        // Save hình
         private void FileSave_Click(object sender, EventArgs e)
         {
             if (FilePath == null)

@@ -39,15 +39,12 @@ namespace Paint
             this.DrawBoxSize = new System.Windows.Forms.ToolStripStatusLabel();
             this.ToolsPanel = new System.Windows.Forms.TableLayoutPanel();
             this.DrawToolPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.toolPanel = new Paint.ToolPanel();
-            this.shapePanel = new Paint.ShapePanel();
-            this.colorPanel = new Paint.ColorPanel();
-            this.StyleComboBox = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.cbStyle = new System.Windows.Forms.ComboBox();
+            this.lbWidth = new System.Windows.Forms.Label();
             this.ShapesLabel = new System.Windows.Forms.Label();
             this.ToolLabel = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.PenWidthBox = new System.Windows.Forms.NumericUpDown();
+            this.lbStyle = new System.Windows.Forms.Label();
+            this.nudWidth = new System.Windows.Forms.NumericUpDown();
             this.FileToolStrip = new System.Windows.Forms.ToolStripMenuItem();
             this.FileNew = new System.Windows.Forms.ToolStripMenuItem();
             this.FileOpen = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,10 +56,13 @@ namespace Paint
             this.EditRedo = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.DrawBoxPanel = new Paint.DrawBoxPanel();
+            this.toolPanel = new Paint.ToolPanel();
+            this.shapePanel = new Paint.ShapePanel();
+            this.colorPanel = new Paint.ColorPanel();
             this.statusStrip.SuspendLayout();
             this.ToolsPanel.SuspendLayout();
             this.DrawToolPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.PenWidthBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).BeginInit();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -133,12 +133,12 @@ namespace Paint
             this.DrawToolPanel.Controls.Add(this.toolPanel, 0, 0);
             this.DrawToolPanel.Controls.Add(this.shapePanel, 1, 0);
             this.DrawToolPanel.Controls.Add(this.colorPanel, 2, 0);
-            this.DrawToolPanel.Controls.Add(this.StyleComboBox, 4, 0);
-            this.DrawToolPanel.Controls.Add(this.label2, 3, 1);
+            this.DrawToolPanel.Controls.Add(this.cbStyle, 4, 0);
+            this.DrawToolPanel.Controls.Add(this.lbWidth, 3, 1);
             this.DrawToolPanel.Controls.Add(this.ShapesLabel, 1, 2);
             this.DrawToolPanel.Controls.Add(this.ToolLabel, 0, 2);
-            this.DrawToolPanel.Controls.Add(this.label1, 3, 0);
-            this.DrawToolPanel.Controls.Add(this.PenWidthBox, 4, 1);
+            this.DrawToolPanel.Controls.Add(this.lbStyle, 3, 0);
+            this.DrawToolPanel.Controls.Add(this.nudWidth, 4, 1);
             this.DrawToolPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DrawToolPanel.Location = new System.Drawing.Point(3, 0);
             this.DrawToolPanel.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
@@ -150,68 +150,34 @@ namespace Paint
             this.DrawToolPanel.Size = new System.Drawing.Size(834, 115);
             this.DrawToolPanel.TabIndex = 2;
             // 
-            // toolPanel
+            // cbStyle
             // 
-            this.toolPanel.BackColor = System.Drawing.Color.Transparent;
-            this.toolPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.toolPanel.Location = new System.Drawing.Point(4, 4);
-            this.toolPanel.Margin = new System.Windows.Forms.Padding(4);
-            this.toolPanel.Name = "toolPanel";
-            this.DrawToolPanel.SetRowSpan(this.toolPanel, 2);
-            this.toolPanel.Size = new System.Drawing.Size(101, 67);
-            this.toolPanel.TabIndex = 3;
-            // 
-            // shapePanel
-            // 
-            this.shapePanel.BackColor = System.Drawing.Color.Transparent;
-            this.shapePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.shapePanel.Location = new System.Drawing.Point(113, 4);
-            this.shapePanel.Margin = new System.Windows.Forms.Padding(4);
-            this.shapePanel.Name = "shapePanel";
-            this.DrawToolPanel.SetRowSpan(this.shapePanel, 2);
-            this.shapePanel.Size = new System.Drawing.Size(192, 67);
-            this.shapePanel.TabIndex = 5;
-            // 
-            // colorPanel
-            // 
-            this.colorPanel.Dock = System.Windows.Forms.DockStyle.Left;
-            this.colorPanel.LeftColor = System.Drawing.Color.Black;
-            this.colorPanel.Location = new System.Drawing.Point(313, 4);
-            this.colorPanel.Margin = new System.Windows.Forms.Padding(4);
-            this.colorPanel.Name = "colorPanel";
-            this.colorPanel.RightColor = System.Drawing.Color.White;
-            this.DrawToolPanel.SetRowSpan(this.colorPanel, 3);
-            this.colorPanel.Size = new System.Drawing.Size(299, 107);
-            this.colorPanel.TabIndex = 0;
-            // 
-            // StyleComboBox
-            // 
-            this.StyleComboBox.AutoCompleteCustomSource.AddRange(new string[] {
+            this.cbStyle.AutoCompleteCustomSource.AddRange(new string[] {
             "Solid"});
-            this.StyleComboBox.DisplayMember = "Solid";
-            this.StyleComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.StyleComboBox.FormattingEnabled = true;
-            this.StyleComboBox.Items.AddRange(new object[] {
+            this.cbStyle.DisplayMember = "Solid";
+            this.cbStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbStyle.FormattingEnabled = true;
+            this.cbStyle.Items.AddRange(new object[] {
             "Solid",
             "Dash",
             "Dot",
             "Dash Dot",
             "Dash Dot Dot"});
-            this.StyleComboBox.Location = new System.Drawing.Point(668, 8);
-            this.StyleComboBox.Margin = new System.Windows.Forms.Padding(0, 8, 8, 8);
-            this.StyleComboBox.Name = "StyleComboBox";
-            this.StyleComboBox.Size = new System.Drawing.Size(98, 21);
-            this.StyleComboBox.TabIndex = 8;
+            this.cbStyle.Location = new System.Drawing.Point(668, 8);
+            this.cbStyle.Margin = new System.Windows.Forms.Padding(0, 8, 8, 8);
+            this.cbStyle.Name = "cbStyle";
+            this.cbStyle.Size = new System.Drawing.Size(98, 21);
+            this.cbStyle.TabIndex = 8;
             // 
-            // label2
+            // lbWidth
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(621, 39);
-            this.label2.Name = "label2";
-            this.label2.Padding = new System.Windows.Forms.Padding(5, 5, 0, 5);
-            this.label2.Size = new System.Drawing.Size(43, 23);
-            this.label2.TabIndex = 9;
-            this.label2.Text = "Width:";
+            this.lbWidth.AutoSize = true;
+            this.lbWidth.Location = new System.Drawing.Point(621, 39);
+            this.lbWidth.Name = "lbWidth";
+            this.lbWidth.Padding = new System.Windows.Forms.Padding(5, 5, 0, 5);
+            this.lbWidth.Size = new System.Drawing.Size(43, 23);
+            this.lbWidth.TabIndex = 9;
+            this.lbWidth.Text = "Width:";
             // 
             // ShapesLabel
             // 
@@ -233,31 +199,31 @@ namespace Paint
             this.ToolLabel.TabIndex = 4;
             this.ToolLabel.Text = "Tool";
             // 
-            // label1
+            // lbStyle
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(621, 3);
-            this.label1.Margin = new System.Windows.Forms.Padding(3);
-            this.label1.Name = "label1";
-            this.label1.Padding = new System.Windows.Forms.Padding(5, 8, 0, 5);
-            this.label1.Size = new System.Drawing.Size(38, 26);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "Style:";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.lbStyle.AutoSize = true;
+            this.lbStyle.Location = new System.Drawing.Point(621, 3);
+            this.lbStyle.Margin = new System.Windows.Forms.Padding(3);
+            this.lbStyle.Name = "lbStyle";
+            this.lbStyle.Padding = new System.Windows.Forms.Padding(5, 8, 0, 5);
+            this.lbStyle.Size = new System.Drawing.Size(38, 26);
+            this.lbStyle.TabIndex = 7;
+            this.lbStyle.Text = "Style:";
+            this.lbStyle.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
-            // PenWidthBox
+            // nudWidth
             // 
-            this.PenWidthBox.Location = new System.Drawing.Point(668, 42);
-            this.PenWidthBox.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
-            this.PenWidthBox.Minimum = new decimal(new int[] {
+            this.nudWidth.Location = new System.Drawing.Point(668, 42);
+            this.nudWidth.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
+            this.nudWidth.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.PenWidthBox.Name = "PenWidthBox";
-            this.PenWidthBox.Size = new System.Drawing.Size(98, 20);
-            this.PenWidthBox.TabIndex = 10;
-            this.PenWidthBox.Value = new decimal(new int[] {
+            this.nudWidth.Name = "nudWidth";
+            this.nudWidth.Size = new System.Drawing.Size(98, 20);
+            this.nudWidth.TabIndex = 10;
+            this.nudWidth.Value = new decimal(new int[] {
             1,
             0,
             0,
@@ -371,6 +337,40 @@ namespace Paint
             this.DrawBoxPanel.Size = new System.Drawing.Size(840, 377);
             this.DrawBoxPanel.TabIndex = 5;
             // 
+            // toolPanel
+            // 
+            this.toolPanel.BackColor = System.Drawing.Color.Transparent;
+            this.toolPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.toolPanel.Location = new System.Drawing.Point(4, 4);
+            this.toolPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.toolPanel.Name = "toolPanel";
+            this.DrawToolPanel.SetRowSpan(this.toolPanel, 2);
+            this.toolPanel.Size = new System.Drawing.Size(101, 67);
+            this.toolPanel.TabIndex = 3;
+            // 
+            // shapePanel
+            // 
+            this.shapePanel.BackColor = System.Drawing.Color.Transparent;
+            this.shapePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.shapePanel.Location = new System.Drawing.Point(113, 4);
+            this.shapePanel.Margin = new System.Windows.Forms.Padding(4);
+            this.shapePanel.Name = "shapePanel";
+            this.DrawToolPanel.SetRowSpan(this.shapePanel, 2);
+            this.shapePanel.Size = new System.Drawing.Size(192, 67);
+            this.shapePanel.TabIndex = 5;
+            // 
+            // colorPanel
+            // 
+            this.colorPanel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.colorPanel.LeftColor = System.Drawing.Color.Black;
+            this.colorPanel.Location = new System.Drawing.Point(313, 4);
+            this.colorPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.colorPanel.Name = "colorPanel";
+            this.colorPanel.RightColor = System.Drawing.Color.White;
+            this.DrawToolPanel.SetRowSpan(this.colorPanel, 3);
+            this.colorPanel.Size = new System.Drawing.Size(299, 107);
+            this.colorPanel.TabIndex = 0;
+            // 
             // MyPaint
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -390,7 +390,7 @@ namespace Paint
             this.ToolsPanel.ResumeLayout(false);
             this.DrawToolPanel.ResumeLayout(false);
             this.DrawToolPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.PenWidthBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudWidth)).EndInit();
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -422,12 +422,12 @@ namespace Paint
         private ToolPanel toolPanel;
         private ShapePanel shapePanel;
         private ColorPanel colorPanel;
-        private ComboBox StyleComboBox;
-        private Label label2;
+        private ComboBox cbStyle;
+        private Label lbWidth;
         private Label ShapesLabel;
         private Label ToolLabel;
-        private Label label1;
-        private NumericUpDown PenWidthBox;
+        private Label lbStyle;
+        private NumericUpDown nudWidth;
     }
 }
 

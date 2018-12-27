@@ -12,7 +12,6 @@ namespace Paint
 {
     public partial class ShapePanel : UserControl
     {
-        string _shapeLabel;
         public static Button CurButton;
         public static bool isEnter;
         
